@@ -201,3 +201,23 @@ CREATE POLICY "Allow public read/write on team" ON public.team FOR ALL USING (tr
 CREATE POLICY "Allow public read/write on departments" ON public.departments FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow public read/write on about" ON public.about FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow public read/write on settings" ON public.settings FOR ALL USING (true) WITH CHECK (true);
+
+-- =========================================================================
+-- Storage Bucket & Storage Access Policies for cesaretoglu_media
+-- =========================================================================
+
+-- Insert the public bucket if it doesn't already exist
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('cesaretoglu_media', 'cesaretoglu_media', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+
+-- Enable public uploads and downloads to storage.objects
+DROP POLICY IF EXISTS "Public Access" ON storage.objects;
+DROP POLICY IF EXISTS "Public Upload" ON storage.objects;
+DROP POLICY IF EXISTS "Public Update" ON storage.objects;
+DROP POLICY IF EXISTS "Public Delete" ON storage.objects;
+
+CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING (bucket_id = 'cesaretoglu_media');
+CREATE POLICY "Public Upload" ON storage.objects FOR INSERT WITH CHECK (bucket_id = 'cesaretoglu_media');
+CREATE POLICY "Public Update" ON storage.objects FOR UPDATE USING (bucket_id = 'cesaretoglu_media');
+CREATE POLICY "Public Delete" ON storage.objects FOR DELETE USING (bucket_id = 'cesaretoglu_media');
