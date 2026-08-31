@@ -2712,6 +2712,59 @@ class AdminApp {
             }, 300);
         }, 3000);
     }
+
+    async syncFromSupabaseNow() {
+        if (!window.supabaseService || !window.supabaseService.isConfigured) {
+            this.showToast('Supabase не подключен или не настроен', 'error');
+            return;
+        }
+        this.showToast('Загрузка данных из Supabase Cloud...', 'info');
+        if (window.dataStore) {
+            await window.dataStore.syncFromCloud();
+            this.renderAll();
+            this.showToast('Данные успешно загружены из Supabase!', 'success');
+        }
+    }
+
+    async seedAllToSupabaseNow() {
+        if (!window.supabaseService || !window.supabaseService.isConfigured) {
+            this.showToast('Supabase не подключен или не настроен', 'error');
+            return;
+        }
+
+        if (!confirm('Отправить все текущие данные (товары, категории, новости, команду, настройки) в базу Supabase?')) {
+            return;
+        }
+
+        this.showToast('Отправка всей базы в Supabase...', 'info');
+        try {
+            const store = window.dataStore;
+            if (!store) return;
+
+            const products = store.getProducts();
+            const partners = store.getPartners();
+            const categories = store.getCategories();
+            const news = store.getNews();
+            const team = store.getTeam();
+            const departments = store.getDepartments();
+            const about = store.getAbout();
+            const settings = store.getSettings();
+
+            for (const p of products) await window.supabaseService.upsertRecord('products', p);
+            for (const part of partners) await window.supabaseService.upsertRecord('partners', part);
+            for (const cat of categories) await window.supabaseService.upsertRecord('categories', cat);
+            for (const n of news) await window.supabaseService.upsertRecord('news', n);
+            for (const t of team) await window.supabaseService.upsertRecord('team', t);
+            for (const d of departments) await window.supabaseService.upsertRecord('departments', d);
+            if (about) await window.supabaseService.upsertRecord('about', { id: 'about_singleton', ...about });
+            if (settings) await window.supabaseService.upsertRecord('settings', { id: 'settings_singleton', ...settings });
+
+            this.showToast('Все данные успешно сохранены в облачную базу Supabase!', 'success');
+        } catch (e) {
+            console.error('Seed error:', e);
+            this.showToast('Ошибка при отправке в Supabase: ' + e.message, 'error');
+        }
+    }
 }
 
 // Bootstrap Admin

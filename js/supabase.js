@@ -5,9 +5,8 @@
  */
 
 const SUPABASE_CONFIG = {
-    // Paste your Supabase Project URL and Anon/Public Key here
-    url: 'https://YOUR_PROJECT_ID.supabase.co',
-    anonKey: 'YOUR_SUPABASE_ANON_PUBLIC_KEY',
+    url: 'https://betafmrutqiikjsgdcge.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJldGFmbXJ1dHFpaWtqc2dkY2dlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgxNzQ1MzgsImV4cCI6MjEwMzc1MDUzOH0.pzDnkB5yhTe28uhD_rAA63DT9FYGyal9hD6EJQ_hMn0',
     storageBucket: 'cesaretoglu_media'
 };
 

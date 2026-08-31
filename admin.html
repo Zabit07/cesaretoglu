@@ -524,6 +524,26 @@
             </div>
           </div>
 
+          <div class="admin-card" style="border-top: 3px solid #10B981;">
+            <div class="admin-card-header" style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <h3 class="admin-card-title"><i class="fa-solid fa-cloud" style="color:#10B981;"></i> Облачная база данных Supabase</h3>
+                <p style="font-size:0.8rem; color:#64748B; margin-top:0.2rem;">Синхронизация данных с облачной базой данных в реальном времени</p>
+              </div>
+              <span class="badge" style="background:#DCFCE7; color:#15803D; font-weight:700; padding:5px 12px; border-radius:12px; font-size:0.8rem;">
+                <i class="fa-solid fa-bolt"></i> Подключено
+              </span>
+            </div>
+            <div class="admin-modal-body" style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+              <button type="button" class="btn btn-primary" onclick="adminApp.syncFromSupabaseNow()" style="background:#059669; border-color:#059669;">
+                <i class="fa-solid fa-arrows-rotate"></i> Загрузить свежие данные из Supabase
+              </button>
+              <button type="button" class="btn btn-secondary" onclick="adminApp.seedAllToSupabaseNow()">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Отправить всю текущую базу в Supabase
+              </button>
+            </div>
+          </div>
+
           <div class="admin-card">
             <div class="admin-card-header">
               <h3 class="admin-card-title">Резервное копирование и восстановление базы данных</h3>
