@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cəsarətoğlu MMC — Высокотехнологичные оболочки, барьерные пленки, специи и белки | Официальный дистрибьютор</title>
+  
+  <!-- Meta & SEO Tags -->
+  <meta name="description" content="Cəsarətoğlu MMC — официальный дистрибьютор Atlantis-Pak, Wiberg и Südpack в Азербайджане. Колбасные оболочки, вакуумные пленки, специи и животные белки.">
+  <meta name="keywords" content="casaratoglu, cesaretoglu, колбасные оболочки, atlantis-pak, wiberg, sudpack, вакуумная пленка, специи, баку, азербайджан">
+  <meta property="og:title" content="Cəsarətoğlu MMC — Сырье и упаковочные материалы для мясной промышленности">
+  <meta property="og:description" content="Официальный дистрибьютор: Atlantis-Pak, Wiberg, Südpack.">
+  <meta property="og:image" content="images/logo.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/logo.png">
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Swiper.js Slider CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+  <!-- Main Stylesheet (asp-pack.ru Architecture) -->
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+  <!-- 1. SLIM TOP BAR -->
+  <aside class="site-topbar">
+    <div class="container topbar-content">
+      <div class="topbar-left">
+        <div class="topbar-item">
+          <i class="fa-solid fa-location-dot"></i>
+          <span data-i18n="topbar_address">г. Баку, Белый город / Хатаинский р-н</span>
+        </div>
+        <div class="topbar-item">
+          <i class="fa-regular fa-clock"></i>
+          <span data-i18n="topbar_hours">Пн - Пт: 09:30 - 18:30</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-item">
+          <i class="fa-solid fa-envelope"></i>
+          <a href="mailto:info@casaratoglu.az" class="topbar-link">info@casaratoglu.az</a>
+        </div>
+        <!-- Language Switcher (AZ / RU / EN) -->
+        <div class="lang-switcher">
+          <button class="lang-btn" data-lang="az">AZ</button>
+          <button class="lang-btn active" data-lang="ru">RU</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 2. COMPACT HEADER ON PURE WHITE BACKGROUND (asp-pack.ru) -->
+  <header class="site-header" id="site-header">
+    <div class="container header-container">
+      <!-- Left: Large Prominent Brand Logo -->
+      <a href="index.html" class="brand-logo-wrap" title="Cəsarətoğlu MMC">
+        <img src="images/logo.png" alt="Cəsarətoğlu MMC" class="brand-logo-img">
+      </a>
+
+      <!-- Strictly Centered Navigation Menu -->
+      <nav class="main-nav">
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link" data-i18n="nav_home">Главная</a>
+          </li>
+          <li class="nav-item">
+            <a href="#catalog" class="nav-link nav-link-catalog">
+              <i class="fa-solid fa-boxes-stacked"></i>
+              <span data-i18n="nav_catalog">Katalog</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="about.html" class="nav-link" data-i18n="nav_about">О компании</a>
+          </li>
+          <li class="nav-item">
+            <a href="#news" class="nav-link" data-i18n="nav_news">Новости</a>
+          </li>
+          <li class="nav-item">
+            <a href="#contacts" class="nav-link" data-i18n="nav_contacts">Контакты</a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Mobile Menu Toggle Button -->
+      <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Меню">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- MOBILE NAVIGATION DRAWER -->
+  <div class="mobile-nav-drawer" id="mobile-nav">
+    <div class="mobile-nav-header">
+      <img src="images/logo.png" alt="Cəsarətoğlu Logo" style="height: 44px; object-fit: contain;">
+      <button class="mobile-nav-close" id="mobile-menu-close">&times;</button>
+    </div>
+    <div class="lang-switcher mb-3" style="width: fit-content; margin-bottom: 1.2rem;">
+      <button class="lang-btn" data-lang="az">AZ</button>
+      <button class="lang-btn active" data-lang="ru">RU</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <ul class="mobile-nav-list">
+      <li><a href="index.html" class="mobile-nav-link" data-i18n="nav_home">Ana səhifə</a></li>
+      <li><a href="index.html#catalog" onclick="document.getElementById('mobile-menu-close').click();" class="mobile-nav-link" data-i18n="nav_catalog">Katalog</a></li>
+      <li><a href="about.html" class="mobile-nav-link" data-i18n="nav_about">Haqqında</a></li>
+      <li><a href="index.html#news" class="mobile-nav-link" data-i18n="nav_news">Xəbərlər</a></li>
+      <li><a href="index.html#contacts" class="mobile-nav-link" data-i18n="nav_contacts">Əlaqə</a></li>
+    </ul>
+    <div style="margin-top:auto; display:flex; flex-direction:column; gap:0.6rem;">
+      <a href="tel:+994553277655" class="btn btn-primary btn-sm"><i class="fa-solid fa-phone"></i> +994 55 327-76-55</a>
+      <a href="mailto:info@casaratoglu.az" class="btn btn-secondary btn-sm"><i class="fa-solid fa-envelope"></i> info@casaratoglu.az</a>
+    </div>
+  </div>
+
+  <!-- 3. FULL-WIDTH HERO SLIDER (asp-pack.ru Carousel) -->
+  <section class="hero-slider-section" id="hero">
+    <div class="slider-container">
+
+      <!-- Slide 1: Atlantis-Pak -->
+      <div class="slide-item slide-item-1 active">
+        <div class="container slide-inner">
+          <div class="slide-content-wrap">
+            <span class="slide-brand-pill" data-i18n="slider_1_badge">Atlantis-Pak — Эксклюзивный Дистрибьютор</span>
+            <h1 class="slide-title" data-i18n="slider_1_title">Инновационные Колбасные Оболочки и Барьерные Материалы</h1>
+            <p class="slide-subtitle" data-i18n="slider_1_desc">Пластиковые и проницаемые оболочки АйЦел, Фибросмок, Амифлекс. Высокая производительность и гарантия качества.</p>
+            <div class="slide-actions">
+              <button class="btn btn-cta-orange btn-lg" onclick="PartnersModule.openPartnerDetail('atlantis-pak')">
+                <i class="fa-solid fa-boxes-stacked"></i>
+                <span data-i18n="slider_1_btn">Каталог Оболочек</span>
+              </button>
+              <a href="tel:+994553277655" class="btn btn-outline-white btn-lg">
+                <i class="fa-solid fa-phone"></i>
+                <span>+994 55 327-76-55</span>
+              </a>
+            </div>
+          </div>
+          <div class="slide-logo-panel">
+            <div class="slide-logo-box">
+              <img src="images/partners/partner_4.jpg" alt="Atlantis-Pak">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2: Wiberg Spices -->
+      <div class="slide-item slide-item-2">
+        <div class="container slide-inner">
+          <div class="slide-content-wrap">
+            <span class="slide-brand-pill" data-i18n="slider_2_badge">Wiberg (NovaTaste) — Австрия / Германия</span>
+            <h2 class="slide-title" data-i18n="slider_2_title">Премиальные Натуральные Специи и Вкусовые Экстракты</h2>
+            <p class="slide-subtitle" data-i18n="slider_2_desc">Мировой лидер в производстве пряностей, маринадов и функциональных смесей для колбас и мясных деликатесов.</p>
+            <div class="slide-actions">
+              <button class="btn btn-cta-orange btn-lg" onclick="PartnersModule.openPartnerDetail('wiberg')">
+                <i class="fa-solid fa-pepper-hot"></i>
+                <span data-i18n="slider_2_btn">Специи Wiberg</span>
+              </button>
+              <a href="tel:+994553277655" class="btn btn-outline-white btn-lg">
+                <i class="fa-solid fa-phone"></i>
+                <span>+994 55 327-76-55</span>
+              </a>
+            </div>
+          </div>
+          <div class="slide-logo-panel">
+            <div class="slide-logo-box">
+              <img src="images/partners/partner_3.jpg" alt="Wiberg">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3: Südpack Barrier Films -->
+      <div class="slide-item slide-item-3">
+        <div class="container slide-inner">
+          <div class="slide-content-wrap">
+            <span class="slide-brand-pill" data-i18n="slider_3_badge">Südpack Verpackungen — Германия</span>
+            <h2 class="slide-title" data-i18n="slider_3_title">Высокобарьерные Термоформовочные и Вакуумные Пленки</h2>
+            <p class="slide-subtitle" data-i18n="slider_3_desc">Многослойные гибкие пленки Multifol® GA для упаковки мясных изделий и сыров в вакуум и газовую среду (МГС).</p>
+            <div class="slide-actions">
+              <button class="btn btn-cta-orange btn-lg" onclick="PartnersModule.openPartnerDetail('sudpack')">
+                <i class="fa-solid fa-box-archive"></i>
+                <span data-i18n="slider_3_btn">Каталог Пленок</span>
+              </button>
+              <a href="tel:+994553277655" class="btn btn-outline-white btn-lg">
+                <i class="fa-solid fa-phone"></i>
+                <span>+994 55 327-76-55</span>
+              </a>
+            </div>
+          </div>
+          <div class="slide-logo-panel">
+            <div class="slide-logo-box">
+              <img src="images/partners/Sudpack.avif" alt="Südpack">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4: Avangard Spices & Seasonings -->
+      <div class="slide-item slide-item-4">
+        <div class="container slide-inner">
+          <div class="slide-content-wrap">
+            <span class="slide-brand-pill" data-i18n="slider_4_badge">Avangard — Официальный Партнер</span>
+            <h2 class="slide-title" data-i18n="slider_4_title">Комплексные Пищевые Смеси, Специи и Посолочные Компоненты</h2>
+            <p class="slide-subtitle" data-i18n="slider_4_desc">Высококачественные вкусо-ароматические смеси, маринады и специальные ингредиенты для мясного производства.</p>
+            <div class="slide-actions">
+              <button class="btn btn-cta-orange btn-lg" onclick="PartnersModule.openPartnerDetail('avangard')">
+                <i class="fa-solid fa-mortar-pestle"></i>
+                <span data-i18n="slider_4_btn">Продукция Avangard</span>
+              </button>
+              <a href="tel:+994553277655" class="btn btn-outline-white btn-lg">
+                <i class="fa-solid fa-phone"></i>
+                <span>+994 55 327-76-55</span>
+              </a>
+            </div>
+          </div>
+          <div class="slide-logo-panel">
+            <div class="slide-logo-box">
+              <img src="images/partners/avangard.jpg" alt="Avangard" style="border-radius:6px;">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Left / Right Carousel Controls -->
+    <button class="slider-arrow slider-arrow-prev" id="slider-prev" aria-label="Назад">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <button class="slider-arrow slider-arrow-next" id="slider-next" aria-label="Вперед">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
+
+    <!-- Pagination Dots (4 Slides) -->
+    <div class="slider-dots">
+      <button class="slider-dot active" aria-label="Слайд 1"></button>
+      <button class="slider-dot" aria-label="Слайд 2"></button>
+      <button class="slider-dot" aria-label="Слайд 3"></button>
+      <button class="slider-dot" aria-label="Слайд 4"></button>
+    </div>
+  </section>
+
+
+  <!-- 4. PRODUCT-FIRST CATALOG SECTION (Interactive Swiper Slider) -->
+  <section class="partner-catalog-section" id="catalog">
+    <div class="container">
+      <div class="pcs-header" style="text-align:center; position:relative; margin-bottom:2.5rem;">
+        <div style="max-width: 780px; margin: 0 auto;">
+          <h2 class="pcs-title" data-i18n="cat_sec_title" style="margin-bottom:0.4rem; text-align:center;">Каталог продукции</h2>
+          <p class="pcs-subtitle" data-i18n="cat_sec_subtitle" style="text-align:center; margin:0 auto;">Выберите категорию сырья и материалов для вашего производства</p>
+        </div>
+        <!-- Swiper Navigation Arrows -->
+        <div class="cat-slider-nav" style="position:absolute; right:0; bottom:0;">
+          <button class="cat-nav-btn cat-prev-btn" id="cat-swiper-prev" aria-label="Назад">
+            <i class="fa-solid fa-arrow-left"></i>
+          </button>
+          <button class="cat-nav-btn cat-next-btn" id="cat-swiper-next" aria-label="Вперед">
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Swiper Slider Container -->
+      <div class="swiper category-swiper">
+        <div class="swiper-wrapper" id="category-swiper-wrapper">
+
+          <!-- ================================================================
+               СТАРТ ЦИКЛА ВЫВОДА КАРТОЧЕК ИЗ БД
+               ================================================================ -->
+
+          <!-- 1. Qabıqlar / Колбасные оболочки -->
+          <div class="swiper-slide">
+            <div class="partner-cat-card" onclick="CatalogModule.openCatalogModal('casings')">
+              <div class="pcc-img-banner">
+                <img src="images/hero/slide_1_casings.jpg" alt="Qabıqlar" class="pcc-banner-img">
+                <span class="pcc-img-badge"><i class="fa-solid fa-drumstick-bite"></i> <span data-i18n="cat_1_badge">Qabıqlar</span></span>
+              </div>
+              <div class="pcc-body">
+                <h3 class="pcc-name" data-i18n="cat_1_title">Kolbasa Qabıqları</h3>
+                <p class="pcc-desc" data-i18n="cat_1_desc">Plastik, hisəkeçirici, poliamid və süni qabıqlar. Məhsuldarlığın artırılması və stabil forma.</p>
+                <div class="pcc-brand-badges">
+                  <span class="pcc-brand-badge-label" data-i18n="suppliers_label">İstehsalçılar:</span>
+                  <span class="pcc-brand-pill"><i class="fa-solid fa-circle-check"></i> Atlantis-Pak</span>
+                </div>
+              </div>
+              <div class="pcc-footer">
+                <span data-i18n="cat_1_btn">Qabıqlar bölməsinə keç</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Ədviyyatlar / Специи и ингредиенты -->
+          <div class="swiper-slide">
+            <div class="partner-cat-card" onclick="CatalogModule.openCatalogModal('spices')">
+              <div class="pcc-img-banner">
+                <img src="images/hero/slide_2_spices.jpg" alt="Ədviyyatlar" class="pcc-banner-img">
+                <span class="pcc-img-badge" style="background:rgba(220, 38, 38, 0.85);"><i class="fa-solid fa-pepper-hot"></i> <span data-i18n="cat_2_badge">Ədviyyatlar</span></span>
+              </div>
+              <div class="pcc-body">
+                <h3 class="pcc-name" data-i18n="cat_2_title">Ədviyyatlar və İnqrediyentlər</h3>
+                <p class="pcc-desc" data-i18n="cat_2_desc">Premium mono-ədviyyatlar, dad ekstraktları və ət emalı üçün kompleks funksional qarışıqlar.</p>
+                <div class="pcc-brand-badges">
+                  <span class="pcc-brand-badge-label" data-i18n="suppliers_label">İstehsalçılar:</span>
+                  <span class="pcc-brand-pill"><i class="fa-solid fa-circle-check"></i> Wiberg</span>
+                </div>
+              </div>
+              <div class="pcc-footer">
+                <span data-i18n="cat_2_btn">Ədviyyatlar bölməsinə keç</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Plyonkalar / Пленки и упаковка -->
+          <div class="swiper-slide">
+            <div class="partner-cat-card" onclick="CatalogModule.openCatalogModal('packaging')">
+              <div class="pcc-img-banner">
+                <img src="images/hero/slide_3_packaging.jpg" alt="Plyonkalar" class="pcc-banner-img">
+                <span class="pcc-img-badge" style="background:rgba(14, 116, 144, 0.85);"><i class="fa-solid fa-box-archive"></i> <span data-i18n="cat_3_badge">Plyonkalar</span></span>
+              </div>
+              <div class="pcc-body">
+                <h3 class="pcc-name" data-i18n="cat_3_title">Plyonkalar və Qablaşdırma</h3>
+                <p class="pcc-desc" data-i18n="cat_3_desc">Yüksək maneəli vakuum, termoformasiya və termo-yığılan barier plyonkaları və paketləri.</p>
+                <div class="pcc-brand-badges">
+                  <span class="pcc-brand-badge-label" data-i18n="suppliers_label">İstehsalçılar:</span>
+                  <span class="pcc-brand-pill"><i class="fa-solid fa-circle-check"></i> Südpack</span>
+                </div>
+              </div>
+              <div class="pcc-footer">
+                <span data-i18n="cat_3_btn">Qablaşdırma bölməsinə keç</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Qarışıqlar / Комплексные смеси Avangard -->
+          <div class="swiper-slide">
+            <div class="partner-cat-card" onclick="CatalogModule.openCatalogModal('additives')">
+              <div class="pcc-img-banner">
+                <img src="images/hero/slide_5_avangard.jpg" alt="Qarışıqlar" class="pcc-banner-img">
+                <span class="pcc-img-badge" style="background:rgba(217, 119, 6, 0.85);"><i class="fa-solid fa-mortar-pestle"></i> <span data-i18n="cat_4_badge">Qarışıqlar</span></span>
+              </div>
+              <div class="pcc-body">
+                <h3 class="pcc-name" data-i18n="cat_4_title">Kompleks Qarışıqlar</h3>
+                <p class="pcc-desc" data-i18n="cat_4_desc">Kolbasalar, qril və duzlama üçün kompleks qarışıqlar.</p>
+                <div class="pcc-brand-badges">
+                  <span class="pcc-brand-badge-label" data-i18n="suppliers_label">İstehsalçılar:</span>
+                  <span class="pcc-brand-pill"><i class="fa-solid fa-circle-check"></i> Avangard</span>
+                </div>
+              </div>
+              <div class="pcc-footer">
+                <span data-i18n="cat_4_btn">Qarışıqlar bölməsinə keç</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- ================================================================
+               КОНЕЦ ЦИКЛА ВЫВОДА КАРТОЧЕК ИЗ БД
+               ================================================================ -->
+
+        </div>
+
+        <!-- Swiper Pagination Dots -->
+        <div class="swiper-pagination cat-swiper-pagination"></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 6. 8 ADVANTAGES OF WORKING WITH US (4x2 Grid) -->
+  <section class="adv8-section" id="services">
+    <div class="container">
+      <div class="adv8-header">
+        <span class="pcs-tag" data-i18n="adv8_sec_badge">Niyə Məhz Biz?</span>
+        <h2 class="pcs-title" data-i18n="adv8_sec_title">8 преимуществ работы с «Cəsarətoğlu MMC»</h2>
+        <p class="pcs-subtitle" data-i18n="adv8_sec_subtitle">Наша главная цель — качественный продукт, своевременно доставленный на ваше производство.</p>
+      </div>
+
+      <div class="adv8-grid">
+        
+        <!-- 1. Прямые поставки -->
+        <div class="adv8-card">
+          <div class="adv8-icon-box">
+            <i class="fa-solid fa-handshake"></i>
+          </div>
+          <h3 class="adv8-card-title" data-i18n="adv8_1_title">Прямые поставки</h3>
+          <p class="adv8-card-desc" data-i18n="adv8_1_desc">Работаем напрямую с ведущими мировыми производителями. Если вам нужны высокотехнологичные оболочки, упаковка или премиальные специи — мы обеспечим вас лучшим.</p>
+        </div>
+
+        <!-- 2. Индивидуальные условия -->
+        <div class="adv8-card">
+          <div class="adv8-icon-box">
+            <i class="fa-solid fa-sliders"></i>
+          </div>
+          <h3 class="adv8-card-title" data-i18n="adv8_2_title">Индивидуальные условия</h3>
+          <p class="adv8-card-desc" data-i18n="adv8_2_desc">Особый подход к клиентам при заблаговременном заказе. Предлагаем выгодные цены и работу по четкому графику поставок.</p>
+        </div>
+
+        <!-- 3. Надежный дистрибьютор -->
+        <div class="adv8-card">
+          <div class="adv8-icon-box">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h3 class="adv8-card-title" data-i18n="adv8_3_title">Надежный дистрибьютор</h3>
+          <p class="adv8-card-desc" data-i18n="adv8_3_desc">Дорожим своей репутацией. Выполняем все взятые на себя обязательства строго, качественно и точно в срок.</p>
+        </div>
+
+        <!-- 4. Высокая ответственность -->
+        <div class="adv8-card">
+          <div class="adv8-icon-box">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <h3 class="adv8-card-title" data-i18n="adv8_4_title">Высокая ответственность</h3>
+          <p class="adv8-card-desc" data-i18n="adv8_4_desc">Мы ориентированы на долгосрочное сотрудничество. Планируем объемы поставок сырья и полностью подстраиваемся под ритм вашего производства.</p>
+        </div>
+
+        <!-- 5. Технологическая поддержка -->
+        <div class="adv8-card">
+          <div class="adv8-icon-box">
+            <i class="fa-solid fa-user-gear"></i>
+          </div>
+          <h3 class="adv8-card-title" data-i18n="adv8_5_title">Технологическая поддержка</h3>
+          <p class="adv8-card-desc" data-i18n="adv8_5_desc">Всегда совместно решаем задачи, помогаем настроить оборудование и адаптировать рецептуры с нашими ингредиентами.</p>
+        </div>
+
+        <!-- 6. Развитая логистика -->
+        <div class="adv8-card">
+          <div class="adv8-icon-box">
+            <i class="fa-solid fa-truck-fast"></i>
+          </div>
+          <h3 class="adv8-card-title" data-i18n="adv8_6_title">Развитая логистика</h3>
+          <p class="adv8-card-desc" data-i18n="adv8_6_desc">На рынке более 15 лет. За это время мы своевременно поставили тысячи километров упаковки и тонны высококачественных добавок для пищевой промышленности.</p>
+        </div>
+
+        <!-- 7. Контроль качества -->
+        <div class="adv8-card">
+          <div class="adv8-icon-box">
+            <i class="fa-solid fa-vial-circle-check"></i>
+          </div>
+          <h3 class="adv8-card-title" data-i18n="adv8_7_title">Контроль качества</h3>
+          <p class="adv8-card-desc" data-i18n="adv8_7_desc">Предоставляем бесплатные тестовые образцы пленок, оболочек и специй для проведения испытаний прямо на ваших линиях.</p>
+        </div>
+
+        <!-- 8. Комплексные решения -->
+        <div class="adv8-card">
+          <div class="adv8-icon-box">
+            <i class="fa-solid fa-cubes-stacked"></i>
+          </div>
+          <h3 class="adv8-card-title" data-i18n="adv8_8_title">Комплексные решения</h3>
+          <p class="adv8-card-desc" data-i18n="adv8_8_desc">Помогаем не только создать идеальную упаковку и дизайн продукта, но и предоставляем авторские рецептуры для достижения неповторимого вкуса.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. LATEST NEWS (Interactive Swiper Slider + Expandable Full Grid) -->
+  <section class="news-section" id="news">
+    <div class="container">
+      <div class="news-header-wrap" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem; margin-bottom:2.2rem;">
+        <div>
+          <span class="pcs-tag" data-i18n="news_sec_badge">Yeniliklər</span>
+          <h2 class="pcs-title" style="margin-bottom:0.25rem;" data-i18n="nav_news">Xəbərlər və Tədbirlər</h2>
+          <p class="pcs-subtitle" data-i18n="news_sec_subtitle">Şirkətimizin ən son hadisələri, ustad dərsləri və texnoloji yenilikləri</p>
+        </div>
+        <!-- Right side: Swiper Nav Buttons & Toggle All News Button -->
+        <div style="display:flex; align-items:center; gap:1.2rem;">
+          <button type="button" class="news-archive-link" id="btn-toggle-all-news" onclick="NewsModule.toggleAllNewsView()" style="background:none; border:none; cursor:pointer; font-family:inherit;">
+            <span id="news-toggle-btn-text" data-i18n="news_all_btn">Bütün xəbərlər</span>
+            <i class="fa-solid fa-arrow-down" id="news-toggle-icon" style="transition:transform 0.3s ease;"></i>
+          </button>
+          <div class="cat-slider-nav" id="news-slider-nav-controls">
+            <button class="cat-nav-btn cat-prev-btn" id="news-swiper-prev" aria-label="Назад">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <button class="cat-nav-btn cat-next-btn" id="news-swiper-next" aria-label="Вперед">
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1. News Swiper Slider View (Default view) -->
+      <div class="swiper news-swiper" id="news-swiper-container">
+        <div class="swiper-wrapper" id="news-swiper-wrapper">
+          <!-- Dynamic slides injected by NewsModule.renderNews() -->
+        </div>
+
+        <!-- News Swiper Pagination -->
+        <div class="swiper-pagination news-swiper-pagination"></div>
+      </div>
+
+      <!-- 2. Expandable Full News Grid View (Opens smoothly in place on the homepage) -->
+      <div id="news-full-grid-wrap" class="news-full-grid-wrap" style="display:none; opacity:0; transition:opacity 0.4s ease, transform 0.4s ease; transform:translateY(15px);">
+        <div class="news-full-grid-header" style="margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #E2E8F0; padding-bottom:0.8rem;">
+          <div style="font-weight:700; font-size:1.1rem; color:var(--secondary-color); display:flex; align-items:center; gap:0.5rem;">
+            <i class="fa-solid fa-newspaper" style="color:var(--accent-orange);"></i>
+            <span id="news-full-grid-heading">Bütün xəbərlər və tədbirlər</span>
+          </div>
+          <button type="button" class="btn btn-outline-primary btn-sm" onclick="NewsModule.collapseAllNewsView()" style="font-size:0.8rem; padding:0.4rem 0.8rem;">
+            <i class="fa-solid fa-compress"></i> <span>Свернуть в слайдер</span>
+          </button>
+        </div>
+        <div class="news-grid-layout" id="news-grid-container">
+          <!-- Dynamic cards injected by NewsModule.renderNews() -->
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 8. FOOTER WITH DIRECT CONTACT BANNER -->
+  <footer class="site-footer" id="contacts">
+    <div class="container">
+
+      <!-- Direct B2B Contact Banner in Footer -->
+      <div class="footer-consultation-banner">
+        <div class="fcb-text">
+          <h3 data-i18n="footer_consult_title">Прямая связь с отделом снабжения и технологами</h3>
+          <p data-i18n="footer_consult_desc">Позвоните нам или отправьте запрос на электронную почту — мы оперативно ответим на все вопросы.</p>
+        </div>
+        <div style="display:flex; gap:0.8rem; align-items:center; flex-wrap:wrap;">
+          <a href="tel:+994553277655" class="btn btn-cta-orange" style="font-size:0.92rem; padding:0.65rem 1.2rem;">
+            <i class="fa-solid fa-phone"></i> +994 55 327-76-55
+          </a>
+          <a href="mailto:info@casaratoglu.az" class="btn btn-outline-white" style="font-size:0.92rem; padding:0.65rem 1.2rem;">
+            <i class="fa-solid fa-envelope"></i> info@casaratoglu.az
+          </a>
+        </div>
+      </div>
+
+      <!-- Footer Columns -->
+      <div class="footer-grid">
+        <div>
+          <div class="footer-logo-badge">
+            <img src="images/logo.png" alt="Cəsarətoğlu MMC" class="footer-brand-logo">
+          </div>
+          <p style="font-size:0.8rem; color:#94A3B8; line-height:1.5;" data-i18n="footer_desc">
+            Официальный дистрибьютор Atlantis-Pak, Wiberg, Südpack и Avangard в Азербайджане.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-heading" data-i18n="footer_catalog_links">Каталог</h4>
+          <ul class="footer-links">
+            <li><a href="javascript:void(0)" onclick="CatalogModule.openCatalogModal('casings')" data-i18n="cat_1_title">Колбасные оболочки</a></li>
+            <li><a href="javascript:void(0)" onclick="CatalogModule.openCatalogModal('spices')" data-i18n="cat_2_title">Специи и ингредиенты</a></li>
+            <li><a href="javascript:void(0)" onclick="CatalogModule.openCatalogModal('additives')" data-i18n="cat_4_title">Комплексные смеси</a></li>
+            <li><a href="javascript:void(0)" onclick="CatalogModule.openCatalogModal('packaging')" data-i18n="cat_3_title">Пленки и упаковка</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading" data-i18n="footer_contacts_heading">Контакты</h4>
+          <ul class="footer-links">
+            <li><i class="fa-solid fa-phone" style="color:var(--accent-orange);"></i> <a href="tel:+994553277655" class="footer-contact-phone" style="color:inherit; text-decoration:none;">+994 55 327-76-55</a></li>
+            <li><i class="fa-solid fa-envelope" style="color:#38BDF8;"></i> <a href="mailto:info@casaratoglu.az" class="footer-contact-email" style="color:inherit; text-decoration:none;">info@casaratoglu.az</a></li>
+            <li><i class="fa-regular fa-clock" style="color:#94A3B8;"></i> <span data-i18n="footer_hours">Пн-Пт: 09:30 - 18:30</span></li>
+            <li><i class="fa-solid fa-location-dot" style="color:var(--accent-orange);"></i> <span data-i18n="footer_address">Баку, Белый город, Азербайджан</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div data-i18n="footer_copyright">© 2026 Cəsarətoğlu MMC. Все права защищены.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       MODALS
+       ======================================================================== -->
+
+  <!-- 1. FULL INTERACTIVE CATALOG MODAL -->
+  <div class="modal-backdrop" id="catalog-interactive-modal">
+    <div class="modal-window catalog-modal-window">
+      <button class="modal-close-btn" id="catalog-modal-close">&times;</button>
+      <div class="catalog-modal-header">
+        <div>
+          <h2 style="color:var(--secondary-color); font-size:1.4rem;" data-i18n="modal_catalog_title">Каталог продукции Cəsarətoğlu MMC</h2>
+          <p style="font-size:0.85rem; color:#64748B;" data-i18n="modal_catalog_subtitle">Официальные поставки от Atlantis-Pak, Wiberg, Südpack и Avangard</p>
+        </div>
+      </div>
+
+      <div class="catalog-controls-bar">
+        <div class="catalog-search-row">
+          <div class="catalog-search-box">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" class="catalog-search-input" data-i18n-placeholder="search_placeholder" placeholder="Поиск по названию, артикулу или бренду...">
+            <button class="catalog-clear-search" title="Очистить">&times;</button>
+          </div>
+          <select class="catalog-partner-select">
+            <option value="all">Все бренды</option>
+          </select>
+        </div>
+        <div class="catalog-category-tabs catalog-category-tabs-container"></div>
+      </div>
+
+      <div style="font-size:0.8rem; color:#64748B; font-weight:600; margin-bottom:0.8rem;">
+        <span class="catalog-results-count-target"></span>
+      </div>
+
+      <div class="catalog-products-grid catalog-products-render-target" style="max-height: 55vh; overflow-y: auto; padding-right: 0.3rem;"></div>
+    </div>
+  </div>
+
+  <!-- 2. PARTNER DETAIL MODAL -->
+  <div class="modal-backdrop" id="partner-detail-modal">
+    <div class="modal-window" style="max-width: 820px;">
+      <button class="modal-close-btn" id="partner-modal-close">&times;</button>
+      <div id="pdm-header-banner" style="padding: 1.5rem; background: linear-gradient(135deg, #0A1E33 0%, #0F2B48 100%); color:#FFF; display:flex; align-items:center; gap:1.2rem;">
+        <div style="width:80px; height:54px; background:#FFF; border-radius:6px; padding:0.3rem; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+          <img id="pdm-logo" src="" alt="Brand Logo" style="max-height:100%; object-fit:contain;">
+        </div>
+        <div>
+          <h2 id="pdm-name" style="color:#FFF; font-size:1.4rem; margin-bottom:0.2rem;">Brand Name</h2>
+          <div style="display:flex; gap:0.5rem; flex-wrap:wrap; font-size:0.72rem; font-weight:700;">
+            <span style="background:var(--accent-orange); color:#FFF; padding:0.15rem 0.5rem; border-radius:4px;" id="pdm-status">Официальный дистрибьютор</span>
+            <span style="background:rgba(255,255,255,0.2); color:#FFF; padding:0.15rem 0.5rem; border-radius:4px;" id="pdm-country">Страна</span>
+            <span style="background:rgba(255,255,255,0.3); color:#FFF; padding:0.15rem 0.5rem; border-radius:4px;" id="pdm-category">Категория</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding: 1.5rem;">
+        <p id="pdm-desc" style="font-size:0.88rem; color:#64748B; line-height:1.55; margin-bottom:1.2rem; padding-bottom:0.8rem; border-bottom:1px solid #E2E8F0;"></p>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.8rem;">
+          <h3 id="pdm-products-heading" style="font-size:1.05rem; font-weight:700; color:var(--secondary-color);">Продукция бренда</h3>
+          <a href="#" id="pdm-weblink" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm" style="display:none;">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Официальный сайт
+          </a>
+        </div>
+        <div class="catalog-products-grid" id="pdm-products-grid" style="max-height: 360px; overflow-y: auto;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. PRODUCT SPECS MODAL -->
+  <div class="modal-backdrop" id="product-modal">
+    <div class="modal-window">
+      <button class="modal-close-btn" id="product-modal-close">&times;</button>
+      <div class="product-modal-grid">
+        <div class="pm-image-box">
+          <img src="" id="pm-image" alt="Product Preview">
+        </div>
+        <div class="pm-content">
+          <div style="display:flex; gap:0.5rem; margin-bottom:0.4rem;">
+            <span style="background:var(--secondary-color); color:#FFF; padding:0.15rem 0.45rem; border-radius:4px; font-size:0.7rem; font-weight:700;" id="pm-partner">Бренд</span>
+            <span style="background:#FFF0E6; color:var(--accent-orange); padding:0.15rem 0.45rem; border-radius:4px; font-size:0.7rem; font-weight:700;" id="pm-category">Категория</span>
+          </div>
+          <h2 id="pm-title" style="font-size:1.3rem; margin-bottom:0.4rem; color:var(--text-main);">Название товара</h2>
+          <div id="pm-description" style="font-size:0.82rem; color:#64748B; line-height:1.5;"></div>
+
+          <div id="pm-specs-table"></div>
+
+          <div style="margin-top:1.2rem; padding:0.8rem; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:6px;">
+            <div style="font-size:0.75rem; font-weight:700; color:var(--text-main); margin-bottom:0.5rem;">Контакты для консультации и образцов:</div>
+            <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+              <a href="tel:+994553277655" id="pm-call-btn" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-phone"></i> +994 55 327-76-55
+              </a>
+              <a href="mailto:info@casaratoglu.az" id="pm-email-btn" class="btn btn-secondary btn-sm">
+                <i class="fa-solid fa-envelope"></i> info@casaratoglu.az
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. NEWS MODAL -->
+  <div class="modal-backdrop" id="news-modal">
+    <div class="modal-window" style="max-width: 680px;">
+      <button class="modal-close-btn" id="news-modal-close">&times;</button>
+      <div style="padding: 1.8rem;">
+        <div style="font-size:0.72rem; color:#94A3B8; font-weight:700; margin-bottom:0.3rem;" id="news-modal-date"></div>
+        <h2 style="font-size:1.3rem; color:var(--secondary-color); margin-bottom:0.8rem;" id="news-modal-title"></h2>
+        <img src="" id="news-modal-image" style="width:100%; height:220px; object-fit:cover; border-radius:6px; margin-bottom:0.8rem;" alt="News">
+        <div style="font-size:0.86rem; color:#334155; line-height:1.6;" id="news-modal-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Swiper.js Slider Script -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <!-- Modular Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/partners.js"></script>
+  <script src="js/news.js"></script>
+  <script src="js/catalog.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

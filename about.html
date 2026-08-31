@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bizim haqqımızda | Cəsarətoğlu MMC — Rəsmi Distribyutor</title>
+  <meta name="description" content="Cəsarətoğlu MMC — Atlantis-Pak, Wiberg, Südpack və Avangard şirkətlərinin Azərbaycandakı rəsmi distribyutoru haqqında ətraflı məlumat.">
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="icon" type="image/png" href="images/logo.png">
+</head>
+<body>
+
+  <!-- 1. TOPBAR -->
+  <aside class="site-topbar">
+    <div class="container topbar-content">
+      <div class="topbar-left">
+        <div class="topbar-item">
+          <i class="fa-solid fa-location-dot"></i>
+          <span data-i18n="topbar_address">г. Баку, Белый город / Хатаинский р-н</span>
+        </div>
+        <div class="topbar-item">
+          <i class="fa-regular fa-clock"></i>
+          <span data-i18n="topbar_hours">Пн - Пт: 09:30 - 18:30</span>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div class="topbar-item">
+          <i class="fa-solid fa-envelope"></i>
+          <a href="mailto:info@casaratoglu.az" class="topbar-link">info@casaratoglu.az</a>
+        </div>
+        <!-- Language Switcher (AZ / RU / EN) -->
+        <div class="lang-switcher">
+          <button class="lang-btn" data-lang="az">AZ</button>
+          <button class="lang-btn active" data-lang="ru">RU</button>
+          <button class="lang-btn" data-lang="en">EN</button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 2. COMPACT HEADER ON PURE WHITE BACKGROUND (asp-pack.ru) -->
+  <header class="site-header" id="site-header">
+    <div class="container header-container">
+      <!-- Left: Large Prominent Brand Logo -->
+      <a href="index.html" class="brand-logo-wrap" title="Cəsarətoğlu MMC">
+        <img src="images/logo.png" alt="Cəsarətoğlu MMC" class="brand-logo-img">
+      </a>
+
+      <!-- Strictly Centered Navigation Menu -->
+      <nav class="main-nav">
+        <ul class="nav-list">
+          <li class="nav-item">
+            <a href="index.html" class="nav-link" data-i18n="nav_home">Главная</a>
+          </li>
+          <li class="nav-item">
+            <a href="index.html#catalog" class="nav-link nav-link-catalog">
+              <i class="fa-solid fa-boxes-stacked"></i>
+              <span data-i18n="nav_catalog">Katalog</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="about.html" class="nav-link active" style="color:var(--accent-orange); font-weight:700;" data-i18n="nav_about">О компании</a>
+          </li>
+          <li class="nav-item">
+            <a href="index.html#news" class="nav-link" data-i18n="nav_news">Новости</a>
+          </li>
+          <li class="nav-item">
+            <a href="index.html#contacts" class="nav-link" data-i18n="nav_contacts">Контакты</a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Mobile Menu Toggle Button -->
+      <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Меню">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- MOBILE NAVIGATION DRAWER -->
+  <div class="mobile-nav-drawer" id="mobile-nav">
+    <div class="mobile-nav-header">
+      <img src="images/logo.png" alt="Cəsarətoğlu Logo" style="height: 44px; object-fit: contain;">
+      <button class="mobile-nav-close" id="mobile-menu-close">&times;</button>
+    </div>
+    <div class="lang-switcher mb-3" style="width: fit-content; margin-bottom: 1.2rem;">
+      <button class="lang-btn" data-lang="az">AZ</button>
+      <button class="lang-btn active" data-lang="ru">RU</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <ul class="mobile-nav-list">
+      <li><a href="index.html" class="mobile-nav-link" data-i18n="nav_home">Ana səhifə</a></li>
+      <li><a href="index.html#catalog" onclick="document.getElementById('mobile-menu-close').click();" class="mobile-nav-link" data-i18n="nav_catalog">Katalog</a></li>
+      <li><a href="about.html" class="mobile-nav-link" style="color:var(--accent-orange); font-weight:700;" data-i18n="nav_about">Haqqında</a></li>
+      <li><a href="index.html#news" class="mobile-nav-link" data-i18n="nav_news">Xəbərlər</a></li>
+      <li><a href="index.html#contacts" class="mobile-nav-link" data-i18n="nav_contacts">Əlaqə</a></li>
+    </ul>
+    <div style="margin-top:auto; display:flex; flex-direction:column; gap:0.6rem;">
+      <a href="tel:+994553277655" class="btn btn-primary btn-sm"><i class="fa-solid fa-phone"></i> +994 55 327-76-55</a>
+      <a href="mailto:info@casaratoglu.az" class="btn btn-secondary btn-sm"><i class="fa-solid fa-envelope"></i> info@casaratoglu.az</a>
+    </div>
+  </div>
+
+  <!-- 3. PAGE BANNER (Clean & Bold Header) -->
+  <section class="page-header-banner">
+    <div class="container">
+      <span class="page-header-pill" data-i18n="about_page_badge">Cəsarətoğlu MMC Haqqında</span>
+      <h1 class="page-header-title" data-i18n="about_page_title">Bizim haqqımızda</h1>
+      <p class="page-header-subtitle" data-i18n="about_page_subtitle">İddialı, çalışqan və məsuliyyətli komanda ilə istehsalatınıza etibarlı tərəfdaş</p>
+    </div>
+  </section>
+
+  <!-- 4. ABOUT STORY & PRESENTATION SECTION -->
+  <section class="about-story-section">
+    <div class="container about-story-grid">
+      
+      <!-- Text & Story Column -->
+      <div class="about-story-content">
+        <p class="about-intro-lead" data-i18n="about_lead_text">
+          Biz, sizin məsələləri ən qısa müddətdə həll edəcək, iddialı, çalışqan və məsuliyyətli şirkətik.
+        </p>
+
+        <!-- Formatted Accent Quote Block -->
+        <div class="about-quote-box">
+          <div class="about-quote-question" data-i18n="about_quote_q">
+            <i class="fa-solid fa-quote-left" style="color:var(--accent-orange); margin-right:6px; opacity:0.7;"></i>
+            Sizə ədviyyatlar, üzlüklər lazımdır? Büdcənizi necə qoruyub saxlayacağınızı və ən yaxşı keyfiyyəti necə əldə edəcəyinizi bilmirsiniz?
+          </div>
+          <div class="about-quote-answer" data-i18n="about_quote_a">
+            👉 O zaman sizə lazım olan Bizik.
+          </div>
+        </div>
+
+        <p class="about-paragraph-delivery" data-i18n="about_delivery_p">
+          Biz sizi maraqlandıran istənilən məhsulların ən qısa müddətdə çatdırılmasını təşkil edəcək və sizi lazım olan hər şey ilə təmin edəcəyik.
+        </p>
+
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:1.5rem;">
+          <a href="index.html#catalog" class="btn btn-cta-orange">
+            <i class="fa-solid fa-boxes-stacked"></i> <span data-i18n="about_btn_catalog">Məhsul Kataloqu</span>
+          </a>
+          <a href="tel:+994553277655" class="btn btn-secondary">
+            <i class="fa-solid fa-phone"></i> +994 55 327-76-55
+          </a>
+        </div>
+      </div>
+
+      <!-- Media / Image Column -->
+      <div class="about-story-media">
+        <img src="images/news/event_1.jpg" alt="Cəsarətoğlu MMC" class="about-story-img" onerror="this.src='images/hero/slide_1_casings.jpg'">
+        <div class="about-badge-overlay">
+          <i class="fa-solid fa-award"></i>
+          <div>
+            <div class="about-badge-overlay-title" data-i18n="about_badge_distributor">Rəsmi Distribyutor</div>
+            <div class="about-badge-overlay-sub">Atlantis-Pak • Wiberg • Südpack • Avangard</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 5. OUR TEAM & LEADERSHIP SECTION (Executive Director + Key Team Grid) -->
+  <section class="about-team-section" id="team">
+    <div class="container">
+      <div class="text-center mb-4">
+        <span class="pcs-tag" data-i18n="team_sec_badge">KOMANDAMIZ</span>
+        <h2 style="font-size:2rem; font-weight:800; color:var(--secondary-color);" data-i18n="team_sec_title">Rəhbərlik və Mütəxəssislərimiz</h2>
+        <p class="pcs-subtitle" style="margin-top:0.4rem;" data-i18n="team_sec_subtitle">İstehsalatınızın uğuru üçün çalışan peşəkar, məsuliyyətli və təcrübəli komanda</p>
+      </div>
+
+      <!-- Top Leader Highlight (General Director) -->
+      <div class="team-leader-wrap" id="about-team-leader-container">
+        <!-- Rendered dynamically by MainApp.renderAboutTeam() -->
+      </div>
+
+      <!-- Key Directors & Specialists Grid -->
+      <div class="team-specialists-grid" id="about-team-specialists-container">
+        <!-- Rendered dynamically by MainApp.renderAboutTeam() -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. FOOTER -->
+  <footer class="site-footer" id="contacts">
+    <div class="container">
+      <!-- Direct Contact Banner -->
+      <div class="footer-consultation-banner">
+        <div class="fcb-text">
+          <h3 data-i18n="footer_consult_title">Təchizat şöbəsi və texnoloqlarla birbaşa əlaqə</h3>
+          <p data-i18n="footer_consult_desc">Bizə zəng edin və ya elektron poçt ünvanımıza müraciət göndərin — operativ şəkildə cavablandıracağıq.</p>
+        </div>
+        <div style="display:flex; gap:0.8rem; flex-wrap:wrap;">
+          <a href="tel:+994553277655" class="btn btn-cta-orange"><i class="fa-solid fa-phone"></i> +994 55 327-76-55</a>
+          <a href="mailto:info@casaratoglu.az" class="btn btn-secondary"><i class="fa-solid fa-envelope"></i> info@casaratoglu.az</a>
+        </div>
+      </div>
+
+      <!-- Main Footer Columns -->
+      <div class="footer-grid">
+        <div class="footer-col footer-col-main">
+          <div class="footer-logo-badge">
+            <img src="images/logo.png" alt="Cəsarətoğlu MMC" class="footer-brand-logo">
+          </div>
+          <p class="footer-desc" data-i18n="footer_desc">
+            Azərbaycanda Atlantis-Pak, Wiberg, Südpack və Avangard şirkətlərinin rəsmi distribyutoru.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-heading" data-i18n="footer_catalog_links">Məhsul Bölmələri</h4>
+          <ul class="footer-nav">
+            <li><a href="index.html#catalog" data-i18n="cat_1_title">Kolbasa Qabıqları</a></li>
+            <li><a href="index.html#catalog" data-i18n="cat_2_title">Ədviyyatlar və İnqrediyentlər</a></li>
+            <li><a href="index.html#catalog" data-i18n="cat_4_title">Kompleks Qarışıqlar</a></li>
+            <li><a href="index.html#catalog" data-i18n="cat_3_title">Plyonkalar və Qablaşdırma</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-heading" data-i18n="footer_contacts_heading">Bizimlə Əlaqə</h4>
+          <ul class="footer-contact-list">
+            <li><i class="fa-solid fa-location-dot"></i> <span data-i18n="footer_address">Bakı, Ağ Şəhər, Azərbaycan</span></li>
+            <li><i class="fa-solid fa-phone"></i> <a href="tel:+994553277655">+994 55 327-76-55</a></li>
+            <li><i class="fa-solid fa-envelope"></i> <a href="mailto:info@casaratoglu.az">info@casaratoglu.az</a></li>
+            <li><i class="fa-regular fa-clock"></i> <span data-i18n="footer_hours">B.e - Cümə: 09:30 - 18:30</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p data-i18n="footer_copyright">© 2026 Cəsarətoğlu MMC. Bütün hüquqlar qorunur.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
