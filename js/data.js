@@ -1471,10 +1471,11 @@ const INITIAL_SETTINGS = {
 class DataStore {
     constructor() {
         this.init();
+        this.syncFromCloud();
     }
 
     init() {
-        // Only seed localStorage if keys do not already exist
+        // Seed localStorage if keys do not already exist
         if (!localStorage.getItem(STORAGE_KEYS.PARTNERS)) {
             localStorage.setItem(STORAGE_KEYS.PARTNERS, JSON.stringify(INITIAL_PARTNERS));
         }
@@ -1493,6 +1494,57 @@ class DataStore {
 
         if (!localStorage.getItem(STORAGE_KEYS.SETTINGS)) {
             localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(INITIAL_SETTINGS));
+        }
+
+        if (!localStorage.getItem(STORAGE_KEYS.TEAM)) {
+            localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(INITIAL_TEAM));
+        }
+
+        if (!localStorage.getItem(STORAGE_KEYS.DEPARTMENTS)) {
+            localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(INITIAL_DEPARTMENTS));
+        }
+
+        if (!localStorage.getItem(STORAGE_KEYS.ABOUT)) {
+            localStorage.setItem(STORAGE_KEYS.ABOUT, JSON.stringify(INITIAL_ABOUT));
+        }
+    }
+
+    async syncFromCloud() {
+        if (typeof window === 'undefined' || !window.supabaseService || !window.supabaseService.isConfigured) return;
+
+        try {
+            console.log('🔄 Fetching latest data from Supabase Cloud...');
+            const [products, partners, categories, news, team, departments, about, settings] = await Promise.all([
+                window.supabaseService.fetchTable('products'),
+                window.supabaseService.fetchTable('partners'),
+                window.supabaseService.fetchTable('categories'),
+                window.supabaseService.fetchTable('news'),
+                window.supabaseService.fetchTable('team'),
+                window.supabaseService.fetchTable('departments'),
+                window.supabaseService.fetchTable('about'),
+                window.supabaseService.fetchTable('settings')
+            ]);
+
+            if (products && products.length) localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
+            if (partners && partners.length) localStorage.setItem(STORAGE_KEYS.PARTNERS, JSON.stringify(partners));
+            if (categories && categories.length) localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
+            if (news && news.length) localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(news));
+            if (team && team.length) localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(team));
+            if (departments && departments.length) localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(departments));
+            if (about && about.length) localStorage.setItem(STORAGE_KEYS.ABOUT, JSON.stringify(about[0]));
+            if (settings && settings.length) localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings[0]));
+
+            console.log('✅ Local storage updated from Supabase Cloud.');
+            
+            // Trigger refresh if mainApp or adminApp is running
+            if (window.mainApp && typeof window.mainApp.init === 'function') {
+                window.mainApp.init();
+            }
+            if (window.adminApp && typeof window.adminApp.renderAll === 'function') {
+                window.adminApp.renderAll();
+            }
+        } catch (e) {
+            console.warn('Could not sync from Supabase, keeping local data:', e);
         }
     }
 
@@ -1529,6 +1581,9 @@ class DataStore {
             categories.push(category);
         }
         localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.upsertRecord('categories', category);
+        }
         return category;
     }
 
@@ -1538,6 +1593,10 @@ class DataStore {
         let categories = this.getCategories();
         categories = categories.filter(c => String(c.id).trim().toLowerCase() !== targetId);
         localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.deleteRecord('categories', id);
+        }
 
         // Automatically delete all products belonging to this deleted category
         try {
@@ -1602,6 +1661,10 @@ class DataStore {
             products.unshift(product);
         }
         localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.upsertRecord('products', product);
+        }
         return product;
     }
 
@@ -1610,6 +1673,10 @@ class DataStore {
         const targetId = String(id).trim();
         products = products.filter(p => String(p.id).trim() !== targetId);
         localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.deleteRecord('products', id);
+        }
     }
 
     getPartners() {
@@ -1641,6 +1708,10 @@ class DataStore {
             partners.push(partner);
         }
         localStorage.setItem(STORAGE_KEYS.PARTNERS, JSON.stringify(partners));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.upsertRecord('partners', partner);
+        }
         return partner;
     }
 
@@ -1648,6 +1719,10 @@ class DataStore {
         let partners = this.getPartners();
         partners = partners.filter(p => p.id !== id);
         localStorage.setItem(STORAGE_KEYS.PARTNERS, JSON.stringify(partners));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.deleteRecord('partners', id);
+        }
     }
 
     getNews() {
@@ -1677,6 +1752,10 @@ class DataStore {
             newsList.unshift(newsItem);
         }
         localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(newsList));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.upsertRecord('news', newsItem);
+        }
         return newsItem;
     }
 
@@ -1684,6 +1763,10 @@ class DataStore {
         let newsList = this.getNews();
         newsList = newsList.filter(n => n.id !== id);
         localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(newsList));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.deleteRecord('news', id);
+        }
     }
 
     // ==========================================
@@ -1750,6 +1833,10 @@ class DataStore {
         }
 
         localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(team));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.upsertRecord('team', member);
+        }
         return member;
     }
 
@@ -1759,6 +1846,10 @@ class DataStore {
         let team = this.getTeam();
         team = team.filter(m => String(m.id).trim() !== cleanId);
         localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(team));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.deleteRecord('team', id);
+        }
     }
 
     // ==========================================
@@ -1787,6 +1878,10 @@ class DataStore {
             departments.push(department);
         }
         localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(departments));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.upsertRecord('departments', department);
+        }
         return department;
     }
 
@@ -1794,6 +1889,10 @@ class DataStore {
         let departments = this.getDepartments();
         departments = departments.filter(d => d.id !== id);
         localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(departments));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.deleteRecord('departments', id);
+        }
     }
 
     // ==========================================
@@ -1814,6 +1913,10 @@ class DataStore {
         const current = this.getAbout();
         const updated = { ...current, ...aboutData };
         localStorage.setItem(STORAGE_KEYS.ABOUT, JSON.stringify(updated));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.upsertRecord('about', { id: 'about_singleton', ...updated });
+        }
         return updated;
     }
 
@@ -1830,6 +1933,10 @@ class DataStore {
 
     saveSettings(settings) {
         localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.upsertRecord('settings', { id: 'settings_singleton', ...settings });
+        }
     }
 
     resetToDefaults() {

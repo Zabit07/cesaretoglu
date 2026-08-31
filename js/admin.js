@@ -1376,15 +1376,31 @@ class AdminApp {
         const previewImg = document.getElementById(previewImgId);
 
         if (fileInput && previewImg) {
-            fileInput.addEventListener('change', (e) => {
+            fileInput.addEventListener('change', async (e) => {
                 const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (re) => {
-                        previewImg.src = re.target.result;
-                        if (urlInput) urlInput.value = re.target.result;
-                    };
-                    reader.readAsDataURL(file);
+                if (!file) return;
+
+                // 1. Instant local preview
+                const reader = new FileReader();
+                reader.onload = (re) => {
+                    previewImg.src = re.target.result;
+                    if (urlInput) urlInput.value = re.target.result;
+                };
+                reader.readAsDataURL(file);
+
+                // 2. Upload to Supabase Storage if configured
+                if (window.supabaseService && window.supabaseService.isConfigured) {
+                    this.showToast('Загрузка изображения в Supabase Storage...', 'info');
+                    try {
+                        const publicUrl = await window.supabaseService.uploadImage(file, 'media');
+                        if (publicUrl) {
+                            if (urlInput) urlInput.value = publicUrl;
+                            previewImg.src = publicUrl;
+                            this.showToast('Изображение успешно загружено в Supabase Storage!', 'success');
+                        }
+                    } catch (err) {
+                        console.error('Upload to Supabase Storage failed:', err);
+                    }
                 }
             });
         }
