@@ -1475,38 +1475,21 @@ class DataStore {
     }
 
     init() {
-        // Seed localStorage if keys do not already exist
-        if (!localStorage.getItem(STORAGE_KEYS.PARTNERS)) {
-            localStorage.setItem(STORAGE_KEYS.PARTNERS, JSON.stringify(INITIAL_PARTNERS));
-        }
+        // Only seed on first initialization if key is completely absent
+        const seedIfAbsent = (key, initialVal) => {
+            if (localStorage.getItem(key) === null) {
+                localStorage.setItem(key, JSON.stringify(initialVal));
+            }
+        };
 
-        if (!localStorage.getItem(STORAGE_KEYS.PRODUCTS)) {
-            localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(INITIAL_PRODUCTS));
-        }
-
-        if (!localStorage.getItem(STORAGE_KEYS.CATEGORIES)) {
-            localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(INITIAL_CATEGORIES));
-        }
-
-        if (!localStorage.getItem(STORAGE_KEYS.NEWS)) {
-            localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(INITIAL_NEWS));
-        }
-
-        if (!localStorage.getItem(STORAGE_KEYS.SETTINGS)) {
-            localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(INITIAL_SETTINGS));
-        }
-
-        if (!localStorage.getItem(STORAGE_KEYS.TEAM)) {
-            localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(INITIAL_TEAM));
-        }
-
-        if (!localStorage.getItem(STORAGE_KEYS.DEPARTMENTS)) {
-            localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(INITIAL_DEPARTMENTS));
-        }
-
-        if (!localStorage.getItem(STORAGE_KEYS.ABOUT)) {
-            localStorage.setItem(STORAGE_KEYS.ABOUT, JSON.stringify(INITIAL_ABOUT));
-        }
+        seedIfAbsent(STORAGE_KEYS.PARTNERS, INITIAL_PARTNERS);
+        seedIfAbsent(STORAGE_KEYS.PRODUCTS, INITIAL_PRODUCTS);
+        seedIfAbsent(STORAGE_KEYS.CATEGORIES, INITIAL_CATEGORIES);
+        seedIfAbsent(STORAGE_KEYS.NEWS, INITIAL_NEWS);
+        seedIfAbsent(STORAGE_KEYS.SETTINGS, INITIAL_SETTINGS);
+        seedIfAbsent(STORAGE_KEYS.TEAM, INITIAL_TEAM);
+        seedIfAbsent(STORAGE_KEYS.DEPARTMENTS, INITIAL_DEPARTMENTS);
+        seedIfAbsent(STORAGE_KEYS.ABOUT, INITIAL_ABOUT);
     }
 
     async syncFromCloud() {
@@ -1525,12 +1508,12 @@ class DataStore {
                 window.supabaseService.fetchTable('settings')
             ]);
 
-            if (products && products.length) localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
-            if (partners && partners.length) localStorage.setItem(STORAGE_KEYS.PARTNERS, JSON.stringify(partners));
-            if (categories && categories.length) localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
-            if (news && news.length) localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(news));
-            if (team && team.length) localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(team));
-            if (departments && departments.length) localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(departments));
+            if (products !== null && Array.isArray(products)) localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
+            if (partners !== null && Array.isArray(partners)) localStorage.setItem(STORAGE_KEYS.PARTNERS, JSON.stringify(partners));
+            if (categories !== null && Array.isArray(categories)) localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
+            if (news !== null && Array.isArray(news)) localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(news));
+            if (team !== null && Array.isArray(team)) localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(team));
+            if (departments !== null && Array.isArray(departments)) localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(departments));
             if (about && about.length) localStorage.setItem(STORAGE_KEYS.ABOUT, JSON.stringify(about[0]));
             if (settings && settings.length) localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings[0]));
 
@@ -1551,11 +1534,10 @@ class DataStore {
     getCategories() {
         try {
             const stored = localStorage.getItem(STORAGE_KEYS.CATEGORIES);
-            if (stored) return JSON.parse(stored);
-            localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(INITIAL_CATEGORIES));
-            return JSON.parse(JSON.stringify(INITIAL_CATEGORIES));
+            if (stored !== null) return JSON.parse(stored);
+            return [];
         } catch(e) {
-            return INITIAL_CATEGORIES;
+            return [];
         }
     }
 
@@ -1617,30 +1599,12 @@ class DataStore {
     getProducts() {
         try {
             const stored = localStorage.getItem(STORAGE_KEYS.PRODUCTS);
-            let products = stored ? JSON.parse(stored) : INITIAL_PRODUCTS;
-            
-            // Normalize any legacy/test category discrepancies in stored data
-            let modified = false;
-            products = products.map(p => {
-                const partnerName = (p.partner || '').toLowerCase();
-                // Atlantis-Pak belongs strictly to casings (casings and shrink bags)
-                if (partnerName.includes('atlantis') && p.category === 'packaging') {
-                    p.category = 'casings';
-                    p.category_ru = 'Колбасные оболочки и термоусадочные пакеты';
-                    modified = true;
-                }
-                return p;
-            });
-
-            if (modified && stored) {
-                localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
-            } else if (!stored) {
-                localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(INITIAL_PRODUCTS));
+            if (stored !== null) {
+                return JSON.parse(stored);
             }
-
-            return products;
+            return [];
         } catch(e) {
-            return INITIAL_PRODUCTS;
+            return [];
         }
     }
 
@@ -1706,11 +1670,10 @@ class DataStore {
     getPartners() {
         try {
             const stored = localStorage.getItem(STORAGE_KEYS.PARTNERS);
-            if (stored) return JSON.parse(stored);
-            localStorage.setItem(STORAGE_KEYS.PARTNERS, JSON.stringify(INITIAL_PARTNERS));
-            return JSON.parse(JSON.stringify(INITIAL_PARTNERS));
+            if (stored !== null) return JSON.parse(stored);
+            return [];
         } catch(e) {
-            return INITIAL_PARTNERS;
+            return [];
         }
     }
 
@@ -1779,11 +1742,10 @@ class DataStore {
     getNews() {
         try {
             const stored = localStorage.getItem(STORAGE_KEYS.NEWS);
-            if (stored) return JSON.parse(stored);
-            localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(INITIAL_NEWS));
-            return JSON.parse(JSON.stringify(INITIAL_NEWS));
+            if (stored !== null) return JSON.parse(stored);
+            return [];
         } catch(e) {
-            return INITIAL_NEWS;
+            return [];
         }
     }
 
@@ -1847,27 +1809,13 @@ class DataStore {
     getTeam() {
         try {
             const stored = localStorage.getItem(STORAGE_KEYS.TEAM);
-            let team = stored ? JSON.parse(stored) : INITIAL_TEAM;
-            if (!Array.isArray(team) || team.length === 0) {
-                team = INITIAL_TEAM;
+            if (stored !== null) {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed)) return parsed;
             }
-            // Auto-clean any duplicates that may have accumulated in localStorage by id or name
-            const seenIds = new Set();
-            const uniqueTeam = [];
-            for (const m of team) {
-                if (!m || !m.id) continue;
-                const cleanId = String(m.id).trim();
-                if (!seenIds.has(cleanId)) {
-                    seenIds.add(cleanId);
-                    uniqueTeam.push(m);
-                }
-            }
-            if (uniqueTeam.length !== team.length) {
-                localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(uniqueTeam));
-            }
-            return uniqueTeam;
+            return [];
         } catch(e) {
-            return INITIAL_TEAM;
+            return [];
         }
     }
 
@@ -1951,11 +1899,10 @@ class DataStore {
     getDepartments() {
         try {
             const stored = localStorage.getItem(STORAGE_KEYS.DEPARTMENTS);
-            if (stored) return JSON.parse(stored);
-            localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(INITIAL_DEPARTMENTS));
-            return JSON.parse(JSON.stringify(INITIAL_DEPARTMENTS));
+            if (stored !== null) return JSON.parse(stored);
+            return [];
         } catch(e) {
-            return INITIAL_DEPARTMENTS;
+            return [];
         }
     }
 
@@ -1995,8 +1942,7 @@ class DataStore {
         try {
             const stored = localStorage.getItem(STORAGE_KEYS.ABOUT);
             if (stored) return { ...INITIAL_ABOUT, ...JSON.parse(stored) };
-            localStorage.setItem(STORAGE_KEYS.ABOUT, JSON.stringify(INITIAL_ABOUT));
-            return JSON.parse(JSON.stringify(INITIAL_ABOUT));
+            return INITIAL_ABOUT;
         } catch(e) {
             return INITIAL_ABOUT;
         }
@@ -2017,8 +1963,7 @@ class DataStore {
         try {
             const stored = localStorage.getItem(STORAGE_KEYS.SETTINGS);
             if (stored) return JSON.parse(stored);
-            localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(INITIAL_SETTINGS));
-            return JSON.parse(JSON.stringify(INITIAL_SETTINGS));
+            return INITIAL_SETTINGS;
         } catch(e) {
             return INITIAL_SETTINGS;
         }
