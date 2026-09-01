@@ -1655,7 +1655,19 @@ class DataStore {
         }
         const targetId = String(product.id).trim();
         const idx = products.findIndex(p => String(p.id).trim() === targetId);
+
         if (idx >= 0) {
+            // Update existing product: check if image has changed
+            const oldProduct = products[idx];
+            const oldImage = oldProduct.image || oldProduct.image_local;
+            const newImage = product.image || product.image_local;
+
+            if (oldImage && newImage && oldImage !== newImage) {
+                if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+                    window.supabaseService.deleteImageFromStorage(oldImage);
+                }
+            }
+
             products[idx] = { ...products[idx], ...product, id: targetId };
         } else {
             products.unshift(product);
@@ -1714,7 +1726,19 @@ class DataStore {
         }
         const targetId = String(partner.id).trim();
         const idx = partners.findIndex(p => String(p.id).trim() === targetId);
+
         if (idx >= 0) {
+            const oldPartner = partners[idx];
+            if (oldPartner.logo && partner.logo && oldPartner.logo !== partner.logo) {
+                if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+                    window.supabaseService.deleteImageFromStorage(oldPartner.logo);
+                }
+            }
+            if (oldPartner.banner && partner.banner && oldPartner.banner !== partner.banner) {
+                if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+                    window.supabaseService.deleteImageFromStorage(oldPartner.banner);
+                }
+            }
             partners[idx] = { ...partners[idx], ...partner, id: targetId };
         } else {
             partners.push(partner);
@@ -1774,6 +1798,14 @@ class DataStore {
         }
         const idx = newsList.findIndex(n => n.id === newsItem.id);
         if (idx >= 0) {
+            const oldNews = newsList[idx];
+            const oldImg = oldNews.image || oldNews.image_local;
+            const newImg = newsItem.image || newsItem.image_local;
+            if (oldImg && newImg && oldImg !== newImg) {
+                if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+                    window.supabaseService.deleteImageFromStorage(oldImg);
+                }
+            }
             newsList[idx] = newsItem;
         } else {
             newsList.unshift(newsItem);
@@ -1855,6 +1887,15 @@ class DataStore {
             // Updating an existing member: find existing index
             const idx = team.findIndex(m => String(m.id).trim() === memberIdStr);
             if (idx >= 0) {
+                const oldMember = team[idx];
+                const oldImg = oldMember.image || oldMember.image_local;
+                const newImg = member.image || member.image_local;
+                if (oldImg && newImg && oldImg !== newImg) {
+                    if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+                        window.supabaseService.deleteImageFromStorage(oldImg);
+                    }
+                }
+
                 // Mutate and replace the existing member cleanly at the exact index
                 team[idx] = {
                     ...team[idx],
