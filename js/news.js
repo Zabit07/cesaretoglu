@@ -246,13 +246,51 @@ const NewsModule = {
     formatDate(dateStr, lang) {
         if (!dateStr) return '';
         try {
-            const date = new Date(dateStr);
-            if (isNaN(date)) return dateStr;
-            const options = { year: 'numeric', month: 'long', day: 'numeric' };
-            let locale = 'ru-RU';
-            if (lang === 'az') locale = 'az-AZ';
-            if (lang === 'en') locale = 'en-US';
-            return date.toLocaleDateString(locale, options);
+            const rawStr = String(dateStr).trim();
+            let date = null;
+
+            // Handle standard YYYY-MM-DD or YYYY/MM/DD or ISO strings
+            if (/^\d{4}[-/.]\d{1,2}[-/.]\d{1,2}/.test(rawStr)) {
+                const parts = rawStr.split(/[-/.]/);
+                const year = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1;
+                const day = parseInt(parts[2], 10);
+                date = new Date(year, month, day);
+            } else if (/^\d{1,2}[-/.]\d{1,2}[-/.]\d{4}/.test(rawStr)) {
+                // Handle DD-MM-YYYY or DD.MM.YYYY
+                const parts = rawStr.split(/[-/.]/);
+                const day = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1;
+                const year = parseInt(parts[2], 10);
+                date = new Date(year, month, day);
+            } else {
+                date = new Date(rawStr);
+            }
+
+            if (!date || isNaN(date.getTime())) {
+                return dateStr;
+            }
+
+            const day = date.getDate();
+            const year = date.getFullYear();
+            const monthIdx = date.getMonth();
+
+            const months = {
+                az: ['Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'İyun', 'İyul', 'Avqust', 'Sentyabr', 'Oktyabr', 'Noyabr', 'Dekabr'],
+                ru: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
+                en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+            };
+
+            const currentLang = (lang === 'az' || lang === 'en') ? lang : 'ru';
+            const monthName = months[currentLang][monthIdx];
+
+            if (currentLang === 'az') {
+                return `${day} ${monthName} ${year}`;
+            } else if (currentLang === 'en') {
+                return `${monthName} ${day}, ${year}`;
+            } else {
+                return `${day} ${monthName} ${year} г.`;
+            }
         } catch(e) {
             return dateStr;
         }
