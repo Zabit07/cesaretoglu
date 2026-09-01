@@ -351,9 +351,9 @@ h6 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 104px;
-  min-height: 104px;
-  max-width: 1420px;
+  height: 118px;
+  min-height: 118px;
+  max-width: 1440px;
   margin: 0 auto;
   padding: 0 1.8rem;
 }
@@ -372,18 +372,18 @@ h6 {
 }
 
 .brand-logo-wrap:hover {
-  transform: scale(1.02);
+  transform: scale(1.03);
 }
 
 .brand-logo-img,
 .brand-logo {
-  height: 94px;
-  max-height: 94px;
+  height: 108px;
+  max-height: 108px;
   width: auto;
-  max-width: 320px;
+  max-width: 360px;
   object-fit: contain;
   display: block;
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.04));
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.05));
 }
 
 /* Strictly Centered Navigation Menu */
