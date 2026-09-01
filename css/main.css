@@ -2342,17 +2342,13 @@ h6 {
   border-top: 1px solid #E2E8F0;
 }
 
-/* Executive Director Highlight Card */
-.team-leader-wrap {
-  margin-top: 2.8rem;
-  margin-bottom: 3.2rem;
-  display: flex;
 /* =========================================================================
    ABOUT PAGE: TEAM & LEADERSHIP CARDS (Compact, Harmonious Layout)
    ========================================================================= */
 .team-leader-wrap {
   display: flex;
   justify-content: center;
+  margin-top: 2.8rem;
   margin-bottom: 2.8rem;
 }
 
