@@ -1671,9 +1671,21 @@ class DataStore {
     deleteProduct(id) {
         let products = this.getProducts();
         const targetId = String(id).trim();
+        const product = products.find(p => String(p.id).trim() === targetId);
+
+        // 1. Delete associated image from Supabase Storage if it exists
+        if (product && (product.image || product.image_local)) {
+            const imgPath = product.image || product.image_local;
+            if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+                window.supabaseService.deleteImageFromStorage(imgPath);
+            }
+        }
+
+        // 2. Delete from local storage
         products = products.filter(p => String(p.id).trim() !== targetId);
         localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
 
+        // 3. Delete from Supabase Database
         if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
             window.supabaseService.deleteRecord('products', id);
         }
@@ -1717,9 +1729,24 @@ class DataStore {
 
     deletePartner(id) {
         let partners = this.getPartners();
-        partners = partners.filter(p => p.id !== id);
+        const targetId = String(id).trim();
+        const partner = partners.find(p => String(p.id).trim() === targetId);
+
+        // 1. Delete associated logo and banner from Supabase Storage
+        if (partner) {
+            if (partner.logo && typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+                window.supabaseService.deleteImageFromStorage(partner.logo);
+            }
+            if (partner.banner && typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+                window.supabaseService.deleteImageFromStorage(partner.banner);
+            }
+        }
+
+        // 2. Delete from local storage
+        partners = partners.filter(p => String(p.id).trim() !== targetId);
         localStorage.setItem(STORAGE_KEYS.PARTNERS, JSON.stringify(partners));
 
+        // 3. Delete from Supabase Database
         if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
             window.supabaseService.deleteRecord('partners', id);
         }
@@ -1761,9 +1788,22 @@ class DataStore {
 
     deleteNews(id) {
         let newsList = this.getNews();
-        newsList = newsList.filter(n => n.id !== id);
+        const targetId = String(id).trim();
+        const newsItem = newsList.find(n => String(n.id).trim() === targetId);
+
+        // 1. Delete associated image from Supabase Storage
+        if (newsItem && (newsItem.image || newsItem.image_local)) {
+            const imgPath = newsItem.image || newsItem.image_local;
+            if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+                window.supabaseService.deleteImageFromStorage(imgPath);
+            }
+        }
+
+        // 2. Delete from local storage
+        newsList = newsList.filter(n => String(n.id).trim() !== targetId);
         localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(newsList));
 
+        // 3. Delete from Supabase Database
         if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
             window.supabaseService.deleteRecord('news', id);
         }
@@ -1844,9 +1884,21 @@ class DataStore {
         if (!id) return;
         const cleanId = String(id).trim();
         let team = this.getTeam();
+        const member = team.find(m => String(m.id).trim() === cleanId);
+
+        // 1. Delete associated photo from Supabase Storage
+        if (member && (member.image || member.image_local)) {
+            const imgPath = member.image || member.image_local;
+            if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+                window.supabaseService.deleteImageFromStorage(imgPath);
+            }
+        }
+
+        // 2. Delete from local storage
         team = team.filter(m => String(m.id).trim() !== cleanId);
         localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(team));
 
+        // 3. Delete from Supabase Database
         if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
             window.supabaseService.deleteRecord('team', id);
         }

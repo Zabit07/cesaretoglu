@@ -109,6 +109,51 @@ class SupabaseService {
             return null;
         }
     }
+
+    async deleteImageFromStorage(filePath) {
+        if (!this.isConfigured || !this.client || !filePath) return false;
+        try {
+            const bucketName = SUPABASE_CONFIG.storageBucket || 'cesaretoglu_media';
+            let path = filePath;
+
+            // Extract relative storage path if full URL is passed
+            if (filePath.includes('/')) {
+                const parts = filePath.split('/');
+                const bucketIndex = parts.indexOf(bucketName);
+                if (bucketIndex !== -1) {
+                    path = parts.slice(bucketIndex + 1).join('/');
+                } else if (filePath.includes('supabase.co')) {
+                    // Fallback for standard public URL pattern: .../object/public/bucketName/path
+                    const publicIdx = parts.indexOf('public');
+                    if (publicIdx !== -1 && parts[publicIdx + 1] === bucketName) {
+                        path = parts.slice(publicIdx + 2).join('/');
+                    }
+                }
+            }
+
+            // Remove query params if any
+            path = path.split('?')[0];
+
+            // If it is a local path or placeholder like images/products/..., skip cloud storage deletion
+            if (path.startsWith('images/') || path.startsWith('data:') || path.startsWith('blob:')) {
+                return false;
+            }
+
+            const { data, error } = await this.client.storage
+                .from(bucketName)
+                .remove([path]);
+
+            if (error) {
+                console.error('Supabase Storage delete error:', error);
+                return false;
+            }
+            console.log('✅ File successfully deleted from Supabase Storage:', path);
+            return true;
+        } catch (e) {
+            console.error('Supabase Storage delete exception:', e);
+            return false;
+        }
+    }
 }
 
 if (typeof window !== 'undefined') {
