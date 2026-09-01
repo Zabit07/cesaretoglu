@@ -629,14 +629,14 @@ class MainApp {
                 const img = m.image_local || m.image || 'images/team/director.jpg';
 
                 return `
-                    <div class="team-card-modern" style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:16px; overflow:hidden; display:grid; grid-template-columns:190px 1fr; max-height:240px; box-shadow:0 6px 18px rgba(10,30,51,0.04); text-align:left;">
-                        <div class="team-card-thumb-wrap" style="width:100%; height:100%; min-height:190px; max-height:240px; overflow:hidden; background:#F8FAFC;">
-                            <img src="${img}" alt="${name}" loading="lazy" onerror="this.src='images/logo.png'" style="width:100%; height:100%; max-height:240px; object-fit:cover; object-position:top center; display:block;">
+                    <div class="team-card-modern" style="background:#FFFFFF; border:1px solid #E2E8F0; border-radius:18px; overflow:hidden; display:grid; grid-template-columns:240px 1fr; max-height:270px; box-shadow:0 8px 22px rgba(10,30,51,0.05); text-align:left;">
+                        <div class="team-card-thumb-wrap" style="width:100%; height:100%; min-height:230px; max-height:270px; overflow:hidden; background:#F8FAFC;">
+                            <img src="${img}" alt="${name}" loading="lazy" onerror="this.src='images/logo.png'" style="width:100%; height:100%; max-height:270px; object-fit:cover; object-position:top center; display:block;">
                         </div>
-                        <div class="team-card-body" style="padding:1.4rem 1.3rem; display:flex; flex-direction:column; justify-content:center; overflow:hidden;">
-                            <h4 class="team-card-name" style="font-size:1.15rem; font-weight:800; color:#1E293B; margin-bottom:0.25rem;">${name}</h4>
-                            <div class="team-card-role" style="font-size:0.88rem; font-weight:700; color:#FF6600; margin-bottom:0.5rem;">${role}</div>
-                            <p class="team-card-desc" style="font-size:0.85rem; color:#64748B; line-height:1.5; margin:0; display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;">${bio || ''}</p>
+                        <div class="team-card-body" style="padding:1.6rem 1.5rem; display:flex; flex-direction:column; justify-content:center; overflow:hidden;">
+                            <h4 class="team-card-name" style="font-size:1.25rem; font-weight:800; color:#1E293B; margin-bottom:0.3rem;">${name}</h4>
+                            <div class="team-card-role" style="font-size:0.95rem; font-weight:700; color:#FF6600; margin-bottom:0.6rem;">${role}</div>
+                            <p class="team-card-desc" style="font-size:0.9rem; color:#64748B; line-height:1.55; margin:0; display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden;">${bio || ''}</p>
                         </div>
                     </div>
                 `;
