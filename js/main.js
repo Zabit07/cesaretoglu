@@ -94,7 +94,7 @@ const TRANSLATIONS = {
         adv8_5_title: 'Texnoloji Dəstək',
         adv8_5_desc: 'Məsələləri hər zaman birlikdə həll edir, avadanlıqların sazlanmasına və inqrediyentlərimizlə resepturaların adaptasiyasına kömək edirik.',
         adv8_6_title: 'İnkişaf Etmiş Logistika',
-        adv8_6_desc: 'Bazarda 15 ildən artıq təcrübə. Bu müddət ərzində minlərlə kilometr qablaşdırma və tonlarla yüksək keyfiyyətli qida əlavələri çatdırmışıq.',
+        adv8_6_desc: 'Bazarda 30 ildən artıq təcrübə. Bu müddət ərzində minlərlə kilometr qablaşdırma və tonlarla yüksək keyfiyyətli qida əlavələri çatdırmışıq.',
         adv8_7_title: 'Keyfiyyətə Nəzarət',
         adv8_7_desc: 'İstehsalat xətlərinizdə birbaşa sınaqlar aparmaq üçün plyonka, qabıq və ədviyyatların pulsuz test nümunələrini təqdim edirik.',
         adv8_8_title: 'Kompleks Həllər',
@@ -251,7 +251,7 @@ const TRANSLATIONS = {
         adv8_5_title: 'Технологическая поддержка',
         adv8_5_desc: 'Всегда совместно решаем задачи, помогаем настроить оборудование и адаптировать рецептуры с нашими ингредиентами.',
         adv8_6_title: 'Развитая логистика',
-        adv8_6_desc: 'На рынке более 15 лет. За это время мы своевременно поставили тысячи километров упаковки и тонны высококачественных добавок для пищевой промышленности.',
+        adv8_6_desc: 'На рынке более 30 лет. За это время мы своевременно поставили тысячи километров упаковки и тонны высококачественных добавок для пищевой промышленности.',
         adv8_7_title: 'Контроль качества',
         adv8_7_desc: 'Предоставляем бесплатные тестовые образцы пленок, оболочек и специй для проведения испытаний прямо на ваших линиях.',
         adv8_8_title: 'Комплексные решения',
@@ -398,7 +398,7 @@ const TRANSLATIONS = {
         adv8_5_title: 'Technological Support',
         adv8_5_desc: 'Collaborative problem solving, machinery tuning, and custom recipe adaptation with our premium ingredients.',
         adv8_6_title: 'Advanced Logistics',
-        adv8_6_desc: 'Over 15 years on the market. Thousands of kilometers of barrier packaging and tons of high-grade food additives delivered.',
+        adv8_6_desc: 'Over 30 years on the market. Thousands of kilometers of barrier packaging and tons of high-grade food additives delivered.',
         adv8_7_title: 'Quality Verification',
         adv8_7_desc: 'Complimentary production trial samples of films, casings, and seasonings for testing directly on your processing lines.',
         adv8_8_title: 'Turnkey Solutions',
@@ -994,7 +994,7 @@ class MainApp {
                 if (window.history && window.history.replaceState) {
                     window.history.replaceState(null, '', window.location.pathname + window.location.search);
                 }
-            } catch (e) {}
+            } catch (e) { }
             return;
         }
 
