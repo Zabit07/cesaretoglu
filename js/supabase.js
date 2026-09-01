@@ -82,17 +82,83 @@ class SupabaseService {
     }
 
     // =========================================================================
+    // Client-Side Image Compression (Canvas)
+    // =========================================================================
+    async compressImage(file, maxWidth = 1200, maxHeight = 1200, quality = 0.8) {
+        return new Promise((resolve, reject) => {
+            // If not an image (e.g. PDF, SVG, etc.), return as is
+            if (!file || !file.type || !file.type.startsWith('image/')) {
+                return resolve(file);
+            }
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    let width = img.width;
+                    let height = img.height;
+
+                    // Proportional resize to fit max dimensions
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width = Math.round((width * maxHeight) / height);
+                            height = maxHeight;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Convert to compressed JPEG blob
+                    canvas.toBlob(
+                        (blob) => {
+                            if (!blob) {
+                                return resolve(file); // fallback to original if toBlob fails
+                            }
+                            const cleanName = file.name ? file.name.replace(/\.[^/.]+$/, "") + '.jpg' : 'image.jpg';
+                            const compressedFile = new File([blob], cleanName, {
+                                type: 'image/jpeg',
+                                lastModified: Date.now(),
+                            });
+                            console.log(`🖼️ Сжато: ${(file.size / 1024 / 1024).toFixed(2)}MB ➡️ ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB (${width}x${height}px)`);
+                            resolve(compressedFile);
+                        },
+                        'image/jpeg',
+                        quality
+                    );
+                };
+                img.onerror = () => resolve(file); // fallback to original
+            };
+            reader.onerror = () => resolve(file);
+        });
+    }
+
+    // =========================================================================
     // Supabase Storage (Image Uploads)
     // =========================================================================
     async uploadImage(file, folder = 'uploads') {
         if (!this.isConfigured || !this.client) return null;
         try {
-            const fileExt = file.name ? file.name.split('.').pop() : 'jpg';
+            // 1. Auto-compress heavy images on the client side before uploading
+            const fileToUpload = await this.compressImage(file, 1200, 1200, 0.8);
+
+            const fileExt = fileToUpload.name ? fileToUpload.name.split('.').pop() : 'jpg';
             const fileName = `${folder}/${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
             
             const { data, error } = await this.client.storage
                 .from(SUPABASE_CONFIG.storageBucket)
-                .upload(fileName, file, { cacheControl: '3600', upsert: true });
+                .upload(fileName, fileToUpload, { cacheControl: '3600', upsert: true });
 
             if (error) {
                 console.error('Supabase Storage upload error:', error);

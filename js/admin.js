@@ -1388,15 +1388,15 @@ class AdminApp {
                 };
                 reader.readAsDataURL(file);
 
-                // 2. Upload to Supabase Storage if configured
+                // 2. Upload to Supabase Storage if configured (with automatic client-side compression)
                 if (window.supabaseService && window.supabaseService.isConfigured) {
-                    this.showToast('Загрузка изображения в Supabase Storage...', 'info');
+                    this.showToast('Сжатие и загрузка изображения в Supabase Storage...', 'info');
                     try {
                         const publicUrl = await window.supabaseService.uploadImage(file, 'media');
                         if (publicUrl) {
                             if (urlInput) urlInput.value = publicUrl;
                             previewImg.src = publicUrl;
-                            this.showToast('Изображение успешно загружено в Supabase Storage!', 'success');
+                            this.showToast('Изображение оптимизировано и загружено в Storage!', 'success');
                         }
                     } catch (err) {
                         console.error('Upload to Supabase Storage failed:', err);
