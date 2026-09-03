@@ -1162,7 +1162,7 @@ h6 {
    8 Advantages Section (4x2 Grid on Light Gray Background)
    -------------------------------------------------------------------------- */
 .adv8-section {
-  padding: 4.5rem 0;
+  padding: 3.8rem 0;
   background-color: #F8FAFC;
   border-top: 1px solid #E2E8F0;
   border-bottom: 1px solid #E2E8F0;
@@ -1170,86 +1170,87 @@ h6 {
 
 .adv8-header {
   text-align: center;
-  margin-bottom: 3.2rem;
+  margin-bottom: 2.6rem;
 }
 
 .adv8-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.8rem;
+  gap: 1.4rem;
   align-items: stretch;
 }
 
 .adv8-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: var(--radius-lg);
-  padding: 2.2rem 1.8rem;
+  border-radius: var(--radius-md);
+  padding: 1.6rem 1.4rem;
   display: flex;
   flex-direction: column;
   height: 100%;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 12px rgba(10, 30, 51, 0.04);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 3px 10px rgba(10, 30, 51, 0.03);
   position: relative;
 }
 
 .adv8-card:hover {
   background: #FFFFFF;
   border-color: var(--accent-orange);
-  box-shadow: 0 16px 36px rgba(255, 102, 0, 0.14);
-  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(255, 102, 0, 0.12);
+  transform: translateY(-4px);
 }
 
 .adv8-icon-box {
-  width: 64px;
-  height: 64px;
-  border-radius: 16px;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
   background: #FFF0E6;
   color: var(--accent-orange);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.75rem;
-  margin-bottom: 1.4rem;
+  font-size: 1.45rem;
+  margin-bottom: 1.1rem;
   transition: all var(--transition-fast);
 }
 
 .adv8-card:hover .adv8-icon-box {
   background: var(--accent-orange);
   color: #FFFFFF;
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
 .adv8-card-title {
-  font-size: 1.48rem;
+  font-size: 1.22rem;
   font-weight: 800;
   color: var(--secondary-color);
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.55rem;
   line-height: 1.3;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.01em;
 }
 
 .adv8-card-desc {
-  font-size: 1.15rem;
-  color: #334155;
-  line-height: 1.7;
+  font-size: 0.96rem;
+  color: #475569;
+  line-height: 1.6;
   flex-grow: 1;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1150px) {
   .adv8-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.6rem;
+    gap: 1.3rem;
   }
 }
 
 @media (max-width: 600px) {
   .adv8-grid {
     grid-template-columns: 1fr;
+    gap: 1.2rem;
   }
   
   .adv8-card {
-    padding: 1.8rem 1.5rem;
+    padding: 1.4rem 1.2rem;
   }
 }
 
