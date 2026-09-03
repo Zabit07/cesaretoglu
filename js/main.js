@@ -702,7 +702,7 @@ class MainApp {
             }
 
             slidesHtml += `
-              <div class="slide-item ${isActive}" style="background: linear-gradient(90deg, rgba(6, 18, 33, 0.92) 0%, rgba(6, 18, 33, 0.78) 50%, rgba(6, 18, 33, 0.40) 100%), url('${bg}') center/cover no-repeat;">
+              <div class="slide-item ${isActive}" style="background: linear-gradient(90deg, rgba(6, 18, 33, 0.72) 0%, rgba(6, 18, 33, 0.45) 55%, rgba(6, 18, 33, 0.15) 100%), url('${bg}') center/cover no-repeat; background-size: cover; background-position: center;">
                 <div class="container slide-inner">
                   <div class="slide-content-wrap">
                     <span class="slide-brand-pill">${partner.name} — ${status}</span>

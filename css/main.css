@@ -643,6 +643,7 @@ h6 {
   position: relative;
 }
 
+/* Hero Slider — Real Production Backgrounds with Luminous Soft Gradient Overlays */
 .slide-item {
   position: absolute;
   inset: 0;
@@ -651,6 +652,7 @@ h6 {
   transition: opacity 0.6s ease, visibility 0.6s ease;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   align-items: center;
   /* Vertical centering */
@@ -662,29 +664,36 @@ h6 {
   z-index: 2;
 }
 
-/* Hero Slider — Real Production Backgrounds with Contrast Overlays */
 .slide-item-1 {
   /* Atlantis-Pak: Sausage Casings */
-  background: linear-gradient(90deg, rgba(6, 18, 33, 0.92) 0%, rgba(6, 18, 33, 0.78) 50%, rgba(6, 18, 33, 0.40) 100%),
+  background: linear-gradient(90deg, rgba(6, 18, 33, 0.72) 0%, rgba(6, 18, 33, 0.45) 55%, rgba(6, 18, 33, 0.15) 100%),
     url('../images/hero/slide_1_casings.jpg') center/cover no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 .slide-item-2 {
   /* Wiberg: Spices & Seasonings */
-  background: linear-gradient(90deg, rgba(6, 18, 33, 0.92) 0%, rgba(6, 18, 33, 0.78) 50%, rgba(6, 18, 33, 0.40) 100%),
+  background: linear-gradient(90deg, rgba(6, 18, 33, 0.72) 0%, rgba(6, 18, 33, 0.45) 55%, rgba(6, 18, 33, 0.15) 100%),
     url('../images/hero/slide_2_spices.jpg') center/cover no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 .slide-item-3 {
   /* Südpack: Barrier Packaging Films */
-  background: linear-gradient(90deg, rgba(6, 18, 33, 0.92) 0%, rgba(6, 18, 33, 0.78) 50%, rgba(6, 18, 33, 0.40) 100%),
+  background: linear-gradient(90deg, rgba(6, 18, 33, 0.72) 0%, rgba(6, 18, 33, 0.45) 55%, rgba(6, 18, 33, 0.15) 100%),
     url('../images/hero/slide_3_packaging.jpg') center/cover no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 .slide-item-4 {
   /* Avangard: Seasonings, Spices & Salts */
-  background: linear-gradient(90deg, rgba(6, 18, 33, 0.92) 0%, rgba(6, 18, 33, 0.78) 50%, rgba(6, 18, 33, 0.40) 100%),
+  background: linear-gradient(90deg, rgba(6, 18, 33, 0.72) 0%, rgba(6, 18, 33, 0.45) 55%, rgba(6, 18, 33, 0.15) 100%),
     url('../images/hero/slide_5_avangard.jpg') center/cover no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 /* Slide split layout: text left, brand logo right */
