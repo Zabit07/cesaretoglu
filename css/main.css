@@ -1973,48 +1973,70 @@ h6 {
 }
 
 /* Product Specs Modal */
+#product-modal .modal-window {
+  max-width: 1020px;
+  width: 94%;
+  border-radius: var(--radius-lg, 16px);
+  overflow: hidden;
+}
+
 .product-modal-grid {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: 440px 1fr;
+  min-height: 480px;
 }
 
 .pm-image-box {
   background: #F8FAFC;
-  padding: 1.5rem;
+  padding: 2.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
   border-right: 1px solid var(--border-color);
+  position: relative;
 }
 
 .pm-image-box img {
-  max-height: 220px;
+  max-height: 380px;
+  width: 100%;
   object-fit: contain;
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.08));
+  transition: transform 0.3s ease;
+}
+
+.pm-image-box img:hover {
+  transform: scale(1.03);
 }
 
 .pm-content {
-  padding: 1.5rem;
+  padding: 2.2rem 2.4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .specs-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.78rem;
-  margin: 0.7rem 0;
+  font-size: 0.85rem;
+  margin: 1rem 0;
 }
 
 .specs-table th {
   background: #F8FAFC;
-  color: var(--text-muted);
-  padding: 0.35rem 0.5rem;
+  color: #64748B;
+  padding: 0.55rem 0.8rem;
   text-align: left;
   border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  width: 42%;
 }
 
 .specs-table td {
-  padding: 0.35rem 0.5rem;
+  padding: 0.55rem 0.8rem;
   border-bottom: 1px solid var(--border-color);
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--secondary-color, #0A1E33);
 }
 
 /* Callback Request Modal */
@@ -2118,8 +2140,23 @@ h6 {
     grid-template-columns: 1fr 1fr;
   }
 
-  .about-grid {
+  .product-modal-grid {
     grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .pm-image-box {
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 1.5rem;
+  }
+
+  .pm-image-box img {
+    max-height: 240px;
+  }
+
+  .pm-content {
+    padding: 1.5rem;
   }
 }
 
@@ -2137,8 +2174,29 @@ h6 {
     font-size: 1.4rem;
   }
 
-  .product-modal-grid {
-    grid-template-columns: 1fr;
+  #product-modal .modal-window {
+    width: 95%;
+    margin: 0.5rem auto;
+  }
+
+  .pm-image-box {
+    padding: 1.2rem;
+  }
+
+  .pm-image-box img {
+    max-height: 190px;
+  }
+
+  .pm-content {
+    padding: 1.2rem;
+  }
+
+  .specs-table {
+    font-size: 0.78rem;
+  }
+
+  .specs-table th, .specs-table td {
+    padding: 0.4rem 0.5rem;
   }
 }
 
