@@ -8,6 +8,7 @@ const CatalogModule = {
     currentCategory: 'all',
     currentPartner: 'all',
     searchQuery: '',
+    activeProductId: null,
 
     init() {
         this.bindEvents();
@@ -579,19 +580,8 @@ const CatalogModule = {
         });
     },
 
-    resetFilters() {
-        this.currentCategory = 'all';
-        this.currentPartner = 'all';
-        this.searchQuery = '';
-        document.querySelectorAll('.catalog-search-input').forEach(i => i.value = '');
-        document.querySelectorAll('.catalog-clear-search').forEach(b => b.style.display = 'none');
-        document.querySelectorAll('.catalog-partner-select').forEach(s => s.value = 'all');
-        this.renderPartnerSelect();
-        this.renderCategoryTabs();
-        this.renderProducts();
-    },
-
-    openModal(id) {
+     openModal(id) {
+        this.activeProductId = id;
         const product = window.dataStore.getProductById(id);
         if (!product) return;
 
@@ -675,7 +665,7 @@ const CatalogModule = {
                         overstuffing: { ru: 'Фаршеемкость', az: 'Doldurma', en: 'Overstuffing' },
                         smokePermeability: { ru: 'Проницаемость', az: 'Keçiricilik', en: 'Smoke Permeability' },
                         materialType: { ru: 'Материал', az: 'Material', en: 'Material' },
-                        waterBinding: { ru: 'Влагосвязывание', az: 'Su tutumu', en: 'Water Binding' },
+                        waterBinding: { ru: 'Влагосвязывавание', az: 'Su tutumu', en: 'Water Binding' },
                         proteinType: { ru: 'Тип белка', az: 'Zülal növü', en: 'Protein Type' }
                     };
                     Object.entries(product.specs_structured).forEach(([k, val]) => {
@@ -698,17 +688,17 @@ const CatalogModule = {
                 const rows = specsList.map(s => {
                     // Resolve localized name (supports both old key_* and new name_* formats)
                     let key = '';
-                    if (lang === 'ru')      key = s.name_ru || s.key_ru || s.name || s.key_az || '';
-                    else if (lang === 'en') key = s.name_en || s.key_en || s.name || s.key_az || '';
-                    else                   key = s.name_az || s.key_az || s.name || '';
+                    if (lang === 'ru')      key = s.name_ru || s.key_ru || s.name || s.name_az || s.key_az || s.name_en || '';
+                    else if (lang === 'en') key = s.name_en || s.key_en || s.name || s.name_ru || s.name_az || s.key_az || '';
+                    else                   key = s.name_az || s.key_az || s.name || s.name_ru || s.name_en || '';
 
                     if (!key) return '';
 
                     // Resolve localized value
                     let val = '';
-                    if (lang === 'ru')      val = s.value_ru || s.value || '';
-                    else if (lang === 'en') val = s.value_en || s.value || '';
-                    else                   val = s.value_az || s.value || '';
+                    if (lang === 'ru')      val = s.value_ru || s.value || s.value_az || s.value_en || '';
+                    else if (lang === 'en') val = s.value_en || s.value || s.value_ru || s.value_az || '';
+                    else                   val = s.value_az || s.value || s.value_ru || s.value_en || '';
                     if (!val) val = '—';
 
                     return `<tr><th>${key}</th><td>${val}</td></tr>`;
@@ -722,10 +712,7 @@ const CatalogModule = {
             }
         }
 
-
-
         // Direct Contact Links
-        let waMsg = '';
         let emailSubject = '';
         let emailBody = '';
 
@@ -750,7 +737,15 @@ const CatalogModule = {
         document.body.style.overflow = 'hidden';
     },
 
+    refreshActiveModal() {
+        const modal = document.getElementById('product-modal');
+        if (modal && modal.classList.contains('active') && this.activeProductId) {
+            this.openModal(this.activeProductId);
+        }
+    },
+
     closeModal() {
+        this.activeProductId = null;
         const modal = document.getElementById('product-modal');
         if (modal) {
             modal.classList.remove('active');

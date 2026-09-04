@@ -1358,10 +1358,10 @@ class AdminApp {
             const nameEn = row.querySelector('.spec-hidden-name-en')?.value || '';
             const valAz  = row.querySelector('.spec-hidden-val-az')?.value  || '';
             const valEn  = row.querySelector('.spec-hidden-val-en')?.value  || '';
-            if (nameAz || nameEn) {
+            if (nameAz || nameEn || valAz || valEn) {
                 previewEl.innerHTML = `
-                    <span title="AZ">🇦🇿 ${nameAz || '—'}${valAz ? ': ' + valAz : ''}</span>
-                    <span title="EN">🇬🇧 ${nameEn || '—'}${valEn ? ': ' + valEn : ''}</span>
+                    <span style="background:#EFF6FF; border:1px solid #BFDBFE; color:#1E40AF; padding:2px 8px; border-radius:4px;" title="Azərbaycan dili">🇦🇿 <strong>${nameAz || '—'}</strong>: ${valAz || '—'}</span>
+                    <span style="background:#F0FDF4; border:1px solid #BBF7D0; color:#166534; padding:2px 8px; border-radius:4px;" title="English">🇬🇧 <strong>${nameEn || '—'}</strong>: ${valEn || '—'}</span>
                 `;
                 previewEl.style.display = 'flex';
             } else {
@@ -1624,33 +1624,55 @@ class AdminApp {
     _legacySpecsToRows(product) {
         const rows = [];
         if (product.param1_ru || product.param1_az) {
-            rows.push({ name: product.param1_ru || product.param1_az || '', value: '' });
+            rows.push({
+                name_ru: product.param1_ru || product.param1_az || '',
+                name_az: product.param1_az || product.param1_ru || '',
+                name_en: product.param1_en || product.param1_ru || '',
+                value_ru: '', value_az: '', value_en: ''
+            });
         }
         if (product.param2_ru || product.param2_az) {
-            rows.push({ name: product.param2_ru || product.param2_az || '', value: '' });
+            rows.push({
+                name_ru: product.param2_ru || product.param2_az || '',
+                name_az: product.param2_az || product.param2_ru || '',
+                name_en: product.param2_en || product.param2_ru || '',
+                value_ru: '', value_az: '', value_en: ''
+            });
         }
         if (product.param3_ru || product.param3_az) {
-            rows.push({ name: product.param3_ru || product.param3_az || '', value: '' });
+            rows.push({
+                name_ru: product.param3_ru || product.param3_az || '',
+                name_az: product.param3_az || product.param3_ru || '',
+                name_en: product.param3_en || product.param3_ru || '',
+                value_ru: '', value_az: '', value_en: ''
+            });
         }
         const specs = product.specs_structured || {};
         if (rows.length === 0) {
             const fields = [
-                { key: 'dosage', labelRu: 'Дозировка' },
-                { key: 'smokePermeability', labelRu: 'Проницаемость' },
-                { key: 'materialType', labelRu: 'Материал' },
-                { key: 'application', labelRu: 'Назначение / Применение' },
-                { key: 'overstuffing', labelRu: 'Фаршеемкость' },
-                { key: 'caliber', labelRu: 'Калибр' },
-                { key: 'waterBinding', labelRu: 'Влагосвязывание' },
-                { key: 'shelfLife', labelRu: 'Срок хранения' },
-                { key: 'storage', labelRu: 'Условия хранения' },
-                { key: 'proteinType', labelRu: 'Тип белка' }
+                { key: 'dosage', labelRu: 'Дозировка', labelAz: 'Dozalanma', labelEn: 'Dosage' },
+                { key: 'smokePermeability', labelRu: 'Проницаемость', labelAz: 'Keçiricilik', labelEn: 'Smoke Permeability' },
+                { key: 'materialType', labelRu: 'Материал', labelAz: 'Material', labelEn: 'Material' },
+                { key: 'application', labelRu: 'Назначение', labelAz: 'Təyinatı', labelEn: 'Application' },
+                { key: 'overstuffing', labelRu: 'Фаршеемкость', labelAz: 'Doldurma', labelEn: 'Overstuffing' },
+                { key: 'caliber', labelRu: 'Калибр', labelAz: 'Kalibr', labelEn: 'Caliber' },
+                { key: 'waterBinding', labelRu: 'Влагосвязывание', labelAz: 'Su tutumu', labelEn: 'Water Binding' },
+                { key: 'shelfLife', labelRu: 'Срок хранения', labelAz: 'Saxlama müddəti', labelEn: 'Shelf Life' },
+                { key: 'storage', labelRu: 'Условия хранения', labelAz: 'Saxlama şəraiti', labelEn: 'Storage' },
+                { key: 'proteinType', labelRu: 'Тип белка', labelAz: 'Zülal növü', labelEn: 'Protein Type' }
             ];
             fields.forEach(f => {
                 const v = specs[f.key];
                 if (!v) return;
-                const val = typeof v === 'object' ? (v.ru || v.az || v.en || '') : String(v);
-                if (val) rows.push({ name: f.labelRu, value: val });
+                const valRu = typeof v === 'object' ? (v.ru || v.az || v.en || '') : String(v);
+                const valAz = typeof v === 'object' ? (v.az || v.ru || v.en || '') : String(v);
+                const valEn = typeof v === 'object' ? (v.en || v.ru || v.az || '') : String(v);
+                if (valRu || valAz || valEn) {
+                    rows.push({
+                        name_ru: f.labelRu, name_az: f.labelAz, name_en: f.labelEn,
+                        value_ru: valRu, value_az: valAz, value_en: valEn
+                    });
+                }
             });
         }
         return rows;
@@ -1661,15 +1683,16 @@ class AdminApp {
         const container = document.getElementById('specs-rows-container');
         if (!container) return;
         container.innerHTML = '';
-        (rows || []).forEach((row, idx) => this._appendSpecRow(
-            row.name    || row.name_ru   || '',
-            row.value   || row.value_ru  || '',
-            idx,
-            row.name_az  || '', row.name_en  || '',
-            row.value_az || '', row.value_en || ''
-        ));
+        (rows || []).forEach((row, idx) => {
+            const nRu = row.name_ru || row.key_ru || row.name || '';
+            const nAz = row.name_az || row.key_az || '';
+            const nEn = row.name_en || row.key_en || '';
+            const vRu = row.value_ru || row.value || '';
+            const vAz = row.value_az || '';
+            const vEn = row.value_en || '';
+            this._appendSpecRow(nRu, vRu, idx, nAz, nEn, vAz, vEn);
+        });
         this._updateSpecsCount();
-        // Restore translation previews
         setTimeout(() => this._refreshSpecTranslationPreviews(), 0);
     }
 
@@ -1699,11 +1722,11 @@ class AdminApp {
             <input type="hidden" class="spec-hidden-name-en" value="${this._esc(nameEn)}">
             <input type="hidden" class="spec-hidden-val-az"  value="${this._esc(valueAz)}">
             <input type="hidden" class="spec-hidden-val-en"  value="${this._esc(valueEn)}">
-            <div class="spec-translation-preview" style="display:none; grid-column:1/-1; gap:0.6rem; flex-wrap:wrap; font-size:0.75rem; color:#6366F1; margin-top:0.25rem;"></div>
+            <div class="spec-translation-preview" style="display:none; grid-column:1/-1; gap:0.6rem; flex-wrap:wrap; font-size:0.75rem; margin-top:0.25rem;"></div>
         `;
         container.appendChild(div);
 
-        // When user edits the RU inputs, clear the cached AZ/EN so they get re-translated
+        // When user edits the RU inputs, clear cached AZ/EN so auto-translation will re-generate them
         div.querySelector('.spec-input-name').addEventListener('input', () => {
             div.querySelector('.spec-hidden-name-az').value = '';
             div.querySelector('.spec-hidden-name-en').value = '';
@@ -1754,28 +1777,31 @@ class AdminApp {
         }
     }
 
-    // Collect specs from builder rows — now with all 6 language fields
+    // Collect specs from builder rows — fully ensuring all 6 language keys
     _collectSpecs() {
         const container = document.getElementById('specs-rows-container');
         if (!container) return [];
         const rows = [];
         container.querySelectorAll('.spec-row').forEach(row => {
-            const name    = (row.querySelector('.spec-input-name')?.value    || '').trim();
-            const value   = (row.querySelector('.spec-input-val')?.value     || '').trim();
+            const nameRu  = (row.querySelector('.spec-input-name')?.value    || '').trim();
+            const valueRu = (row.querySelector('.spec-input-val')?.value     || '').trim();
             const nameAz  = (row.querySelector('.spec-hidden-name-az')?.value || '').trim();
             const nameEn  = (row.querySelector('.spec-hidden-name-en')?.value || '').trim();
             const valueAz = (row.querySelector('.spec-hidden-val-az')?.value  || '').trim();
             const valueEn = (row.querySelector('.spec-hidden-val-en')?.value  || '').trim();
-            if (name || value) {
+            if (nameRu || valueRu || nameAz || valueAz || nameEn || valueEn) {
                 rows.push({
-                    name,     // RU (primary editable)
-                    value,    // RU (primary editable)
-                    name_ru:  name,
-                    value_ru: value,
-                    name_az:  nameAz  || name,   // fallback to RU if not yet translated
-                    value_az: valueAz || value,
-                    name_en:  nameEn  || name,
-                    value_en: valueEn || value
+                    name_ru:  nameRu,
+                    value_ru: valueRu,
+                    name_az:  nameAz  || nameRu,
+                    value_az: valueAz || valueRu,
+                    name_en:  nameEn  || nameRu,
+                    value_en: valueEn || valueRu,
+                    key_ru:   nameRu,
+                    key_az:   nameAz  || nameRu,
+                    key_en:   nameEn  || nameRu,
+                    name:     nameRu  || nameAz || nameEn,
+                    value:    valueRu || valueAz || valueEn
                 });
             }
         });

@@ -1596,11 +1596,78 @@ class DataStore {
         }
     }
 
+    _normalizeProduct(p) {
+        if (!p || typeof p !== 'object') return p;
+        const norm = { ...p };
+
+        // 1. Localized Titles
+        if (norm.title && typeof norm.title === 'object') {
+            norm.title_az = norm.title_az || norm.title.az || norm.title.ru || norm.title.en || '';
+            norm.title_ru = norm.title_ru || norm.title.ru || norm.title.az || norm.title.en || '';
+            norm.title_en = norm.title_en || norm.title.en || norm.title.ru || norm.title.az || '';
+        } else if (norm.title_ru || norm.title_az || norm.title_en) {
+            norm.title_az = norm.title_az || norm.title_ru || norm.title_en || '';
+            norm.title_ru = norm.title_ru || norm.title_az || norm.title_en || '';
+            norm.title_en = norm.title_en || norm.title_ru || norm.title_az || '';
+            norm.title = { az: norm.title_az, ru: norm.title_ru, en: norm.title_en };
+        } else if (norm.title) {
+            const tStr = String(norm.title);
+            norm.title_az = tStr;
+            norm.title_ru = tStr;
+            norm.title_en = tStr;
+            norm.title = { az: tStr, ru: tStr, en: tStr };
+        }
+
+        // 2. Localized Descriptions
+        if (norm.description && typeof norm.description === 'object') {
+            norm.description_az = norm.description_az || norm.description.az || norm.description.ru || norm.description.en || '';
+            norm.description_ru = norm.description_ru || norm.description.ru || norm.description.az || norm.description.en || '';
+            norm.description_en = norm.description_en || norm.description.en || norm.description.ru || norm.description.az || '';
+        } else if (norm.description_ru || norm.description_az || norm.description_en) {
+            norm.description_az = norm.description_az || norm.description_ru || norm.description_en || '';
+            norm.description_ru = norm.description_ru || norm.description.az || norm.description_en || '';
+            norm.description_en = norm.description_en || norm.description.ru || norm.description.az || '';
+            norm.description = { az: norm.description_az, ru: norm.description_ru, en: norm.description_en };
+        } else if (norm.description) {
+            const dStr = String(norm.description);
+            norm.description_az = dStr;
+            norm.description_ru = dStr;
+            norm.description_en = dStr;
+            norm.description = { az: dStr, ru: dStr, en: dStr };
+        }
+
+        // 3. Localized Specs Array
+        if (Array.isArray(norm.specs)) {
+            norm.specs = norm.specs.map(s => {
+                if (!s || typeof s !== 'object') return s;
+                const nameRu = s.name_ru || s.key_ru || s.name || '';
+                const nameAz = s.name_az || s.key_az || s.name || nameRu;
+                const nameEn = s.name_en || s.key_en || s.name || nameRu;
+                const valRu = s.value_ru || s.val_ru || s.value || '';
+                const valAz = s.value_az || s.val_az || s.value || valRu;
+                const valEn = s.value_en || s.val_en || s.value || valRu;
+                return {
+                    ...s,
+                    name_ru: nameRu, name_az: nameAz, name_en: nameEn,
+                    key_ru: nameRu,  key_az: nameAz,  key_en: nameEn,
+                    value_ru: valRu, value_az: valAz, value_en: valEn,
+                    name: nameRu || nameAz || nameEn,
+                    value: valRu || valAz || valEn
+                };
+            });
+        }
+
+        return norm;
+    }
+
     getProducts() {
         try {
             const stored = localStorage.getItem(STORAGE_KEYS.PRODUCTS);
             if (stored !== null) {
-                return JSON.parse(stored);
+                const arr = JSON.parse(stored);
+                if (Array.isArray(arr)) {
+                    return arr.map(p => this._normalizeProduct(p));
+                }
             }
             return [];
         } catch(e) {
@@ -1609,7 +1676,10 @@ class DataStore {
     }
 
     getProductById(id) {
-        return this.getProducts().find(p => p.id === id);
+        if (!id) return null;
+        const cleanId = String(id).trim();
+        const p = this.getProducts().find(item => String(item.id).trim() === cleanId);
+        return p ? this._normalizeProduct(p) : null;
     }
 
     saveProduct(product) {

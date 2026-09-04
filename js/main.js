@@ -1025,6 +1025,9 @@ class MainApp {
             window.CatalogModule.renderPartnerSelect();
             window.CatalogModule.renderCategoryTabs();
             window.CatalogModule.renderProducts();
+            if (typeof window.CatalogModule.refreshActiveModal === 'function') {
+                window.CatalogModule.refreshActiveModal();
+            }
         }
         if (window.NewsModule) window.NewsModule.renderNews();
     }
