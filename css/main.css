@@ -1925,13 +1925,23 @@ h6 {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 0.75rem 0.85rem;
+  padding: 0.6rem 0.8rem;
   background: #F8FAFC;
-  border: 1px dashed #CBD5E1;
+  border: 1px dashed #D5DEE7;
   color: #64748B;
-  font-size: 0.76rem;
-  line-height: 1.4;
-  font-weight: 600;
+  border-radius: var(--radius-md, 10px);
+}
+
+.product-specs-empty-badge {
+  display: inline-block;
+  background: #FFF0E6;
+  color: #D9480F;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-full, 9999px);
+  margin-top: 0.25rem;
+  letter-spacing: 0.2px;
 }
 
 .product-spec-row {

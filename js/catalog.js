@@ -570,17 +570,17 @@ const CatalogModule = {
                     }
                 }
 
-                // If no specs exist at all (e.g. secret spices or custom blends), render a clean, professional note
+                // If no specs exist at all (e.g. secret spices or custom blends), render a clean, concise on-request status
                 if (!specsHtml) {
-                    const noSpecsText = lang === 'az' 
-                        ? 'Tərkib və spesifikasiya sorğu əsasında təqdim olunur' 
+                    const shortRequestText = lang === 'az' 
+                        ? 'Sorğu əsasında' 
                         : (lang === 'ru' 
-                            ? 'Состав и характеристики предоставляются по запросу' 
-                            : 'Formulation & specifications available upon inquiry');
+                            ? 'По запросу' 
+                            : 'Upon request');
                     specsHtml = `
                         <div class="product-card-specs product-card-specs-empty">
-                            <i class="fa-solid fa-shield-halved" style="color:#FF6600; font-size:0.95rem; margin-bottom:0.25rem;"></i>
-                            <span>${noSpecsText}</span>
+                            <i class="fa-solid fa-file-lines" style="color:var(--accent-orange, #FF6600); font-size:1.1rem; margin-bottom:0.2rem;"></i>
+                            <span class="product-specs-empty-badge">${shortRequestText}</span>
                         </div>`;
                 }
 
@@ -653,12 +653,22 @@ const CatalogModule = {
         document.getElementById('pm-partner').textContent = product.partner;
         document.getElementById('pm-category').textContent = categoryName;
         document.getElementById('pm-image').src = img;
-        document.getElementById('pm-description').innerHTML = `<p>${(desc || '').replace(/\n/g, '</p><p>')}</p>`;
+        
+        let descHtml = desc ? `<p>${desc.replace(/\n/g, '</p><p>')}</p>` : '';
+        document.getElementById('pm-description').innerHTML = descHtml;
 
         // Render Complete Specifications Table (All items, without limit)
         const specsContainer = document.getElementById('pm-specs-table');
         if (specsContainer) {
             let specsList = Array.isArray(product.specs) ? product.specs : [];
+
+            // Filter out empty rows
+            specsList = specsList.filter(s => {
+                if (!s || typeof s !== 'object') return false;
+                const n = (s.name_ru || s.name_az || s.name_en || s.key_ru || s.key_az || s.key_en || s.name || '').trim();
+                const v = (s.value_ru || s.value_az || s.value_en || s.value || '').trim();
+                return n || v;
+            });
 
             // Fallback for legacy products without specs array
             if (specsList.length === 0) {
@@ -740,7 +750,26 @@ const CatalogModule = {
                     ? `<table class="specs-table"><tbody>${rows}</tbody></table>`
                     : '';
             } else {
-                specsContainer.innerHTML = '';
+                // If product has confidential or custom specs, show a full informative banner in the modal
+                const modalNoticeTitle = lang === 'az' 
+                    ? 'Fərdi spesifikasiya və reseptura' 
+                    : (lang === 'ru' 
+                        ? 'Индивидуальная рецептура и спецификация' 
+                        : 'Custom Formulation & Specification');
+                const modalNoticeDesc = lang === 'az'
+                    ? 'Bu məhsulun dəqiq tərkibi, texnoloji xəritəsi və dozalanma qaydaları istehsalatınızın tələblərinə uyğun olaraq texnoloqlarımız tərəfindən fərdi şəkildə təqdim edilir. Nümunələr və sınaq partiyası üçün bizimlə əlaqə saxlayın.'
+                    : (lang === 'ru'
+                        ? 'Точный состав, технологическая карта и нормы дозировки данного продукта предоставляются нашими технологами индивидуально под параметры вашего производства. Свяжитесь с нами для получения образцов и проведения выработки.'
+                        : 'Detailed composition, technical data sheet, and customized dosage recommendations are provided directly by our food technologists according to your production requirements. Contact us for consultation and free trial samples.');
+
+                specsContainer.innerHTML = `
+                    <div class="pm-confidential-notice" style="margin: 1rem 0; padding: 1rem 1.2rem; background: #FFF9F5; border-left: 4px solid var(--accent-orange, #FF6600); border-radius: 0 8px 8px 0;">
+                        <div style="font-weight: 700; color: #1E293B; font-size: 0.92rem; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fa-solid fa-shield-halved" style="color: var(--accent-orange, #FF6600);"></i>
+                            <span>${modalNoticeTitle}</span>
+                        </div>
+                        <p style="font-size: 0.84rem; color: #475569; line-height: 1.55; margin: 0;">${modalNoticeDesc}</p>
+                    </div>`;
             }
         }
 
