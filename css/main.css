@@ -2043,20 +2043,50 @@ h6 {
   padding: 2.2rem 2.4rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 0.8rem;
+}
+
+#pm-partner, #pm-category {
+  font-size: 0.82rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  letter-spacing: 0.2px;
+}
+
+#pm-title {
+  font-size: 1.65rem !important;
+  font-weight: 800;
+  line-height: 1.3;
+  margin: 0.2rem 0 0.5rem !important;
+  color: var(--secondary-color, #0A1E33);
+}
+
+#pm-description {
+  font-size: 0.98rem !important;
+  color: #475569;
+  line-height: 1.65 !important;
+}
+
+#pm-description p {
+  margin-bottom: 0.6rem;
+}
+
+#pm-description p:last-child {
+  margin-bottom: 0;
 }
 
 .specs-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.85rem;
-  margin: 1rem 0;
+  font-size: 0.92rem;
+  margin: 0.8rem 0;
 }
 
 .specs-table th {
   background: #F8FAFC;
   color: #64748B;
-  padding: 0.55rem 0.8rem;
+  padding: 0.65rem 0.9rem;
   text-align: left;
   border-bottom: 1px solid var(--border-color);
   font-weight: 600;
@@ -2064,10 +2094,51 @@ h6 {
 }
 
 .specs-table td {
-  padding: 0.55rem 0.8rem;
+  padding: 0.65rem 0.9rem;
   border-bottom: 1px solid var(--border-color);
   font-weight: 700;
   color: var(--secondary-color, #0A1E33);
+}
+
+.pm-confidential-notice {
+  margin: 0.9rem 0;
+  padding: 1.2rem 1.4rem;
+  background: #FFF9F5;
+  border-left: 4px solid var(--accent-orange, #FF6600);
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0 4px 14px rgba(255, 102, 0, 0.05);
+}
+
+.pm-confidential-notice-title {
+  font-weight: 800;
+  color: #1E293B;
+  font-size: 1.05rem;
+  margin-bottom: 0.45rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.pm-confidential-notice-desc {
+  font-size: 0.94rem;
+  color: #475569;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.pm-contact-box {
+  margin-top: 0.8rem;
+  padding: 1rem 1.2rem;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+}
+
+.pm-contact-box-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--secondary-color, #0A1E33);
+  margin-bottom: 0.6rem;
 }
 
 /* Callback Request Modal */

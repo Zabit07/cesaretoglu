@@ -776,12 +776,12 @@ const CatalogModule = {
                         : 'Detailed composition, technical data sheet, and customized dosage recommendations are provided directly by our food technologists according to your production requirements. Contact us for consultation and free trial samples.');
 
                 specsContainer.innerHTML = `
-                    <div class="pm-confidential-notice" style="margin: 1rem 0; padding: 1rem 1.2rem; background: #FFF9F5; border-left: 4px solid var(--accent-orange, #FF6600); border-radius: 0 8px 8px 0;">
-                        <div style="font-weight: 700; color: #1E293B; font-size: 0.92rem; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <div class="pm-confidential-notice">
+                        <div class="pm-confidential-notice-title">
                             <i class="fa-solid fa-shield-halved" style="color: var(--accent-orange, #FF6600);"></i>
                             <span>${modalNoticeTitle}</span>
                         </div>
-                        <p style="font-size: 0.84rem; color: #475569; line-height: 1.55; margin: 0;">${modalNoticeDesc}</p>
+                        <p class="pm-confidential-notice-desc">${modalNoticeDesc}</p>
                     </div>`;
             }
         }
