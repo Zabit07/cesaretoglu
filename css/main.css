@@ -1919,29 +1919,28 @@ h6 {
   justify-content: center;
 }
 
-.product-card-specs-empty {
+.product-card-desc-snippet {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  text-align: center;
-  padding: 0.6rem 0.8rem;
+  padding: 0.65rem 0.85rem;
   background: #F8FAFC;
-  border: 1px dashed #D5DEE7;
-  color: #64748B;
   border-radius: var(--radius-md, 10px);
+  border: 1px solid #EDF2F7;
+  overflow: hidden;
 }
 
-.product-specs-empty-badge {
-  display: inline-block;
-  background: #FFF0E6;
-  color: #D9480F;
-  font-size: 0.82rem;
-  font-weight: 700;
-  padding: 0.2rem 0.65rem;
-  border-radius: var(--radius-full, 9999px);
-  margin-top: 0.25rem;
-  letter-spacing: 0.2px;
+.product-card-desc-text {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #64748B;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
 }
 
 .product-spec-row {

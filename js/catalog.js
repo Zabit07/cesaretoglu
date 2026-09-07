@@ -464,6 +464,17 @@ const CatalogModule = {
                 let detailsText = lang === 'az' ? 'Xüsusiyyətlər' : (lang === 'ru' ? 'Характеристики' : 'Specifications');
                 const img = product.image_local || product.image || 'images/logo.png';
 
+                let desc = (product.description && typeof product.description === 'object') ? (product.description[lang] || product.description.ru || product.description.az || product.description.en) : null;
+                if (!desc) {
+                    if (lang === 'ru') {
+                        desc = product.description_ru || product.description_az || product.description_en || '';
+                    } else if (lang === 'en') {
+                        desc = product.description_en || product.description_ru || product.description_az || '';
+                    } else {
+                        desc = product.description_az || product.description_ru || product.description_en || '';
+                    }
+                }
+
                 // Helper: extract localized value from {az, ru, en} object or plain string
                 const getSpecVal = (val) => {
                     if (!val) return '';
@@ -570,17 +581,19 @@ const CatalogModule = {
                     }
                 }
 
-                // If no specs exist at all (e.g. secret spices or custom blends), render a clean, concise on-request status
+                // If no specs exist at all, automatically display the beginning of the product description
                 if (!specsHtml) {
-                    const shortRequestText = lang === 'az' 
-                        ? 'Sorğu əsasında' 
-                        : (lang === 'ru' 
-                            ? 'По запросу' 
-                            : 'Upon request');
+                    let cleanDesc = (desc || '').replace(/<[^>]+>/g, '').trim();
+                    if (!cleanDesc) {
+                        cleanDesc = lang === 'az' 
+                            ? 'Məhsul haqqında ətraflı məlumat və texnoloji dəstək üçün müraciət edin.' 
+                            : (lang === 'ru' 
+                                ? 'Подробная информация о продукте и технологическая поддержка по запросу.' 
+                                : 'Detailed product information and technical support available upon inquiry.');
+                    }
                     specsHtml = `
-                        <div class="product-card-specs product-card-specs-empty">
-                            <i class="fa-solid fa-file-lines" style="color:var(--accent-orange, #FF6600); font-size:1.1rem; margin-bottom:0.2rem;"></i>
-                            <span class="product-specs-empty-badge">${shortRequestText}</span>
+                        <div class="product-card-specs product-card-desc-snippet" title="${cleanDesc}">
+                            <p class="product-card-desc-text">${cleanDesc}</p>
                         </div>`;
                 }
 
