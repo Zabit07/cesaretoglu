@@ -473,70 +473,84 @@ const CatalogModule = {
 
                 // ====== Dynamic specs array (product.specs) - TOP 3 PREVIEW ONLY ======
                 let specsHtml = '';
-                const specsArr = Array.isArray(product.specs) ? product.specs : [];
+                const rawSpecsArr = Array.isArray(product.specs) ? product.specs : [];
+                
+                // Filter out empty rows (where name and value are both blank)
+                const validSpecs = rawSpecsArr.filter(s => {
+                    if (!s || typeof s !== 'object') return false;
+                    const n = (s.name_ru || s.name_az || s.name_en || s.key_ru || s.key_az || s.key_en || s.name || '').trim();
+                    const v = (s.value_ru || s.value_az || s.value_en || s.value || '').trim();
+                    return n || v;
+                });
 
-                if (specsArr.length > 0) {
-                    // Strictly top 3 characteristics with leader dots for a clean, professional B2B layout
-                    const rows = specsArr.slice(0, 3).map(s => {
+                if (validSpecs.length > 0) {
+                    // Strictly top 3 valid characteristics with leader dots for a clean, professional B2B layout
+                    const rows = validSpecs.slice(0, 3).map(s => {
                         // Pick localized name: try lang-specific field first, then fallback chain
-                        const name = (
-                            (lang === 'az' ? (s.name_az || s.name) :
-                             lang === 'en' ? (s.name_en || s.name) :
-                                             (s.name_ru || s.name)) || ''
-                        ).trim();
-                        const value = (
-                            (lang === 'az' ? (s.value_az || s.value) :
-                             lang === 'en' ? (s.value_en || s.value) :
-                                             (s.value_ru || s.value)) || ''
-                        ).trim();
+                        let name = '';
+                        if (lang === 'ru')      name = s.name_ru || s.key_ru || s.name || s.name_az || s.key_az || s.name_en || '';
+                        else if (lang === 'en') name = s.name_en || s.key_en || s.name || s.name_ru || s.name_az || s.key_az || '';
+                        else                   name = s.name_az || s.key_az || s.name || s.name_ru || s.name_en || '';
+
+                        let value = '';
+                        if (lang === 'ru')      value = s.value_ru || s.value || s.value_az || s.value_en || '';
+                        else if (lang === 'en') value = s.value_en || s.value || s.value_ru || s.value_az || '';
+                        else                   value = s.value_az || s.value || s.value_ru || s.value_en || '';
+
+                        name = name.trim();
+                        value = value.trim();
                         if (!name && !value) return '';
                         const cleanName = name.replace(/:$/, '').trim();
                         return `
                             <div class="product-spec-row">
-                                <span class="product-spec-label">${cleanName}</span>
+                                <span class="product-spec-label">${cleanName || '—'}</span>
                                 <span class="product-spec-dots"></span>
-                                <span class="product-spec-val">${value}</span>
+                                <span class="product-spec-val">${value || '—'}</span>
                             </div>`;
-                    }).join('');
-                    specsHtml = `<div class="product-card-specs">${rows}</div>`;
-                } else {
-                    // ====== LEGACY FALLBACK: old param1/2/3 or specs_structured ======
-                    const specs = product.specs_structured || {};
+                    }).filter(Boolean).join('');
 
+                    if (rows) {
+                        specsHtml = `<div class="product-card-specs">${rows}</div>`;
+                    }
+                } else if (product.specs_structured && typeof product.specs_structured === 'object' && Object.keys(product.specs_structured).length > 0) {
+                    // ====== STRUCTURED SPECS FALLBACK ======
+                    const specs = product.specs_structured;
+                    const rowsArr = [];
+
+                    if (specs.dosage && getSpecVal(specs.dosage)) {
+                        rowsArr.push({ l: lang === 'az' ? 'Dozalanma' : (lang === 'ru' ? 'Дозировка' : 'Dosage'), v: getSpecVal(specs.dosage) });
+                    }
+                    if (specs.application && getSpecVal(specs.application)) {
+                        rowsArr.push({ l: lang === 'az' ? 'Təyinatı' : (lang === 'ru' ? 'Назначение' : 'Application'), v: getSpecVal(specs.application) });
+                    }
+                    if (specs.caliber && getSpecVal(specs.caliber)) {
+                        rowsArr.push({ l: lang === 'az' ? 'Kalibr' : (lang === 'ru' ? 'Калибр' : 'Caliber'), v: getSpecVal(specs.caliber) });
+                    }
+                    if (specs.shelfLife && getSpecVal(specs.shelfLife)) {
+                        rowsArr.push({ l: lang === 'az' ? 'Saxlama' : (lang === 'ru' ? 'Хранение' : 'Shelf Life'), v: getSpecVal(specs.shelfLife) });
+                    }
+                    if (specs.materialType && getSpecVal(specs.materialType)) {
+                        rowsArr.push({ l: lang === 'az' ? 'Material' : (lang === 'ru' ? 'Материал' : 'Material'), v: getSpecVal(specs.materialType) });
+                    }
+
+                    if (rowsArr.length > 0) {
+                        const rows = rowsArr.slice(0, 3).map(r => `
+                            <div class="product-spec-row">
+                                <span class="product-spec-label">${r.l}</span>
+                                <span class="product-spec-dots"></span>
+                                <span class="product-spec-val">${r.v}</span>
+                            </div>`).join('');
+                        specsHtml = `<div class="product-card-specs">${rows}</div>`;
+                    }
+                } else if (product.param1_ru || product.param1_az || product.param1_en || product.param2_ru || product.param2_az || product.param3_ru) {
+                    // ====== PARAM1/2/3 FALLBACK ======
                     let p1 = (lang === 'ru' ? product.param1_ru : (lang === 'en' ? product.param1_en : product.param1_az)) || product.param1_ru || product.param1_az || product.param1_en || '';
                     let p2 = (lang === 'ru' ? product.param2_ru : (lang === 'en' ? product.param2_en : product.param2_az)) || product.param2_ru || product.param2_az || product.param2_en || '';
                     let p3 = (lang === 'ru' ? product.param3_ru : (lang === 'en' ? product.param3_en : product.param3_az)) || product.param3_ru || product.param3_az || product.param3_en || '';
 
-                    if (!p1 && specs.dosage) { p1 = (lang === 'az' ? 'Dozalanma' : (lang === 'ru' ? 'Дозировка' : 'Dosage')) + ': ' + getSpecVal(specs.dosage); }
-                    else if (!p1 && specs.smokePermeability) { p1 = (lang === 'az' ? 'Keçiricilik' : (lang === 'ru' ? 'Проницаемость' : 'Permeability')) + ': ' + getSpecVal(specs.smokePermeability); }
-                    else if (!p1 && specs.materialType) { p1 = (lang === 'az' ? 'Material' : (lang === 'ru' ? 'Материал' : 'Material')) + ': ' + getSpecVal(specs.materialType); }
-
-                    if (!p2 && specs.application) { p2 = (lang === 'az' ? 'Təyinatı' : (lang === 'ru' ? 'Назначение' : 'Application')) + ': ' + getSpecVal(specs.application); }
-                    else if (!p2 && specs.overstuffing) { p2 = (lang === 'az' ? 'Doldurma' : (lang === 'ru' ? 'Фаршеемкость' : 'Overstuffing')) + ': ' + getSpecVal(specs.overstuffing); }
-                    else if (!p2 && specs.caliber) { p2 = (lang === 'az' ? 'Kalibr' : (lang === 'ru' ? 'Калибр' : 'Caliber')) + ': ' + getSpecVal(specs.caliber); }
-
-                    if (!p3 && specs.shelfLife) { p3 = (lang === 'az' ? 'Saxlama' : (lang === 'ru' ? 'Хранение' : 'Shelf Life')) + ': ' + getSpecVal(specs.shelfLife); }
-                    else if (!p3 && specs.storage) { p3 = (lang === 'az' ? 'Saxlama' : (lang === 'ru' ? 'Хранение' : 'Storage')) + ': ' + getSpecVal(specs.storage); }
-
-                    if (!p1 && !p2 && !p3) {
-                        if (product.category === 'casings') {
-                            p1 = lang === 'az' ? 'Kalibr: Stabil forma' : (lang === 'ru' ? 'Калибр: Стабильная форма' : 'Caliber: High uniformity');
-                            p2 = lang === 'az' ? 'Təyinat: Bütün növ kolbasalar' : (lang === 'ru' ? 'Назначение: Для вареных и с/к колбас' : 'Application: Cooked & smoked sausages');
-                            p3 = lang === 'az' ? 'Saxlama: Quru yerdə 24 ay' : (lang === 'ru' ? 'Хранение: В сухом месте 24 мес' : 'Storage: Dry place 24 months');
-                        } else if (product.category === 'spices' || product.category === 'additives') {
-                            p1 = lang === 'az' ? 'Dozalanma: 2–5 q/kq qiymə' : (lang === 'ru' ? 'Дозировка: 2–5 г/кг фарша' : 'Dosage: 2–5 g/kg meat');
-                            p2 = lang === 'az' ? 'Təyinat: Ət emalı' : (lang === 'ru' ? 'Назначение: Мясопереработка' : 'Application: Meat processing');
-                            p3 = lang === 'az' ? 'Saxlama: 0...+20 °C' : (lang === 'ru' ? 'Хранение: 0...+20 °C' : 'Storage: 0...+20 °C');
-                        } else {
-                            p1 = lang === 'az' ? 'Material: Yüksək baryerli PA/PE' : (lang === 'ru' ? 'Материал: Высокобарьерный PA/PE' : 'Material: High-barrier PA/PE');
-                            p2 = lang === 'az' ? 'Təyinat: Vakuum və MAP' : (lang === 'ru' ? 'Назначение: Вакуум и МГС' : 'Usage: Vacuum & MAP');
-                            p3 = lang === 'az' ? 'Saxlama: 15–25 °C' : (lang === 'ru' ? 'Хранение: 15–25 °C' : 'Storage: 15–25 °C');
-                        }
-                    }
-
                     const fmtRow = (text) => {
-                        if (!text) return '';
-                        let label = text, val = '';
+                        if (!text || !text.trim()) return '';
+                        let label = text.trim(), val = '';
                         if (text.includes(':')) {
                             const parts = text.split(':');
                             label = parts[0].trim();
@@ -546,10 +560,28 @@ const CatalogModule = {
                             <div class="product-spec-row">
                                 <span class="product-spec-label">${label}</span>
                                 <span class="product-spec-dots"></span>
-                                <span class="product-spec-val">${val}</span>
+                                <span class="product-spec-val">${val || '—'}</span>
                             </div>`;
                     };
-                    specsHtml = `<div class="product-card-specs">${fmtRow(p1)}${fmtRow(p2)}${fmtRow(p3)}</div>`;
+
+                    const validRows = [fmtRow(p1), fmtRow(p2), fmtRow(p3)].filter(Boolean).join('');
+                    if (validRows) {
+                        specsHtml = `<div class="product-card-specs">${validRows}</div>`;
+                    }
+                }
+
+                // If no specs exist at all (e.g. secret spices or custom blends), render a clean, professional note
+                if (!specsHtml) {
+                    const noSpecsText = lang === 'az' 
+                        ? 'Tərkib və spesifikasiya sorğu əsasında təqdim olunur' 
+                        : (lang === 'ru' 
+                            ? 'Состав и характеристики предоставляются по запросу' 
+                            : 'Formulation & specifications available upon inquiry');
+                    specsHtml = `
+                        <div class="product-card-specs product-card-specs-empty">
+                            <i class="fa-solid fa-shield-halved" style="color:#FF6600; font-size:0.95rem; margin-bottom:0.25rem;"></i>
+                            <span>${noSpecsText}</span>
+                        </div>`;
                 }
 
                 return `
