@@ -2018,25 +2018,35 @@ class DataStore {
     getGallery() {
         try {
             const stored = localStorage.getItem(STORAGE_KEYS.GALLERY);
-            let list = null;
+            let list = [];
             if (stored !== null) {
                 const parsed = JSON.parse(stored);
-                if (Array.isArray(parsed) && parsed.length > 0) list = parsed;
+                if (Array.isArray(parsed)) list = parsed;
             }
-            if (!list) list = INITIAL_GALLERY;
 
-            // Deduplicate by normalized ID preserving latest
-            const uniqueMap = new Map();
+            // Deduplicate by ID and unique Title content
+            const uniqueList = [];
+            const seenIds = new Set();
+            const seenTitles = new Set();
+
             list.forEach(album => {
                 if (!album) return;
                 const id = String(album.id || '').trim();
-                if (id) {
-                    uniqueMap.set(id, album);
+                const titleKey = `${String(album.title_ru || '').trim()}|${String(album.title_az || '').trim()}|${String(album.title_en || '').trim()}`;
+
+                if (id && !seenIds.has(id)) {
+                    if (titleKey !== '||' && seenTitles.has(titleKey)) {
+                        return; // skip duplicate content created with different IDs
+                    }
+                    seenIds.add(id);
+                    if (titleKey !== '||') seenTitles.add(titleKey);
+                    uniqueList.push(album);
                 }
             });
-            return Array.from(uniqueMap.values());
+
+            return uniqueList;
         } catch(e) {
-            return INITIAL_GALLERY;
+            return [];
         }
     }
 
@@ -2052,11 +2062,21 @@ class DataStore {
         const albumIdStr = album.id ? String(album.id).trim() : ('album-' + Date.now());
         album.id = albumIdStr;
 
+        // Check if an album with same ID exists
         const idx = gallery.findIndex(a => String(a.id).trim() === albumIdStr);
         if (idx >= 0) {
             gallery[idx] = { ...gallery[idx], ...album, id: albumIdStr };
         } else {
-            gallery.unshift({ ...album, id: albumIdStr });
+            // Also check if an album with identical titles already exists to prevent duplicate insertion
+            const titleKey = `${String(album.title_ru || '').trim()}|${String(album.title_az || '').trim()}|${String(album.title_en || '').trim()}`;
+            const existingTitleIdx = (titleKey !== '||') ? gallery.findIndex(a => `${String(a.title_ru || '').trim()}|${String(a.title_az || '').trim()}|${String(a.title_en || '').trim()}` === titleKey) : -1;
+            
+            if (existingTitleIdx >= 0) {
+                gallery[existingTitleIdx] = { ...gallery[existingTitleIdx], ...album, id: gallery[existingTitleIdx].id };
+                album.id = gallery[existingTitleIdx].id;
+            } else {
+                gallery.unshift({ ...album, id: albumIdStr });
+            }
         }
 
         // Secondary deduplication pass
@@ -2086,7 +2106,7 @@ class DataStore {
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
 
         if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
-            window.supabaseService.deleteRecord('gallery', id);
+            window.supabaseService.deleteRecord('gallery', cleanId);
         }
     }
 
