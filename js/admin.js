@@ -1524,10 +1524,10 @@ class AdminApp {
     // Dashboard Overview Stats
     // ==========================================
     renderDashboardStats() {
-        const products = window.dataStore ? window.dataStore.getProducts() : [];
-        const partners = window.dataStore ? window.dataStore.getPartners() : [];
-        const news = window.dataStore ? window.dataStore.getNews() : [];
-        const gallery = window.dataStore ? window.dataStore.getGallery() : [];
+        const products = (window.dataStore && typeof window.dataStore.getProducts === 'function') ? window.dataStore.getProducts() : [];
+        const partners = (window.dataStore && typeof window.dataStore.getPartners === 'function') ? window.dataStore.getPartners() : [];
+        const news = (window.dataStore && typeof window.dataStore.getNews === 'function') ? window.dataStore.getNews() : [];
+        const gallery = (window.dataStore && typeof window.dataStore.getGallery === 'function') ? window.dataStore.getGallery() : [];
 
         const pCount = document.getElementById('dash-stat-products');
         const bCount = document.getElementById('dash-stat-partners');

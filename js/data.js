@@ -11,6 +11,7 @@ const STORAGE_KEYS = {
     NEWS: 'cesaretoglu_news',
     TEAM: 'cesaretoglu_team',
     DEPARTMENTS: 'cesaretoglu_departments',
+    GALLERY: 'cesaretoglu_gallery',
     ABOUT: 'cesaretoglu_about',
     SETTINGS: 'cesaretoglu_settings'
 };
@@ -374,6 +375,121 @@ const INITIAL_TEAM = [
         bio_ru: 'Обеспечивает строгое соблюдение температурных режимов хранения пищевых ингредиентов и экспресс-доставку по Баку и регионам Азербайджана.',
         bio_az: 'Qida inqrediyentlərinin düzgün temperatur rejimində saxlanılması və Bakı üzrə eləcə də regionlara təcili çatdırılmanı təmin edir.',
         bio_en: 'Manages controlled-climate warehouse storage, safety compliance, and swift distribution across all regions of Azerbaijan.'
+    }
+];
+
+// Initial Gallery Seed Data (Structured Albums for Events, Meetings & Office)
+const INITIAL_GALLERY = [
+    {
+        id: 'album-1',
+        category: 'seminars',
+        title_ru: 'Практический семинар и мастер-класс по мясным технологиям (Шемаха)',
+        title_az: 'Şamaxıda ət texnologiyaları üzrə praktiki seminar və ustad dərsi',
+        title_en: 'Meat Technology Practical Workshop & Masterclass in Shamakhi',
+        date: '2024-10-18',
+        location_ru: 'г. Шемаха, Азербайджан',
+        location_az: 'Şamaxı şəhəri, Azərbaycan',
+        location_en: 'Shamakhi, Azerbaijan',
+        cover_image: 'images/news/event_1.jpg',
+        description_ru: 'Масштабный технологический семинар компании Cəsarətoğlu MMC совместно с европейскими технологами Wiberg и Atlantis-Pak для ведущих мясокомбинатов Азербайджана.',
+        description_az: 'Cəsarətoğlu MMC şirkətinin Wiberg və Atlantis-Pak avropalı texnoloqları ilə birgə Azərbaycanın aparıcı ət kombinatları üçün təşkil etdiyi irimiqyaslı texnoloji seminar.',
+        description_en: 'Comprehensive technological seminar organized by Cəsarətoğlu MMC in collaboration with European technologists from Wiberg and Atlantis-Pak for premier meat processors.',
+        photos: [
+            {
+                url: 'images/news/event_1.jpg',
+                caption_ru: 'Участники и технологи на открытии практического семинара',
+                caption_az: 'Praktiki seminarın açılışında iştirakçılar və texnoloqlar',
+                caption_en: 'Participants and technologists at the opening of the practical workshop'
+            },
+            {
+                url: 'images/news/event_5.jpg',
+                caption_ru: 'Демонстрация выработки полукопченых и вареных колбас на оборудовании',
+                caption_az: 'Avara və yarımhisə verilmiş kolbasaların avadanlıqda hazırlanması prosesi',
+                caption_en: 'Demonstration of sausage manufacturing on commercial processing equipment'
+            },
+            {
+                url: 'images/news/event_6.jpg',
+                caption_ru: 'Оценка плотности фарша, аромата пряностей и органолептических показателей',
+                caption_az: 'Farşın sıxlığı, ədviyyat ətri və orqanoleptik göstricilərin qiymətləndirilməsi',
+                caption_en: 'Evaluation of meat emulsion density, spice aroma and organoleptic parameters'
+            },
+            {
+                url: 'images/news/wiberg_foto.avif',
+                caption_ru: 'Презентация премиальных маринадов и экстрактов Wiberg',
+                caption_az: 'Wiberg premium marinadları və ekstraktlarının təqdimatı',
+                caption_en: 'Presentation of premium Wiberg marinades and aromatic extracts'
+            }
+        ]
+    },
+    {
+        id: 'album-2',
+        category: 'meetings',
+        title_ru: 'Деловые встречи и переговоры с европейскими партнерами (Atlantis-Pak, Südpack, Wiberg)',
+        title_az: 'Avropalı tərəfdaşlarla işgüzar görüşlər və danışıqlar (Atlantis-Pak, Südpack, Wiberg)',
+        title_en: 'Business Meetings & Strategic Negotiations with European Partners',
+        date: '2024-08-15',
+        location_ru: 'Главный офис Cəsarətoğlu MMC / Баку',
+        location_az: 'Cəsarətoğlu MMC Baş Ofisi / Bakı',
+        location_en: 'Cəsarətoğlu MMC Central Office / Baku',
+        cover_image: 'images/news/event_3.jpg',
+        description_ru: 'Рабочие консультации руководства компании и зарубежных экспертов по расширению поставок инновационных оболочек и барьерных пленок в Азербайджан.',
+        description_az: 'İnnovativ qabıqlar və barier plyonkaların Azərbaycana təchizatının genişləndirilməsi üzrə rəhbərlik və xarici ekspertlərin işgüzar məsləhətləşmələri.',
+        description_en: 'Strategic management discussions and partner consultations on expanding supply volumes of innovative casings and high-barrier films in Azerbaijan.',
+        photos: [
+            {
+                url: 'images/news/event_3.jpg',
+                caption_ru: 'Обсуждение технологических карт и адаптации рецептур',
+                caption_az: 'Texnoloji xəritələrin və resepturaların müzakirəsi',
+                caption_en: 'Discussion of formulation maps and technological adaptations'
+            },
+            {
+                url: 'images/news/atlantis_pac.avif',
+                caption_ru: 'Презентация инноваций полиамидных оболочек Atlantis-Pak',
+                caption_az: 'Atlantis-Pak poliamid qabıqlarının innovasiyalarının təqdimatı',
+                caption_en: 'Presentation of Atlantis-Pak polyamide casing innovations'
+            },
+            {
+                url: 'images/hero/slide_1_casings.jpg',
+                caption_ru: 'Готовые колбасные изделия в сверхпроницаемых оболочках АйЦел',
+                caption_az: 'iCel yüksək keçiricilikli qabıqlarda hazır kolbasa məhsulları',
+                caption_en: 'Finished sausage delicacies in ultra-permeable iCel casings'
+            }
+        ]
+    },
+    {
+        id: 'album-3',
+        category: 'office',
+        title_ru: 'Главный офис, команда и центральный складской комплекс в Баку',
+        title_az: 'Bakıda baş ofis, komandamız və mərkəzi anbar kompleksi',
+        title_en: 'Headquarters, Corporate Team & Central Logistics Warehouse in Baku',
+        date: '2024-05-10',
+        location_ru: 'г. Баку, Белый город / Хатаинский район',
+        location_az: 'Bakı şəhəri, Ağ Şəhər / Xətai rayonu',
+        location_en: 'Baku, White City / Khatai district',
+        cover_image: 'images/news/event_4.jpg',
+        description_ru: 'Инфраструктура компании Cəsarətoğlu MMC: просторные офисные помещения, переговорные зоны и логистический хаб со строгим климат-контролем для специй и упаковочных материалов.',
+        description_az: 'Cəsarətoğlu MMC infrastruktur: geniş ofis otaqları, danışıqlar zonası və ədviyyatlar ilə qablaşdırma materialları üçün iqlim nəzarətli müasir anbar kompleksi.',
+        description_en: 'Cəsarətoğlu MMC corporate infrastructure: modern office facilities, conference areas, and temperature-controlled logistics warehouse in Baku.',
+        photos: [
+            {
+                url: 'images/news/event_4.jpg',
+                caption_ru: 'Складской комплекс и постоянный резерв сырья и оболочек',
+                caption_az: 'Anbar kompleksi və xammal ilə qabıqların daimi rezervi',
+                caption_en: 'Warehouse complex with permanent reserve stock of ingredients and casings'
+            },
+            {
+                url: 'images/team/director.jpg',
+                caption_ru: 'Руководство компании Cəsarətoğlu MMC',
+                caption_az: 'Cəsarətoğlu MMC rəhbərliyi',
+                caption_en: 'Executive Management of Cəsarətoğlu MMC'
+            },
+            {
+                url: 'images/news/event_2.jpg',
+                caption_ru: 'Контроль качества поступающих партий барьерных пленок Südpack',
+                caption_az: 'Daxil olan Südpack barier plyonkalarının keyfiyyət yoxlanışı',
+                caption_en: 'Quality inspection of incoming Südpack barrier film shipments'
+            }
+        ]
     }
 ];
 
@@ -1489,6 +1605,7 @@ class DataStore {
         seedIfAbsent(STORAGE_KEYS.SETTINGS, INITIAL_SETTINGS);
         seedIfAbsent(STORAGE_KEYS.TEAM, INITIAL_TEAM);
         seedIfAbsent(STORAGE_KEYS.DEPARTMENTS, INITIAL_DEPARTMENTS);
+        seedIfAbsent(STORAGE_KEYS.GALLERY, INITIAL_GALLERY);
         seedIfAbsent(STORAGE_KEYS.ABOUT, INITIAL_ABOUT);
     }
 
@@ -1497,15 +1614,16 @@ class DataStore {
 
         try {
             console.log('🔄 Fetching latest data from Supabase Cloud...');
-            const [products, partners, categories, news, team, departments, about, settings] = await Promise.all([
-                window.supabaseService.fetchTable('products'),
-                window.supabaseService.fetchTable('partners'),
-                window.supabaseService.fetchTable('categories'),
-                window.supabaseService.fetchTable('news'),
-                window.supabaseService.fetchTable('team'),
-                window.supabaseService.fetchTable('departments'),
-                window.supabaseService.fetchTable('about'),
-                window.supabaseService.fetchTable('settings')
+            const [products, partners, categories, news, team, departments, gallery, about, settings] = await Promise.all([
+                window.supabaseService.fetchTable('products').catch(() => null),
+                window.supabaseService.fetchTable('partners').catch(() => null),
+                window.supabaseService.fetchTable('categories').catch(() => null),
+                window.supabaseService.fetchTable('news').catch(() => null),
+                window.supabaseService.fetchTable('team').catch(() => null),
+                window.supabaseService.fetchTable('departments').catch(() => null),
+                window.supabaseService.fetchTable('gallery').catch(() => null),
+                window.supabaseService.fetchTable('about').catch(() => null),
+                window.supabaseService.fetchTable('settings').catch(() => null)
             ]);
 
             if (products !== null && Array.isArray(products)) localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
@@ -1514,6 +1632,7 @@ class DataStore {
             if (news !== null && Array.isArray(news)) localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(news));
             if (team !== null && Array.isArray(team)) localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(team));
             if (departments !== null && Array.isArray(departments)) localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(departments));
+            if (gallery !== null && Array.isArray(gallery)) localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
             if (about && about.length) localStorage.setItem(STORAGE_KEYS.ABOUT, JSON.stringify(about[0]));
             if (settings && settings.length) localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings[0]));
 
@@ -2002,6 +2121,66 @@ class DataStore {
 
         if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
             window.supabaseService.deleteRecord('departments', id);
+        }
+    }
+
+    // ==========================================
+    // Photo Gallery CRUD Management (Albums & Photos)
+    // ==========================================
+    getGallery() {
+        try {
+            const stored = localStorage.getItem(STORAGE_KEYS.GALLERY);
+            if (stored !== null) {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            }
+            return INITIAL_GALLERY;
+        } catch(e) {
+            return INITIAL_GALLERY;
+        }
+    }
+
+    getAlbumById(id) {
+        if (!id) return null;
+        const cleanId = String(id).trim();
+        return this.getGallery().find(a => String(a.id).trim() === cleanId);
+    }
+
+    saveAlbum(album) {
+        if (!album) return null;
+        let gallery = this.getGallery();
+        const albumIdStr = album.id ? String(album.id).trim() : '';
+
+        if (albumIdStr) {
+            const idx = gallery.findIndex(a => String(a.id).trim() === albumIdStr);
+            if (idx >= 0) {
+                gallery[idx] = { ...gallery[idx], ...album, id: albumIdStr };
+            } else {
+                gallery.push({ ...album, id: albumIdStr });
+            }
+        } else {
+            const newId = 'album-' + Date.now();
+            album.id = newId;
+            gallery.unshift(album);
+        }
+
+        localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.upsertRecord('gallery', album);
+        }
+        return album;
+    }
+
+    deleteAlbum(id) {
+        if (!id) return;
+        const cleanId = String(id).trim();
+        let gallery = this.getGallery();
+        gallery = gallery.filter(a => String(a.id).trim() !== cleanId);
+        localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.deleteRecord('gallery', id);
         }
     }
 
