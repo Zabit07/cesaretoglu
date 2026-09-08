@@ -2029,11 +2029,14 @@ class DataStore {
     getGalleryCategories() {
         try {
             const stored = localStorage.getItem(STORAGE_KEYS.GALLERY_CATEGORIES);
-            let list = INITIAL_GALLERY_CATEGORIES;
+            let list = [];
             if (stored !== null) {
                 const parsed = JSON.parse(stored);
-                if (Array.isArray(parsed) && parsed.length > 0) list = parsed;
+                if (Array.isArray(parsed)) list = parsed;
+            } else {
+                list = [...INITIAL_GALLERY_CATEGORIES];
             }
+
             // Deduplicate by ID and clean title
             const uniqueList = [];
             const seenIds = new Set();
@@ -2050,9 +2053,9 @@ class DataStore {
                 }
             });
 
-            return uniqueList.length > 0 ? uniqueList : INITIAL_GALLERY_CATEGORIES;
+            return uniqueList;
         } catch(e) {
-            return INITIAL_GALLERY_CATEGORIES;
+            return [...INITIAL_GALLERY_CATEGORIES];
         }
     }
 
