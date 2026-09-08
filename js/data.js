@@ -374,6 +374,10 @@ const INITIAL_TEAM = [
         image_local: 'images/team/logistics_manager.jpg',
         bio_ru: 'Обеспечивает строгое соблюдение температурных режимов хранения пищевых ингредиентов и экспресс-доставку по Баку и регионам Азербайджана.',
         bio_az: 'Qida inqrediyentlərinin düzgün temperatur rejimində saxlanılması və Bakı üzrə eləcə də regionlara təcili çatdırılmanı təmin edir.',
+        bio_en: 'Ensures strict climate-controlled storage conditions for food ingredients and rapid delivery across Baku and all regions of Azerbaijan.'
+    }
+];
+
 // Initial Gallery Seed Data (Structured Albums for Events, Meetings & Office)
 const INITIAL_GALLERY = [
     {
@@ -1601,6 +1605,7 @@ class DataStore {
         seedIfAbsent(STORAGE_KEYS.SETTINGS, INITIAL_SETTINGS);
         seedIfAbsent(STORAGE_KEYS.TEAM, INITIAL_TEAM);
         seedIfAbsent(STORAGE_KEYS.DEPARTMENTS, INITIAL_DEPARTMENTS);
+        seedIfAbsent(STORAGE_KEYS.GALLERY, INITIAL_GALLERY);
         seedIfAbsent(STORAGE_KEYS.ABOUT, INITIAL_ABOUT);
     }
 
@@ -1609,13 +1614,14 @@ class DataStore {
 
         try {
             console.log('🔄 Fetching latest data from Supabase Cloud...');
-            const [products, partners, categories, news, team, departments, about, settings] = await Promise.all([
+            const [products, partners, categories, news, team, departments, gallery, about, settings] = await Promise.all([
                 window.supabaseService.fetchTable('products'),
                 window.supabaseService.fetchTable('partners'),
                 window.supabaseService.fetchTable('categories'),
                 window.supabaseService.fetchTable('news'),
                 window.supabaseService.fetchTable('team'),
                 window.supabaseService.fetchTable('departments'),
+                window.supabaseService.fetchTable('gallery'),
                 window.supabaseService.fetchTable('about'),
                 window.supabaseService.fetchTable('settings')
             ]);
@@ -1626,6 +1632,7 @@ class DataStore {
             if (news !== null && Array.isArray(news)) localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(news));
             if (team !== null && Array.isArray(team)) localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(team));
             if (departments !== null && Array.isArray(departments)) localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(departments));
+            if (gallery !== null && Array.isArray(gallery)) localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
             if (about && about.length) localStorage.setItem(STORAGE_KEYS.ABOUT, JSON.stringify(about[0]));
             if (settings && settings.length) localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings[0]));
 

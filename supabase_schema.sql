@@ -180,6 +180,26 @@ CREATE TABLE IF NOT EXISTS public.settings (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- 9. Gallery Albums Table
+CREATE TABLE IF NOT EXISTS public.gallery (
+    id TEXT PRIMARY KEY,
+    category TEXT,
+    date TEXT,
+    title_az TEXT,
+    title_ru TEXT,
+    title_en TEXT,
+    description_az TEXT,
+    description_ru TEXT,
+    description_en TEXT,
+    location_az TEXT,
+    location_ru TEXT,
+    location_en TEXT,
+    cover_image TEXT,
+    photos JSONB DEFAULT '[]'::jsonb,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- =========================================================================
 -- Enable Full Read & Write Access via Anon Key
 -- =========================================================================
@@ -191,6 +211,7 @@ ALTER TABLE public.news ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.team ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.departments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.about ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.gallery ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.settings ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow public read/write on products" ON public.products FOR ALL USING (true) WITH CHECK (true);
@@ -200,6 +221,7 @@ CREATE POLICY "Allow public read/write on news" ON public.news FOR ALL USING (tr
 CREATE POLICY "Allow public read/write on team" ON public.team FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow public read/write on departments" ON public.departments FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow public read/write on about" ON public.about FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow public read/write on gallery" ON public.gallery FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Allow public read/write on settings" ON public.settings FOR ALL USING (true) WITH CHECK (true);
 
 -- =========================================================================

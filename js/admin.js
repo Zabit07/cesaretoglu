@@ -11,6 +11,8 @@ class AdminApp {
         this.editingProductId = null;
         this.editingPartnerId = null;
         this.editingNewsId = null;
+        this.editingTeamId = null;
+        this.editingAlbumId = null;
 
         // Specialized Food & Meat Processing Dictionary for Smart Translation
         this.dictionary = {
@@ -299,6 +301,7 @@ class AdminApp {
         this.bindImageUpload('partner-banner-file-input', 'partner-banner-url', 'partner-banner-preview');
         this.bindImageUpload('news-file-input', 'news-image-url', 'news-img-preview');
         this.bindImageUpload('team-file-input', 'team-image-url', 'team-img-preview');
+        this.bindImageUpload('album-cover-file-input', 'album-cover-url', 'album-cover-preview');
 
         // Form Submit Handlers
         const prodForm = document.getElementById('form-product-edit');
@@ -333,6 +336,14 @@ class AdminApp {
             });
         }
 
+        const albumForm = document.getElementById('form-album-edit');
+        if (albumForm) {
+            albumForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.saveAlbumForm();
+            });
+        }
+
         const settingsForm = document.getElementById('form-settings-edit');
         if (settingsForm) {
             settingsForm.addEventListener('submit', (e) => {
@@ -341,7 +352,7 @@ class AdminApp {
             });
         }
 
-        // Auto-Translate Buttons
+        // Magic Auto-Translation Buttons
         const autoTranslateProdBtn = document.getElementById('btn-auto-translate-prod');
         if (autoTranslateProdBtn) {
             autoTranslateProdBtn.addEventListener('click', () => this.autoTranslateProduct());
@@ -355,6 +366,11 @@ class AdminApp {
         const autoTranslateTeamBtn = document.getElementById('btn-auto-translate-team');
         if (autoTranslateTeamBtn) {
             autoTranslateTeamBtn.addEventListener('click', () => this.autoTranslateTeam());
+        }
+
+        const autoTranslateAlbumBtn = document.getElementById('btn-auto-translate-album');
+        if (autoTranslateAlbumBtn) {
+            autoTranslateAlbumBtn.addEventListener('click', () => this.autoTranslateAlbum());
         }
 
         // Close custom category & department dropdowns when clicking outside
@@ -381,7 +397,7 @@ class AdminApp {
     // ==========================================
     bindMultilingualTabs() {
         // Live input tracking to update border highlights and badges
-        document.querySelectorAll('.prod-track-input, .part-track-input, .news-track-input, .team-track-input, .about-track-input').forEach(input => {
+        document.querySelectorAll('.prod-track-input, .part-track-input, .news-track-input, .team-track-input, .album-track-input, .about-track-input').forEach(input => {
             input.addEventListener('input', () => this.updateFieldHighlights());
             input.addEventListener('blur', () => this.updateFieldHighlights());
         });
@@ -426,6 +442,18 @@ class AdminApp {
 
         // Track Team fields
         document.querySelectorAll('.team-track-input').forEach(input => {
+            const hasVal = input.value.trim().length > 0;
+            if (hasVal) {
+                input.classList.add('input-has-value');
+                input.classList.remove('input-is-empty');
+            } else {
+                input.classList.remove('input-has-value');
+                input.classList.add('input-is-empty');
+            }
+        });
+
+        // Track Album fields
+        document.querySelectorAll('.album-track-input').forEach(input => {
             const hasVal = input.value.trim().length > 0;
             if (hasVal) {
                 input.classList.add('input-has-value');
@@ -578,6 +606,28 @@ class AdminApp {
         if (badgeAboutEn) {
             badgeAboutEn.className = aboutEnVal ? 'lang-badge-status badge-filled' : 'lang-badge-status badge-empty';
             badgeAboutEn.textContent = aboutEnVal ? '🟢 Filled' : '⚪ Empty';
+        }
+
+        // Update Album Card Status Badges
+        const albumRuVal = (document.getElementById('album-title-ru')?.value || '').trim();
+        const albumAzVal = (document.getElementById('album-title-az')?.value || '').trim();
+        const albumEnVal = (document.getElementById('album-title-en')?.value || '').trim();
+
+        const badgeAlbumRu = document.getElementById('badge-album-ru');
+        const badgeAlbumAz = document.getElementById('badge-album-az');
+        const badgeAlbumEn = document.getElementById('badge-album-en');
+
+        if (badgeAlbumRu) {
+            badgeAlbumRu.className = albumRuVal ? 'lang-badge-status badge-filled' : 'lang-badge-status badge-empty';
+            badgeAlbumRu.textContent = albumRuVal ? '🟢 Заполнено' : '⚪ Пусто';
+        }
+        if (badgeAlbumAz) {
+            badgeAlbumAz.className = albumAzVal ? 'lang-badge-status badge-filled' : 'lang-badge-status badge-empty';
+            badgeAlbumAz.textContent = albumAzVal ? '🟢 Doldurulub' : '⚪ Boş';
+        }
+        if (badgeAlbumEn) {
+            badgeAlbumEn.className = albumEnVal ? 'lang-badge-status badge-filled' : 'lang-badge-status badge-empty';
+            badgeAlbumEn.textContent = albumEnVal ? '🟢 Filled' : '⚪ Empty';
         }
     }
 
@@ -1465,6 +1515,7 @@ class AdminApp {
         this.renderProductsTable();
         this.renderNewsTable();
         this.renderTeamTable();
+        this.renderGalleryTable();
         this.renderAboutForm();
         this.renderSettingsForm();
     }
@@ -1476,14 +1527,17 @@ class AdminApp {
         const products = window.dataStore ? window.dataStore.getProducts() : [];
         const partners = window.dataStore ? window.dataStore.getPartners() : [];
         const news = window.dataStore ? window.dataStore.getNews() : [];
+        const gallery = window.dataStore ? window.dataStore.getGallery() : [];
 
         const pCount = document.getElementById('dash-stat-products');
         const bCount = document.getElementById('dash-stat-partners');
         const nCount = document.getElementById('dash-stat-news');
+        const gCount = document.getElementById('dash-stat-gallery');
 
         if (pCount) pCount.textContent = products.length;
         if (bCount) bCount.textContent = partners.length;
         if (nCount) nCount.textContent = news.length;
+        if (gCount) gCount.textContent = gallery.length;
     }
 
     // ==========================================
@@ -2486,6 +2540,493 @@ class AdminApp {
     }
 
     // ==========================================
+    // Photo Gallery CRUD Management (Albums & Photos)
+    // ==========================================
+    renderGalleryTable() {
+        const tbody = document.getElementById('admin-gallery-tbody');
+        if (!tbody) return;
+
+        const albums = window.dataStore ? window.dataStore.getGallery() : [];
+
+        if (albums.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 2.5rem; color: #94A3B8;">Альбомов в галерее пока нет. Нажмите «Добавить альбом», чтобы создать новый.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = albums.map((album, idx) => {
+            const cover = album.cover_image || (album.photos && album.photos[0] && (album.photos[0].url || album.photos[0])) || 'images/hero/slide_1_casings.jpg';
+            const titleRu = album.title_ru || album.title_az || album.title_en || 'Без названия';
+            const titleAz = album.title_az || '';
+            const titleEn = album.title_en || '';
+            const date = album.date || '—';
+            const location = album.location_ru || album.location_az || album.location_en || '';
+            const photosCount = Array.isArray(album.photos) ? album.photos.length : 0;
+
+            let catLabel = 'Событие';
+            let catBadgeColor = 'background:#EDE9FE; color:#6D28D9; border:1px solid #DDD6FE;';
+            if (album.category === 'seminars') {
+                catLabel = '🎓 Семинары';
+                catBadgeColor = 'background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE;';
+            } else if (album.category === 'meetings') {
+                catLabel = '🤝 Переговоры';
+                catBadgeColor = 'background:#ECFDF5; color:#047857; border:1px solid #A7F3D0;';
+            } else if (album.category === 'office') {
+                catLabel = '🏢 Офис и Склад';
+                catBadgeColor = 'background:#FFFBEB; color:#B45309; border:1px solid #FDE68A;';
+            }
+
+            const hasRu = Boolean(album.title_ru);
+            const hasAz = Boolean(album.title_az);
+            const hasEn = Boolean(album.title_en);
+
+            return `
+                <tr>
+                    <td style="font-weight:700; color:#64748B;">${idx + 1}</td>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:0.9rem;">
+                            <img src="${cover}" alt="${titleRu}" style="width:54px; height:42px; object-fit:cover; border-radius:6px; border:1px solid #E2E8F0;" onerror="this.src='images/logo.png'">
+                            <div>
+                                <div style="font-weight:700; color:#1E293B; font-size:0.95rem;">${titleRu}</div>
+                                ${titleAz ? `<div style="font-size:0.8rem; color:#64748B;">🇦🇿 ${titleAz}</div>` : ''}
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span style="font-size:0.8rem; font-weight:700; padding:3px 10px; border-radius:12px; display:inline-block; ${catBadgeColor}">
+                            ${catLabel}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="font-size:0.88rem; font-weight:600; color:#334155;">${date}</div>
+                        ${location ? `<div style="font-size:0.78rem; color:#64748B;"><i class="fa-solid fa-location-dot"></i> ${location}</div>` : ''}
+                    </td>
+                    <td>
+                        <span style="font-weight:700; color:#7C3AED; background:#F5F3FF; padding:3px 8px; border-radius:6px; font-size:0.85rem; border:1px solid #DDD6FE;">
+                            <i class="fa-solid fa-camera"></i> ${photosCount} фото
+                        </span>
+                    </td>
+                    <td>
+                        <div class="lang-pills-wrap">
+                            <span class="lang-pill ${hasAz ? 'lang-pill-active' : 'lang-pill-inactive'}" title="Azərbaycan">AZ</span>
+                            <span class="lang-pill ${hasRu ? 'lang-pill-active' : 'lang-pill-inactive'}" title="Русский">RU</span>
+                            <span class="lang-pill ${hasEn ? 'lang-pill-active' : 'lang-pill-inactive'}" title="English">EN</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="action-buttons-cell">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="adminApp.openAlbumModal('${album.id}')" title="Редактировать альбом">
+                                <i class="fa-solid fa-pen"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="adminApp.deleteAlbum('${album.id}')" title="Удалить альбом">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    openAlbumModal(albumId = null) {
+        const cleanId = albumId ? String(albumId).trim() : null;
+        this.editingAlbumId = cleanId;
+
+        const hiddenIdInput = document.getElementById('album-edit-id');
+        if (hiddenIdInput) hiddenIdInput.value = cleanId || '';
+
+        const modal = document.getElementById('modal-album-edit');
+        const titleEl = document.getElementById('malbum-modal-title');
+
+        const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+
+        if (cleanId) {
+            const album = window.dataStore ? window.dataStore.getAlbumById(cleanId) : null;
+            if (!album) return;
+            if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square" style="color:#FFFFFF;"></i> <span>Редактировать фотоальбом</span>`;
+
+            setVal('album-category-select', album.category || 'seminars');
+            setVal('album-date', album.date || '2024-10-18');
+            setVal('album-cover-url', album.cover_image || '');
+
+            const coverPrev = document.getElementById('album-cover-preview');
+            if (coverPrev) coverPrev.src = album.cover_image || 'images/news/event_1.jpg';
+
+            setVal('album-title-ru', album.title_ru);
+            setVal('album-title-az', album.title_az);
+            setVal('album-title-en', album.title_en);
+
+            setVal('album-location-ru', album.location_ru);
+            setVal('album-location-az', album.location_az);
+            setVal('album-location-en', album.location_en);
+
+            setVal('album-desc-ru', album.description_ru);
+            setVal('album-desc-az', album.description_az);
+            setVal('album-desc-en', album.description_en);
+
+            // Render existing photos
+            const photos = Array.isArray(album.photos) ? album.photos : [];
+            this.renderPhotoRows(photos);
+        } else {
+            if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-images" style="color:#FFFFFF;"></i> <span>Добавить фотоальбом в галерею</span>`;
+            const form = document.getElementById('form-album-edit');
+            if (form) form.reset();
+            if (hiddenIdInput) hiddenIdInput.value = '';
+
+            const today = new Date().toISOString().split('T')[0];
+            setVal('album-date', today);
+
+            const coverPrev = document.getElementById('album-cover-preview');
+            if (coverPrev) coverPrev.src = 'images/news/event_1.jpg';
+
+            // Start with 1 default empty photo row
+            this.renderPhotoRows([
+                { url: 'images/news/event_1.jpg', caption_ru: '', caption_az: '', caption_en: '' }
+            ]);
+        }
+
+        this.updateFieldHighlights();
+
+        if (modal) {
+            modal.classList.add('active');
+            modal.style.display = 'flex';
+        }
+    }
+
+    renderPhotoRows(photos = []) {
+        const container = document.getElementById('album-photos-rows-container');
+        if (!container) return;
+
+        container.innerHTML = '';
+        if (!Array.isArray(photos) || photos.length === 0) {
+            this.updatePhotoCountBadge();
+            return;
+        }
+
+        photos.forEach((photo, idx) => {
+            const pUrl = typeof photo === 'object' ? (photo.url || photo.image || '') : photo;
+            const capRu = typeof photo === 'object' ? (photo.caption_ru || '') : '';
+            const capAz = typeof photo === 'object' ? (photo.caption_az || '') : '';
+            const capEn = typeof photo === 'object' ? (photo.caption_en || '') : '';
+
+            this.appendPhotoRowElement(pUrl, capRu, capAz, capEn, idx + 1);
+        });
+
+        this.updatePhotoCountBadge();
+    }
+
+    addPhotoRow(url = '', captionRu = '', captionAz = '', captionEn = '') {
+        const container = document.getElementById('album-photos-rows-container');
+        if (!container) return;
+
+        const currentRows = container.querySelectorAll('.album-photo-card');
+        const nextNum = currentRows.length + 1;
+        this.appendPhotoRowElement(url, captionRu, captionAz, captionEn, nextNum);
+        this.updatePhotoCountBadge();
+    }
+
+    appendPhotoRowElement(url = '', captionRu = '', captionAz = '', captionEn = '', rowNumber = 1) {
+        const container = document.getElementById('album-photos-rows-container');
+        if (!container) return;
+
+        const rowId = 'photo-row-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
+        const card = document.createElement('div');
+        card.className = 'album-photo-card';
+        card.id = rowId;
+
+        const safeUrl = url || 'images/news/event_1.jpg';
+
+        card.innerHTML = `
+            <div class="album-photo-card-header">
+                <div class="album-photo-card-title">
+                    <i class="fa-solid fa-image" style="color:#7C3AED;"></i>
+                    <span>Фотография #<span class="photo-idx-label">${rowNumber}</span></span>
+                </div>
+                <button type="button" class="btn btn-danger btn-sm" onclick="adminApp.removePhotoRow('${rowId}')" title="Удалить фото" style="padding:2px 8px; font-size:0.75rem;">
+                    <i class="fa-solid fa-trash"></i> Удалить
+                </button>
+            </div>
+
+            <div class="album-photo-card-body">
+                <div style="display:flex; flex-direction:column; gap:0.4rem;">
+                    <div class="album-photo-preview-box">
+                        <img src="${safeUrl}" class="photo-row-img-preview" alt="Превью фото" onerror="this.src='images/logo.png'">
+                    </div>
+                    <label class="btn btn-secondary btn-sm" style="font-size:0.75rem; text-align:center; padding:3px 6px; cursor:pointer;">
+                        <i class="fa-solid fa-upload"></i> Загрузить
+                        <input type="file" accept="image/*" class="photo-row-file-input" style="display:none;">
+                    </label>
+                </div>
+
+                <div style="flex:1;">
+                    <div class="adm-form-group" style="margin-bottom:0.6rem;">
+                        <label style="font-size:0.8rem; margin-bottom:0.2rem;">URL изображения или путь к файлу *:</label>
+                        <input type="text" class="adm-input photo-row-url-input" value="${url || ''}" placeholder="images/news/... или https://..." style="font-size:0.85rem; padding:0.45rem 0.7rem;">
+                    </div>
+
+                    <div class="album-photo-captions-grid">
+                        <div class="adm-form-group" style="margin-bottom:0;">
+                            <label style="font-size:0.75rem; margin-bottom:0.2rem; color:#1E293B;">🇷🇺 Подпись к фото (RU):</label>
+                            <input type="text" class="adm-input photo-row-caption-ru" value="${captionRu || ''}" placeholder="Подпись снимка..." style="font-size:0.8rem; padding:0.4rem 0.6rem;">
+                        </div>
+                        <div class="adm-form-group" style="margin-bottom:0;">
+                            <label style="font-size:0.75rem; margin-bottom:0.2rem; color:#1E293B;">🇦🇿 Şəkil başlığı (AZ):</label>
+                            <input type="text" class="adm-input photo-row-caption-az" value="${captionAz || ''}" placeholder="Şəklin alt yazısı..." style="font-size:0.8rem; padding:0.4rem 0.6rem;">
+                        </div>
+                        <div class="adm-form-group" style="margin-bottom:0;">
+                            <label style="font-size:0.75rem; margin-bottom:0.2rem; color:#1E293B;">🇬🇧 Caption (EN):</label>
+                            <input type="text" class="adm-input photo-row-caption-en" value="${captionEn || ''}" placeholder="Photo caption..." style="font-size:0.8rem; padding:0.4rem 0.6rem;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(card);
+
+        // Bind URL change & file upload to preview
+        const urlInput = card.querySelector('.photo-row-url-input');
+        const fileInput = card.querySelector('.photo-row-file-input');
+        const imgPreview = card.querySelector('.photo-row-img-preview');
+
+        if (urlInput && imgPreview) {
+            urlInput.addEventListener('input', (e) => {
+                const v = e.target.value.trim();
+                if (v) imgPreview.src = v;
+            });
+        }
+
+        if (fileInput && imgPreview) {
+            fileInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (re) => {
+                    imgPreview.src = re.target.result;
+                    if (urlInput) urlInput.value = re.target.result;
+                };
+                reader.readAsDataURL(file);
+
+                if (window.supabaseService && window.supabaseService.isConfigured) {
+                    this.showToast('Сжатие и загрузка фото в Supabase Storage...', 'info');
+                    try {
+                        const publicUrl = await window.supabaseService.uploadImage(file, 'media');
+                        if (publicUrl) {
+                            if (urlInput) urlInput.value = publicUrl;
+                            imgPreview.src = publicUrl;
+                            this.showToast('Фото успешно загружено в облако!', 'success');
+                        }
+                    } catch (err) {
+                        console.error('Supabase photo upload failed:', err);
+                    }
+                }
+            });
+        }
+    }
+
+    removePhotoRow(rowId) {
+        const row = document.getElementById(rowId);
+        if (row) {
+            row.remove();
+            this.renumberPhotoRows();
+            this.updatePhotoCountBadge();
+        }
+    }
+
+    renumberPhotoRows() {
+        const container = document.getElementById('album-photos-rows-container');
+        if (!container) return;
+        container.querySelectorAll('.album-photo-card').forEach((card, idx) => {
+            const lbl = card.querySelector('.photo-idx-label');
+            if (lbl) lbl.textContent = idx + 1;
+        });
+    }
+
+    updatePhotoCountBadge() {
+        const container = document.getElementById('album-photos-rows-container');
+        const badge = document.getElementById('album-photos-count-badge');
+        if (!container || !badge) return;
+
+        const count = container.querySelectorAll('.album-photo-card').length;
+        badge.textContent = `${count} фото`;
+    }
+
+    saveAlbumForm() {
+        const getVal = (id) => (document.getElementById(id)?.value || '').trim();
+
+        const titleRu = getVal('album-title-ru');
+        const titleAz = getVal('album-title-az');
+        const titleEn = getVal('album-title-en');
+
+        if (!titleRu && !titleAz && !titleEn) {
+            this.showToast('Пожалуйста, введите название альбома хотя бы на одном языке!', 'error');
+            return;
+        }
+
+        const hiddenId = (document.getElementById('album-edit-id')?.value || '').trim();
+        const editingId = this.editingAlbumId ? String(this.editingAlbumId).trim() : '';
+        const targetId = hiddenId || editingId || ('album-' + Date.now());
+
+        const category = getVal('album-category-select') || 'seminars';
+        const date = getVal('album-date') || new Date().toISOString().split('T')[0];
+        let coverImage = getVal('album-cover-url');
+
+        // Extract photos array from dynamic builder
+        const photos = [];
+        const container = document.getElementById('album-photos-rows-container');
+        if (container) {
+            container.querySelectorAll('.album-photo-card').forEach(card => {
+                const pUrl = (card.querySelector('.photo-row-url-input')?.value || '').trim();
+                const capRu = (card.querySelector('.photo-row-caption-ru')?.value || '').trim();
+                const capAz = (card.querySelector('.photo-row-caption-az')?.value || '').trim();
+                const capEn = (card.querySelector('.photo-row-caption-en')?.value || '').trim();
+
+                if (pUrl) {
+                    photos.push({
+                        url: pUrl,
+                        caption_ru: capRu,
+                        caption_az: capAz,
+                        caption_en: capEn
+                    });
+                }
+            });
+        }
+
+        if (!coverImage && photos.length > 0) {
+            coverImage = photos[0].url;
+        } else if (!coverImage) {
+            coverImage = 'images/news/event_1.jpg';
+        }
+
+        const albumData = {
+            id: targetId,
+            category: category,
+            date: date,
+            cover_image: coverImage,
+            title_ru: titleRu || titleAz || titleEn,
+            title_az: titleAz || titleRu || titleEn,
+            title_en: titleEn || titleRu || titleAz,
+            location_ru: getVal('album-location-ru'),
+            location_az: getVal('album-location-az'),
+            location_en: getVal('album-location-en'),
+            description_ru: getVal('album-desc-ru'),
+            description_az: getVal('album-desc-az'),
+            description_en: getVal('album-desc-en'),
+            photos: photos
+        };
+
+        if (window.dataStore) {
+            window.dataStore.saveAlbum(albumData);
+        }
+
+        this.editingAlbumId = null;
+        const hiddenIdInput = document.getElementById('album-edit-id');
+        if (hiddenIdInput) hiddenIdInput.value = '';
+
+        this.closeModal('modal-album-edit');
+        this.renderAll();
+        this.showToast('Фотоальбом успешно сохранен!', 'success');
+    }
+
+    deleteAlbum(id) {
+        if (!id) return;
+        const album = window.dataStore ? window.dataStore.getAlbumById(id) : null;
+        const title = (album && (album.title_ru || album.title_az || album.title_en)) || 'этот альбом';
+
+        if (confirm(`Вы уверены, что хотите удалить альбом "${title}"?`)) {
+            if (window.dataStore) {
+                window.dataStore.deleteAlbum(id);
+            }
+            this.renderAll();
+            this.showToast(`Альбом "${title}" удален`, 'info');
+        }
+    }
+
+    async autoTranslateAlbum() {
+        const translateBtn = document.getElementById('btn-auto-translate-album');
+        if (translateBtn) {
+            translateBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Переводим альбом...</span>`;
+            translateBtn.style.opacity = '0.7';
+            translateBtn.disabled = true;
+        }
+
+        try {
+            const fields = [
+                { key: 'title', elRu: 'album-title-ru', elAz: 'album-title-az', elEn: 'album-title-en' },
+                { key: 'location', elRu: 'album-location-ru', elAz: 'album-location-az', elEn: 'album-location-en' },
+                { key: 'desc', elRu: 'album-desc-ru', elAz: 'album-desc-az', elEn: 'album-desc-en' }
+            ];
+
+            for (const f of fields) {
+                const ruEl = document.getElementById(f.elRu);
+                const azEl = document.getElementById(f.elAz);
+                const enEl = document.getElementById(f.elEn);
+
+                const ruVal = (ruEl?.value || '').trim();
+                const azVal = (azEl?.value || '').trim();
+                const enVal = (enEl?.value || '').trim();
+
+                const srcText = ruVal || azVal || enVal;
+                const srcLang = ruVal ? 'ru' : (azVal ? 'az' : 'en');
+
+                if (srcText) {
+                    if (ruEl && !ruEl.value.trim() && srcLang !== 'ru') {
+                        ruEl.value = await this.translateUniversal(srcText, srcLang, 'ru');
+                    }
+                    if (azEl && !azEl.value.trim() && srcLang !== 'az') {
+                        azEl.value = await this.translateUniversal(srcText, srcLang, 'az');
+                    }
+                    if (enEl && !enEl.value.trim() && srcLang !== 'en') {
+                        enEl.value = await this.translateUniversal(srcText, srcLang, 'en');
+                    }
+                }
+            }
+
+            // Also auto-translate all photo captions in the rows
+            const container = document.getElementById('album-photos-rows-container');
+            if (container) {
+                const cards = container.querySelectorAll('.album-photo-card');
+                for (const card of cards) {
+                    const capRuEl = card.querySelector('.photo-row-caption-ru');
+                    const capAzEl = card.querySelector('.photo-row-caption-az');
+                    const capEnEl = card.querySelector('.photo-row-caption-en');
+
+                    const capRu = (capRuEl?.value || '').trim();
+                    const capAz = (capAzEl?.value || '').trim();
+                    const capEn = (capEnEl?.value || '').trim();
+
+                    const srcCap = capRu || capAz || capEn;
+                    const srcLang = capRu ? 'ru' : (capAz ? 'az' : 'en');
+
+                    if (srcCap) {
+                        if (capRuEl && !capRuEl.value.trim() && srcLang !== 'ru') {
+                            capRuEl.value = await this.translateUniversal(srcCap, srcLang, 'ru');
+                        }
+                        if (capAzEl && !capAzEl.value.trim() && srcLang !== 'az') {
+                            capAzEl.value = await this.translateUniversal(srcCap, srcLang, 'az');
+                        }
+                        if (capEnEl && !capEnEl.value.trim() && srcLang !== 'en') {
+                            capEnEl.value = await this.translateUniversal(srcCap, srcLang, 'en');
+                        }
+                    }
+                }
+            }
+
+            this.updateFieldHighlights();
+            this.showToast('✨ Альбом и подписи к фото успешно переведены на все языки!', 'success');
+        } catch (e) {
+            console.error('Album translation error:', e);
+            this.showToast('Перевод завершен', 'info');
+        } finally {
+            if (translateBtn) {
+                translateBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> <span>✨ Авто-перевод (на все языки)</span>`;
+                translateBtn.style.opacity = '1';
+                translateBtn.disabled = false;
+            }
+        }
+    }
+
+    // ==========================================
     // About Page Content Form
     // ==========================================
     renderAboutForm() {
@@ -2779,6 +3320,7 @@ class AdminApp {
             const news = store.getNews();
             const team = store.getTeam();
             const departments = store.getDepartments();
+            const gallery = store.getGallery();
             const about = store.getAbout();
             const settings = store.getSettings();
 
@@ -2788,6 +3330,7 @@ class AdminApp {
             for (const n of news) await window.supabaseService.upsertRecord('news', n);
             for (const t of team) await window.supabaseService.upsertRecord('team', t);
             for (const d of departments) await window.supabaseService.upsertRecord('departments', d);
+            for (const g of gallery) await window.supabaseService.upsertRecord('gallery', g);
             if (about) await window.supabaseService.upsertRecord('about', { id: 'about_singleton', ...about });
             if (settings) await window.supabaseService.upsertRecord('settings', { id: 'settings_singleton', ...settings });
 

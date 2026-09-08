@@ -75,6 +75,10 @@
           <i class="fa-solid fa-users"></i>
           <span>Команда</span>
         </button>
+        <button class="sidebar-nav-item" data-tab="gallery" onclick="adminApp.switchTab('gallery')">
+          <i class="fa-solid fa-images"></i>
+          <span>Галерея</span>
+        </button>
         <button class="sidebar-nav-item" data-tab="about" onclick="adminApp.switchTab('about')">
           <i class="fa-solid fa-building"></i>
           <span>О компании (Тексты)</span>
@@ -152,6 +156,16 @@
 
             <div class="summary-card">
               <div class="sc-info">
+                <span>Альбомов в галерее</span>
+                <h3 id="dash-stat-gallery">3</h3>
+              </div>
+              <div class="sc-icon" style="background:#F5F3FF; color:#7C3AED;">
+                <i class="fa-solid fa-images"></i>
+              </div>
+            </div>
+
+            <div class="summary-card">
+              <div class="sc-info">
                 <span>Поддержка языков</span>
                 <h3 style="font-size:1.15rem; color:#16A34A; margin-top:0.6rem;">AZ 🇦🇿 RU 🇷🇺 EN 🇬🇧</h3>
               </div>
@@ -174,6 +188,9 @@
               </button>
               <button class="btn btn-outline-primary" style="color:#10B981; border-color:#10B981;" onclick="adminApp.openNewsModal()">
                 <i class="fa-solid fa-plus"></i> Добавить новость
+              </button>
+              <button class="btn btn-outline-primary" style="color:#7C3AED; border-color:#7C3AED;" onclick="adminApp.openAlbumModal()">
+                <i class="fa-solid fa-images"></i> Добавить альбом в галерею
               </button>
               <button class="btn btn-outline-primary" onclick="adminApp.exportData()">
                 <i class="fa-solid fa-download"></i> Скачать базу данных (Резервная копия)
@@ -302,7 +319,40 @@
           </div>
         </section>
 
-        <!-- TAB 6: ABOUT PAGE TEXTS CRUD -->
+        <!-- TAB 6: GALLERY CRUD -->
+        <section id="tab-gallery" class="admin-tab-content">
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div>
+                <h3 class="admin-card-title">Фотогалерея и События (gallery.html)</h3>
+                <p style="font-size:0.85rem; color:#64748B; margin-top:3px;">Управление фотоальбомами, загрузка нескольких фотографий с индивидуальными подписями на 3 языках</p>
+              </div>
+              <div class="admin-card-actions">
+                <button class="btn btn-primary btn-sm" onclick="adminApp.openAlbumModal()" style="background:#7C3AED; border-color:#7C3AED;">
+                  <i class="fa-solid fa-plus"></i> Добавить альбом
+                </button>
+              </div>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Обложка и Название альбома</th>
+                    <th>Категория</th>
+                    <th>Дата / Локация</th>
+                    <th>Кол-во фото</th>
+                    <th>Языки</th>
+                    <th>Действия</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-gallery-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 7: ABOUT PAGE TEXTS CRUD -->
         <section id="tab-about" class="admin-tab-content">
           <div class="admin-card">
             <div class="admin-card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
@@ -1279,6 +1329,191 @@
           <button type="button" class="btn btn-secondary" onclick="adminApp.closeModal('modal-team-edit')">Отмена</button>
           <button type="submit" class="btn btn-primary" style="background:#3B82F6; border-color:#3B82F6; padding:0.7rem 1.6rem;">
             <i class="fa-solid fa-floppy-disk"></i> Сохранить сотрудника
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Album Edit / Create Modal (Photo Gallery) -->
+  <div id="modal-album-edit" class="admin-modal-backdrop">
+    <div class="admin-modal-window" style="max-width: 960px;">
+      <div class="admin-modal-header" style="background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%); color:#FFFFFF;">
+        <h3 class="admin-modal-title" id="malbum-modal-title" style="color:#FFFFFF; display:flex; align-items:center; gap:0.6rem;">
+          <i class="fa-solid fa-images"></i> <span>Добавить фотоальбом в галерею</span>
+        </h3>
+        <button type="button" class="admin-modal-close" style="color:#FFFFFF;" onclick="adminApp.closeModal('modal-album-edit')">&times;</button>
+      </div>
+
+      <form id="form-album-edit" onsubmit="event.preventDefault(); adminApp.saveAlbumForm();">
+        <input type="hidden" id="album-edit-id" value="">
+
+        <div class="admin-modal-body" style="padding: 1.8rem; max-height: 75vh; overflow-y: auto;">
+
+          <!-- 1. GENERAL ALBUM INFO (Category, Date, Cover Image) -->
+          <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:1.4rem; margin-bottom:1.5rem;">
+            <h4 style="font-size:1rem; font-weight:700; color:#1E293B; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem;">
+              <i class="fa-solid fa-sliders" style="color:#7C3AED;"></i> Основные параметры альбома
+            </h4>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.2rem; margin-bottom:1rem;">
+              <div class="adm-form-group">
+                <label>Категория альбома *:</label>
+                <select id="album-category-select" class="adm-input" required style="background:#FFF; font-weight:600;">
+                  <option value="seminars">🎓 Семинары и Мастер-классы (Seminars & Workshops)</option>
+                  <option value="meetings">🤝 Деловые встречи и Переговоры (Business Meetings)</option>
+                  <option value="office">🏢 Главный офис, Команда и Склад (Office & Warehouse)</option>
+                </select>
+              </div>
+
+              <div class="adm-form-group">
+                <label>Дата проведения / публикации:</label>
+                <input type="date" id="album-date" class="adm-input" value="2024-10-18" style="background:#FFF;">
+              </div>
+            </div>
+
+            <!-- Cover Image -->
+            <div class="adm-form-group">
+              <label>Обложка альбома (Главное фото карточки):</label>
+              <input type="text" id="album-cover-url" class="adm-input" placeholder="images/news/... или https://...">
+              <div class="image-upload-preview-box" style="margin-top:0.5rem; background:#FFFFFF; border:1px dashed #CBD5E1;">
+                <input type="file" id="album-cover-file-input" accept="image/*" style="flex:1;">
+                <img id="album-cover-preview" src="images/news/event_1.jpg" class="iup-preview" alt="Превью обложки" style="object-fit:cover; width:130px; height:76px; border-radius:8px; border:1px solid #E2E8F0;">
+                <div style="font-size:0.82rem; color:#64748B; line-height:1.4; max-width:280px;">
+                  <strong style="color:#334155; display:block;">Обложка события</strong>
+                  Рекомендуется качественное широкоформатное изображение (16:9).
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. SMART MULTILINGUAL FIELDS (Title, Description, Location) -->
+          <div class="multilang-action-bar" style="margin-top:1.4rem;">
+            <div>
+              <div class="mab-title">
+                <i class="fa-solid fa-language" style="color:#7C3AED;"></i>
+                <span>Название, описание и локация (3 языка)</span>
+              </div>
+              <div class="mab-hint">
+                Заполните поля на любом языке (RU, AZ или EN) и нажмите ✨ Авто-перевод — система автоматически переведет альбом!
+              </div>
+            </div>
+
+            <!-- Magic Translate Button for Album -->
+            <button type="button" class="btn-magic-translate" id="btn-auto-translate-album" onclick="adminApp.autoTranslateAlbum()" title="Перевести на все пустые языки">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span>✨ Авто-перевод (на все языки)</span>
+            </button>
+          </div>
+
+          <div class="lang-sections-container">
+
+            <!-- 1. RUSSIAN (RU) -->
+            <div class="lang-card lang-card-ru">
+              <div class="lang-card-header">
+                <div class="lang-card-title">
+                  <span>🇷🇺</span>
+                  <span>Русский язык (RU)</span>
+                </div>
+                <span class="lang-badge-status badge-empty" id="badge-album-ru">⚪ Пусто</span>
+              </div>
+              <div class="adm-form-group">
+                <label>Заголовок альбома (RU) *:</label>
+                <input type="text" id="album-title-ru" class="adm-input album-track-input" data-lang="ru" placeholder="Например: Практический семинар в Шемахе" required>
+              </div>
+              <div class="adm-form-group">
+                <label>Локация / Место события (RU):</label>
+                <input type="text" id="album-location-ru" class="adm-input album-track-input" data-lang="ru" placeholder="Например: г. Шемаха, Азербайджан">
+              </div>
+              <div class="adm-form-group">
+                <label>Описание события (RU):</label>
+                <textarea id="album-desc-ru" class="adm-input album-track-input" data-lang="ru" rows="3" placeholder="Подробное описание события, цели встречи или мастер-класса..."></textarea>
+              </div>
+            </div>
+
+            <!-- 2. AZERBAIJANI (AZ) -->
+            <div class="lang-card lang-card-az">
+              <div class="lang-card-header">
+                <div class="lang-card-title">
+                  <span>🇦🇿</span>
+                  <span>Azərbaycan dili (AZ)</span>
+                </div>
+                <span class="lang-badge-status badge-empty" id="badge-album-az">⚪ Boş</span>
+              </div>
+              <div class="adm-form-group">
+                <label>Albomun Başlığı (AZ) *:</label>
+                <input type="text" id="album-title-az" class="adm-input album-track-input" data-lang="az" placeholder="Məsələn: Şamaxıda ət texnologiyaları üzrə seminar">
+              </div>
+              <div class="adm-form-group">
+                <label>Məkan / Şəhər (AZ):</label>
+                <input type="text" id="album-location-az" class="adm-input album-track-input" data-lang="az" placeholder="Məsələn: Şamaxı şəhəri, Azərbaycan">
+              </div>
+              <div class="adm-form-group">
+                <label>Hadisənin təsviri (AZ):</label>
+                <textarea id="album-desc-az" class="adm-input album-track-input" data-lang="az" rows="3" placeholder="Tədbirin ətraflı təsviri, ustad dərsi və nəticələri..."></textarea>
+              </div>
+            </div>
+
+            <!-- 3. ENGLISH (EN) -->
+            <div class="lang-card lang-card-en">
+              <div class="lang-card-header">
+                <div class="lang-card-title">
+                  <span>🇬🇧</span>
+                  <span>English (EN)</span>
+                </div>
+                <span class="lang-badge-status badge-empty" id="badge-album-en">⚪ Empty</span>
+              </div>
+              <div class="adm-form-group">
+                <label>Album Title (EN):</label>
+                <input type="text" id="album-title-en" class="adm-input album-track-input" data-lang="en" placeholder="Example: Practical Meat Technology Workshop in Shamakhi">
+              </div>
+              <div class="adm-form-group">
+                <label>Event Location (EN):</label>
+                <input type="text" id="album-location-en" class="adm-input album-track-input" data-lang="en" placeholder="Example: Shamakhi, Azerbaijan">
+              </div>
+              <div class="adm-form-group">
+                <label>Event Description (EN):</label>
+                <textarea id="album-desc-en" class="adm-input album-track-input" data-lang="en" rows="3" placeholder="Full overview of the masterclass, technological insights and meetings..."></textarea>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- 3. DYNAMIC MULTI-PHOTO BUILDER WITH TRILINGUAL CAPTIONS -->
+          <div class="album-photos-builder-section" style="margin-top:2rem; background:#F8FAFC; border:1px solid #E2E8F0; border-radius:12px; padding:1.4rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.8rem; margin-bottom:1.2rem;">
+              <div>
+                <h4 style="font-size:1.05rem; font-weight:700; color:#1E293B; display:flex; align-items:center; gap:0.5rem;">
+                  <i class="fa-solid fa-camera-retro" style="color:#7C3AED;"></i>
+                  <span>Фотографии в альбоме</span>
+                  <span class="badge badge-info" id="album-photos-count-badge" style="background:#EDE9FE; color:#6D28D9; font-weight:700; padding:2px 8px; border-radius:12px; font-size:0.8rem;">0 фото</span>
+                </h4>
+                <p style="font-size:0.82rem; color:#64748B; margin-top:2px;">Добавляйте неограниченное количество фотографий с индивидуальными подписями на 3 языках для слайдера (Lightbox)</p>
+              </div>
+
+              <button type="button" class="btn btn-primary btn-sm" onclick="adminApp.addPhotoRow()" style="background:#7C3AED; border-color:#7C3AED; font-weight:700;">
+                <i class="fa-solid fa-plus"></i> Добавить фото
+              </button>
+            </div>
+
+            <!-- Photos Rows Container -->
+            <div id="album-photos-rows-container" style="display:flex; flex-direction:column; gap:1.2rem;">
+              <!-- Dynamic photo items will be rendered here -->
+            </div>
+
+            <div style="margin-top:1.2rem; text-align:center;">
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="adminApp.addPhotoRow()" style="color:#7C3AED; border-color:#7C3AED; font-weight:600; width:100%; padding:0.6rem; border-style:dashed;">
+                <i class="fa-solid fa-plus-circle"></i> + Нажмите, чтобы прикрепить еще одну фотографию
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="admin-modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="adminApp.closeModal('modal-album-edit')">Отмена</button>
+          <button type="submit" class="btn btn-primary" style="background:#7C3AED; border-color:#7C3AED; padding:0.7rem 1.8rem; font-weight:700;">
+            <i class="fa-solid fa-floppy-disk"></i> Сохранить альбом
           </button>
         </div>
       </form>
