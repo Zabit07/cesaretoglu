@@ -2601,12 +2601,24 @@ class AdminApp {
             return;
         }
 
-        select.innerHTML = categories.map(c => {
-            const isSel = String(c.id).toLowerCase() === String(selectedCat).toLowerCase() ? 'selected' : '';
-            const tRu = c.title_ru || c.title_az || c.title_en || c.id;
+        const seenKeys = new Set();
+        const optionsHtml = [];
+
+        categories.forEach(c => {
+            if (!c) return;
+            const tRu = (c.title_ru || c.title_az || c.title_en || c.id || '').trim();
             const tAz = c.title_az ? ` (${c.title_az})` : '';
-            return `<option value="${c.id}" ${isSel}>${tRu}${tAz}</option>`;
-        }).join('');
+            const key = (c.id || tRu).toLowerCase();
+
+            if (!seenKeys.has(key) && !seenKeys.has(tRu.toLowerCase())) {
+                seenKeys.add(key);
+                seenKeys.add(tRu.toLowerCase());
+                const isSel = String(c.id).toLowerCase() === String(selectedCat).toLowerCase() ? 'selected' : '';
+                optionsHtml.push(`<option value="${c.id}" ${isSel}>${tRu}${tAz}</option>`);
+            }
+        });
+
+        select.innerHTML = optionsHtml.join('');
     }
 
     openNewGalleryCategoryModal(event) {
@@ -2631,6 +2643,23 @@ class AdminApp {
 
         if (!rawName) {
             this.showToast('Пожалуйста, введите название категории!', 'error');
+            return;
+        }
+
+        // Check if category already exists in local list
+        const existingList = (window.dataStore && typeof window.dataStore.getGalleryCategories === 'function')
+            ? window.dataStore.getGalleryCategories()
+            : [];
+
+        const duplicate = existingList.find(c => {
+            const titleRu = String(c.title_ru || c.title_az || c.title_en || '').trim().toLowerCase();
+            return titleRu === rawName.toLowerCase();
+        });
+
+        if (duplicate) {
+            this.closeModal('modal-gallery-category-create');
+            this.populateAlbumCategoriesDropdown(duplicate.id);
+            this.showToast(`Категория «${rawName}» уже существует и была выбрана!`, 'info');
             return;
         }
 

@@ -2029,11 +2029,28 @@ class DataStore {
     getGalleryCategories() {
         try {
             const stored = localStorage.getItem(STORAGE_KEYS.GALLERY_CATEGORIES);
+            let list = INITIAL_GALLERY_CATEGORIES;
             if (stored !== null) {
                 const parsed = JSON.parse(stored);
-                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                if (Array.isArray(parsed) && parsed.length > 0) list = parsed;
             }
-            return INITIAL_GALLERY_CATEGORIES;
+            // Deduplicate by ID and clean title
+            const uniqueList = [];
+            const seenIds = new Set();
+            const seenTitles = new Set();
+
+            list.forEach(cat => {
+                if (!cat) return;
+                const id = String(cat.id || '').trim().toLowerCase();
+                const titleKey = String(cat.title_ru || cat.title_az || cat.title_en || id).trim().toLowerCase();
+                if (id && !seenIds.has(id) && !seenTitles.has(titleKey)) {
+                    seenIds.add(id);
+                    seenTitles.add(titleKey);
+                    uniqueList.push(cat);
+                }
+            });
+
+            return uniqueList.length > 0 ? uniqueList : INITIAL_GALLERY_CATEGORIES;
         } catch(e) {
             return INITIAL_GALLERY_CATEGORIES;
         }
@@ -2048,6 +2065,26 @@ class DataStore {
     saveGalleryCategory(category) {
         if (!category) return null;
         let categories = this.getGalleryCategories();
+        
+        // 1. Check if category with identical title_ru (or fallback title) already exists
+        const normTitleRu = String(category.title_ru || category.title_az || category.title_en || '').trim().toLowerCase();
+        const existingByTitle = categories.find(c => {
+            const cTitle = String(c.title_ru || c.title_az || c.title_en || '').trim().toLowerCase();
+            return cTitle && cTitle === normTitleRu;
+        });
+
+        if (existingByTitle && (!category.id || String(category.id).trim().toLowerCase() !== String(existingByTitle.id).trim().toLowerCase())) {
+            // Already exists with same title - update existing instead of creating duplicate
+            const merged = { ...existingByTitle, ...category, id: existingByTitle.id };
+            const idx = categories.findIndex(c => String(c.id).trim().toLowerCase() === String(existingByTitle.id).trim().toLowerCase());
+            if (idx >= 0) categories[idx] = merged;
+            localStorage.setItem(STORAGE_KEYS.GALLERY_CATEGORIES, JSON.stringify(categories));
+            if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+                window.supabaseService.upsertRecord('gallery_categories', merged);
+            }
+            return merged;
+        }
+
         if (!category.id) {
             const base = (category.title_az || category.title_ru || category.title_en || 'cat');
             category.id = 'gcat-' + base.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
