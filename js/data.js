@@ -2130,11 +2130,23 @@ class DataStore {
     getGallery() {
         try {
             const stored = localStorage.getItem(STORAGE_KEYS.GALLERY);
+            let list = null;
             if (stored !== null) {
                 const parsed = JSON.parse(stored);
-                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                if (Array.isArray(parsed) && parsed.length > 0) list = parsed;
             }
-            return INITIAL_GALLERY;
+            if (!list) list = INITIAL_GALLERY;
+
+            // Deduplicate by normalized ID preserving latest
+            const uniqueMap = new Map();
+            list.forEach(album => {
+                if (!album) return;
+                const id = String(album.id || '').trim();
+                if (id) {
+                    uniqueMap.set(id, album);
+                }
+            });
+            return Array.from(uniqueMap.values());
         } catch(e) {
             return INITIAL_GALLERY;
         }
@@ -2149,23 +2161,28 @@ class DataStore {
     saveAlbum(album) {
         if (!album) return null;
         let gallery = this.getGallery();
-        const albumIdStr = album.id ? String(album.id).trim() : '';
+        const albumIdStr = album.id ? String(album.id).trim() : ('album-' + Date.now());
+        album.id = albumIdStr;
 
-        if (albumIdStr) {
-            const idx = gallery.findIndex(a => String(a.id).trim() === albumIdStr);
-            if (idx >= 0) {
-                gallery[idx] = { ...gallery[idx], ...album, id: albumIdStr };
-            } else {
-                gallery.unshift({ ...album, id: albumIdStr });
-            }
-            album.id = albumIdStr;
+        const idx = gallery.findIndex(a => String(a.id).trim() === albumIdStr);
+        if (idx >= 0) {
+            gallery[idx] = { ...gallery[idx], ...album, id: albumIdStr };
         } else {
-            const newId = 'album-' + Date.now();
-            album.id = newId;
-            gallery.unshift(album);
+            gallery.unshift({ ...album, id: albumIdStr });
         }
 
-        localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
+        // Secondary deduplication pass
+        const cleanList = [];
+        const seenIds = new Set();
+        for (const item of gallery) {
+            const iId = String(item.id).trim();
+            if (!seenIds.has(iId)) {
+                seenIds.add(iId);
+                cleanList.push(item);
+            }
+        }
+
+        localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(cleanList));
 
         if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
             window.supabaseService.upsertRecord('gallery', album);
