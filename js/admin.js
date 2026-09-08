@@ -2628,7 +2628,10 @@ class AdminApp {
     }
 
     openAlbumModal(albumId = null) {
-        const cleanId = albumId ? String(albumId).trim() : null;
+        const form = document.getElementById('form-album-edit');
+        if (form) form.reset();
+
+        const cleanId = (albumId !== null && albumId !== undefined && String(albumId).trim() !== '' && String(albumId).trim() !== 'null' && String(albumId).trim() !== 'undefined') ? String(albumId).trim() : null;
         this.editingAlbumId = cleanId;
 
         const hiddenIdInput = document.getElementById('album-edit-id');
@@ -2641,7 +2644,10 @@ class AdminApp {
 
         if (cleanId) {
             const album = window.dataStore ? window.dataStore.getAlbumById(cleanId) : null;
-            if (!album) return;
+            if (!album) {
+                console.warn(`Album not found for ID: ${cleanId}`);
+                return;
+            }
             if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square" style="color:#FFFFFF;"></i> <span>Редактировать фотоальбом</span>`;
 
             setVal('album-category-select', album.category || 'seminars');
@@ -2668,8 +2674,6 @@ class AdminApp {
             this.renderPhotoRows(photos);
         } else {
             if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-images" style="color:#FFFFFF;"></i> <span>Добавить фотоальбом в галерею</span>`;
-            const form = document.getElementById('form-album-edit');
-            if (form) form.reset();
             if (hiddenIdInput) hiddenIdInput.value = '';
 
             const today = new Date().toISOString().split('T')[0];
@@ -2680,7 +2684,7 @@ class AdminApp {
 
             // Start with 1 default empty photo row
             this.renderPhotoRows([
-                { url: 'images/news/event_1.jpg', caption_ru: '', caption_az: '', caption_en: '' }
+                { url: 'images/news/event_1.jpg' }
             ]);
         }
 
@@ -2704,27 +2708,23 @@ class AdminApp {
 
         photos.forEach((photo, idx) => {
             const pUrl = typeof photo === 'object' ? (photo.url || photo.image || '') : photo;
-            const capRu = typeof photo === 'object' ? (photo.caption_ru || '') : '';
-            const capAz = typeof photo === 'object' ? (photo.caption_az || '') : '';
-            const capEn = typeof photo === 'object' ? (photo.caption_en || '') : '';
-
-            this.appendPhotoRowElement(pUrl, capRu, capAz, capEn, idx + 1);
+            this.appendPhotoRowElement(pUrl, idx + 1);
         });
 
         this.updatePhotoCountBadge();
     }
 
-    addPhotoRow(url = '', captionRu = '', captionAz = '', captionEn = '') {
+    addPhotoRow(url = '') {
         const container = document.getElementById('album-photos-rows-container');
         if (!container) return;
 
         const currentRows = container.querySelectorAll('.album-photo-card');
         const nextNum = currentRows.length + 1;
-        this.appendPhotoRowElement(url, captionRu, captionAz, captionEn, nextNum);
+        this.appendPhotoRowElement(url, nextNum);
         this.updatePhotoCountBadge();
     }
 
-    appendPhotoRowElement(url = '', captionRu = '', captionAz = '', captionEn = '', rowNumber = 1) {
+    appendPhotoRowElement(url = '', rowNumber = 1) {
         const container = document.getElementById('album-photos-rows-container');
         if (!container) return;
 
@@ -2736,46 +2736,28 @@ class AdminApp {
         const safeUrl = url || 'images/news/event_1.jpg';
 
         card.innerHTML = `
-            <div class="album-photo-card-header">
-                <div class="album-photo-card-title">
-                    <i class="fa-solid fa-image" style="color:#7C3AED;"></i>
-                    <span>Фотография #<span class="photo-idx-label">${rowNumber}</span></span>
-                </div>
-                <button type="button" class="btn btn-danger btn-sm" onclick="adminApp.removePhotoRow('${rowId}')" title="Удалить фото" style="padding:2px 8px; font-size:0.75rem;">
-                    <i class="fa-solid fa-trash"></i> Удалить
-                </button>
-            </div>
-
             <div class="album-photo-card-body">
-                <div style="display:flex; flex-direction:column; gap:0.4rem;">
-                    <div class="album-photo-preview-box">
-                        <img src="${safeUrl}" class="photo-row-img-preview" alt="Превью фото" onerror="this.src='images/logo.png'">
-                    </div>
-                    <label class="btn btn-secondary btn-sm" style="font-size:0.75rem; text-align:center; padding:3px 6px; cursor:pointer;">
-                        <i class="fa-solid fa-upload"></i> Загрузить
-                        <input type="file" accept="image/*" class="photo-row-file-input" style="display:none;">
-                    </label>
+                <div class="album-photo-preview-box">
+                    <img src="${safeUrl}" class="photo-row-img-preview" alt="Превью фото" onerror="this.src='images/logo.png'">
                 </div>
 
-                <div style="flex:1;">
-                    <div class="adm-form-group" style="margin-bottom:0.6rem;">
-                        <label style="font-size:0.8rem; margin-bottom:0.2rem;">URL изображения или путь к файлу *:</label>
-                        <input type="text" class="adm-input photo-row-url-input" value="${url || ''}" placeholder="images/news/... или https://..." style="font-size:0.85rem; padding:0.45rem 0.7rem;">
+                <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:0.5rem;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:0.8rem;">
+                        <span style="font-weight:700; font-size:0.85rem; color:#334155;">
+                            <i class="fa-solid fa-image" style="color:#7C3AED; margin-right:4px;"></i>
+                            Фото #<span class="photo-idx-label">${rowNumber}</span>
+                        </span>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="adminApp.removePhotoRow('${rowId}')" title="Удалить фото" style="padding:3px 8px; font-size:0.75rem; border-radius:6px;">
+                            <i class="fa-solid fa-trash"></i> Удалить
+                        </button>
                     </div>
 
-                    <div class="album-photo-captions-grid">
-                        <div class="adm-form-group" style="margin-bottom:0;">
-                            <label style="font-size:0.75rem; margin-bottom:0.2rem; color:#1E293B;">🇷🇺 Подпись к фото (RU):</label>
-                            <input type="text" class="adm-input photo-row-caption-ru" value="${captionRu || ''}" placeholder="Подпись снимка..." style="font-size:0.8rem; padding:0.4rem 0.6rem;">
-                        </div>
-                        <div class="adm-form-group" style="margin-bottom:0;">
-                            <label style="font-size:0.75rem; margin-bottom:0.2rem; color:#1E293B;">🇦🇿 Şəkil başlığı (AZ):</label>
-                            <input type="text" class="adm-input photo-row-caption-az" value="${captionAz || ''}" placeholder="Şəklin alt yazısı..." style="font-size:0.8rem; padding:0.4rem 0.6rem;">
-                        </div>
-                        <div class="adm-form-group" style="margin-bottom:0;">
-                            <label style="font-size:0.75rem; margin-bottom:0.2rem; color:#1E293B;">🇬🇧 Caption (EN):</label>
-                            <input type="text" class="adm-input photo-row-caption-en" value="${captionEn || ''}" placeholder="Photo caption..." style="font-size:0.8rem; padding:0.4rem 0.6rem;">
-                        </div>
+                    <div style="display:flex; gap:0.5rem; align-items:center;">
+                        <input type="text" class="adm-input photo-row-url-input" value="${url || ''}" placeholder="images/news/... или https://..." style="font-size:0.85rem; padding:0.5rem 0.75rem; flex:1;">
+                        <label class="btn btn-secondary btn-sm" style="font-size:0.8rem; padding:0.5rem 0.9rem; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:0.4rem;" title="Загрузить файл">
+                            <i class="fa-solid fa-upload"></i> <span>Загрузить</span>
+                            <input type="file" accept="image/*" class="photo-row-file-input" style="display:none;">
+                        </label>
                     </div>
                 </div>
             </div>
@@ -2871,22 +2853,15 @@ class AdminApp {
         const date = getVal('album-date') || new Date().toISOString().split('T')[0];
         let coverImage = getVal('album-cover-url');
 
-        // Extract photos array from dynamic builder
+        // Extract photos array from dynamic builder (compact photo URLs)
         const photos = [];
         const container = document.getElementById('album-photos-rows-container');
         if (container) {
             container.querySelectorAll('.album-photo-card').forEach(card => {
                 const pUrl = (card.querySelector('.photo-row-url-input')?.value || '').trim();
-                const capRu = (card.querySelector('.photo-row-caption-ru')?.value || '').trim();
-                const capAz = (card.querySelector('.photo-row-caption-az')?.value || '').trim();
-                const capEn = (card.querySelector('.photo-row-caption-en')?.value || '').trim();
-
                 if (pUrl) {
                     photos.push({
-                        url: pUrl,
-                        caption_ru: capRu,
-                        caption_az: capAz,
-                        caption_en: capEn
+                        url: pUrl
                     });
                 }
             });

@@ -1111,53 +1111,27 @@ select.form-select option,
 .album-photo-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 10px;
-  padding: 1.1rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  transition: all 0.2s ease;
-  position: relative;
+  border-radius: 8px;
+  padding: 0.8rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .album-photo-card:hover {
   border-color: #CBD5E1;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
-.album-photo-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.9rem;
-  padding-bottom: 0.6rem;
-  border-bottom: 1px solid #F1F5F9;
-}
-
-.album-photo-card-title {
-  font-weight: 700;
-  font-size: 0.9rem;
-  color: #1E293B;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 .album-photo-card-body {
   display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 1.2rem;
-  align-items: start;
-}
-
-@media (max-width: 768px) {
-  .album-photo-card-body {
-    grid-template-columns: 1fr;
-  }
+  grid-template-columns: 80px 1fr;
+  gap: 1rem;
+  align-items: center;
 }
 
 .album-photo-preview-box {
-  width: 140px;
-  height: 105px;
-  border-radius: 8px;
+  width: 80px;
+  height: 58px;
+  border-radius: 6px;
   overflow: hidden;
   border: 1px solid #E2E8F0;
   background: #F8FAFC;
@@ -1165,6 +1139,7 @@ select.form-select option,
   align-items: center;
   justify-content: center;
   position: relative;
+  flex-shrink: 0;
 }
 
 .album-photo-preview-box img {
@@ -1184,4 +1159,3 @@ select.form-select option,
     grid-template-columns: 1fr;
   }
 }
-
