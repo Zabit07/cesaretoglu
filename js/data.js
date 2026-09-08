@@ -2156,8 +2156,9 @@ class DataStore {
             if (idx >= 0) {
                 gallery[idx] = { ...gallery[idx], ...album, id: albumIdStr };
             } else {
-                gallery.push({ ...album, id: albumIdStr });
+                gallery.unshift({ ...album, id: albumIdStr });
             }
+            album.id = albumIdStr;
         } else {
             const newId = 'album-' + Date.now();
             album.id = newId;

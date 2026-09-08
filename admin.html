@@ -1488,12 +1488,8 @@
                   <span>Фотографии в альбоме</span>
                   <span class="badge badge-info" id="album-photos-count-badge" style="background:#EDE9FE; color:#6D28D9; font-weight:700; padding:2px 8px; border-radius:12px; font-size:0.8rem;">0 фото</span>
                 </h4>
-                <p style="font-size:0.82rem; color:#64748B; margin-top:2px;">Добавляйте неограниченное количество фотографий с индивидуальными подписями на 3 языках для слайдера (Lightbox)</p>
+                <p style="font-size:0.82rem; color:#64748B; margin-top:2px;">Добавляйте фотографии с индивидуальными подписями на 3 языках для слайдера (Lightbox)</p>
               </div>
-
-              <button type="button" class="btn btn-primary btn-sm" onclick="adminApp.addPhotoRow()" style="background:#7C3AED; border-color:#7C3AED; font-weight:700;">
-                <i class="fa-solid fa-plus"></i> Добавить фото
-              </button>
             </div>
 
             <!-- Photos Rows Container -->
@@ -1502,8 +1498,8 @@
             </div>
 
             <div style="margin-top:1.2rem; text-align:center;">
-              <button type="button" class="btn btn-outline-primary btn-sm" onclick="adminApp.addPhotoRow()" style="color:#7C3AED; border-color:#7C3AED; font-weight:600; width:100%; padding:0.6rem; border-style:dashed;">
-                <i class="fa-solid fa-plus-circle"></i> + Нажмите, чтобы прикрепить еще одну фотографию
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="adminApp.addPhotoRow()" style="color:#7C3AED; border-color:#7C3AED; font-weight:600; width:100%; padding:0.75rem; border-style:dashed; background:#FFFFFF; font-size:0.9rem; border-radius:8px; display:flex; align-items:center; justify-content:center; gap:0.5rem;">
+                <i class="fa-solid fa-plus-circle"></i> <span>+ Добавить фото</span>
               </button>
             </div>
           </div>
@@ -1591,8 +1587,8 @@
   <script src="js/supabase.js"></script>
 
   <!-- Modular Scripts -->
-  <script src="js/data.js?v=2.1"></script>
-  <script src="js/admin.js?v=2.1"></script>
+  <script src="js/data.js?v=2.3"></script>
+  <script src="js/admin.js?v=2.3"></script>
 
   <script>
     function toggleLoginPasswordVisibility() {
