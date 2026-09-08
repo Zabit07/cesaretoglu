@@ -1511,7 +1511,7 @@ class DataStore {
 
         try {
             console.log('🔄 Fetching latest data from Supabase Cloud...');
-            const [products, partners, categories, news, team, departments, gallery, about, settings] = await Promise.all([
+            const [products, partners, categories, news, team, departments, gallery, galleryCategories, about, settings] = await Promise.all([
                 window.supabaseService.fetchTable('products').catch(() => null),
                 window.supabaseService.fetchTable('partners').catch(() => null),
                 window.supabaseService.fetchTable('categories').catch(() => null),
@@ -1519,20 +1519,19 @@ class DataStore {
                 window.supabaseService.fetchTable('team').catch(() => null),
                 window.supabaseService.fetchTable('departments').catch(() => null),
                 window.supabaseService.fetchTable('gallery').catch(() => null),
+                window.supabaseService.fetchTable('gallery_categories').catch(() => null),
                 window.supabaseService.fetchTable('about').catch(() => null),
                 window.supabaseService.fetchTable('settings').catch(() => null)
             ]);
 
             if (products !== null && Array.isArray(products)) localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
             if (partners !== null && Array.isArray(partners)) localStorage.setItem(STORAGE_KEYS.PARTNERS, JSON.stringify(partners));
-            if (categories !== null && Array.isArray(categories)) {
-                localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
-                // If cloud categories are present, seed gallery categories if needed
-            }
+            if (categories !== null && Array.isArray(categories)) localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
             if (news !== null && Array.isArray(news)) localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(news));
             if (team !== null && Array.isArray(team)) localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(team));
             if (departments !== null && Array.isArray(departments)) localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(departments));
             if (gallery !== null && Array.isArray(gallery)) localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
+            if (galleryCategories !== null && Array.isArray(galleryCategories)) localStorage.setItem(STORAGE_KEYS.GALLERY_CATEGORIES, JSON.stringify(galleryCategories));
             if (about && about.length) localStorage.setItem(STORAGE_KEYS.ABOUT, JSON.stringify(about[0]));
             if (settings && settings.length) localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings[0]));
 
@@ -2065,7 +2064,7 @@ class DataStore {
         localStorage.setItem(STORAGE_KEYS.GALLERY_CATEGORIES, JSON.stringify(categories));
 
         if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
-            window.supabaseService.upsertRecord('categories', category);
+            window.supabaseService.upsertRecord('gallery_categories', category);
         }
         return category;
     }
@@ -2078,7 +2077,7 @@ class DataStore {
         localStorage.setItem(STORAGE_KEYS.GALLERY_CATEGORIES, JSON.stringify(categories));
 
         if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
-            window.supabaseService.deleteRecord('categories', id);
+            window.supabaseService.deleteRecord('gallery_categories', id);
         }
     }
 

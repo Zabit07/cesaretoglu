@@ -1359,12 +1359,18 @@
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.2rem; margin-bottom:1rem;">
               <div class="adm-form-group">
-                <label>Категория альбома *:</label>
-                <select id="album-category-select" class="adm-input" required style="background:#FFF; font-weight:600;">
-                  <option value="seminars">🎓 Семинары и Мастер-классы (Seminars & Workshops)</option>
-                  <option value="meetings">🤝 Деловые встречи и Переговоры (Business Meetings)</option>
-                  <option value="office">🏢 Главный офис, Команда и Склад (Office & Warehouse)</option>
-                </select>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+                  <label style="margin:0; font-weight:700; color:#1E293B;">Категория альбома *:</label>
+                  <div style="display:flex; gap:0.4rem;">
+                    <button type="button" class="btn btn-sm" onclick="adminApp.openNewGalleryCategoryModal(event)" style="background:#7C3AED; color:#FFF; padding:0.25rem 0.6rem; font-size:0.8rem; border-radius:6px; border:none; display:flex; align-items:center; gap:0.3rem;" title="Добавить новую категорию галереи">
+                      <i class="fa-solid fa-plus"></i> <span>Добавить</span>
+                    </button>
+                    <button type="button" class="btn btn-sm" onclick="adminApp.deleteSelectedGalleryCategory(event)" style="background:#FEE2E2; color:#DC2626; border:1px solid #FECACA; padding:0.25rem 0.55rem; font-size:0.8rem; border-radius:6px;" title="Удалить выбранную категорию">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                <select id="album-category-select" class="adm-input" required style="background:#FFF; font-weight:600;"></select>
               </div>
 
               <div class="adm-form-group">
@@ -1575,6 +1581,39 @@
         <div class="admin-modal-footer" style="border-top: 1px solid #E2E8F0; padding: 1rem 1.4rem; display:flex; justify-content:flex-end; gap:0.75rem;">
           <button type="button" class="btn btn-secondary" onclick="adminApp.closeModal('modal-department-create')">Отмена</button>
           <button type="submit" class="btn btn-primary" style="background:#2563EB; border-color:#2563EB; font-weight:700; display:flex; align-items:center; gap:0.4rem;">
+            <i class="fa-solid fa-plus"></i>
+            <span>Добавить</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Custom Gallery Category Create Modal -->
+  <div id="modal-gallery-category-create" class="admin-modal-backdrop" style="z-index: 100000; display: none;">
+    <div class="admin-modal-window" style="max-width: 440px;">
+      <div class="admin-modal-header" style="background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%); color:#FFFFFF; padding: 1.1rem 1.4rem;">
+        <h3 class="admin-modal-title" style="font-size: 1.1rem; display:flex; align-items:center; gap:0.5rem; color:#FFFFFF;">
+          <i class="fa-solid fa-tags"></i>
+          <span>Новая категория галереи</span>
+        </h3>
+        <button type="button" class="admin-modal-close" style="color:#FFFFFF;" onclick="adminApp.closeModal('modal-gallery-category-create')">&times;</button>
+      </div>
+      <form id="form-gallery-category-create" onsubmit="event.preventDefault(); adminApp.submitNewGalleryCategoryModal();">
+        <div class="admin-modal-body" style="padding: 1.4rem;">
+          <div class="adm-form-group" style="margin-bottom: 0.5rem;">
+            <label for="new-gcat-input-name" style="font-weight: 700; color: #1E293B; margin-bottom: 0.5rem; display:block;">
+              Название категории *:
+            </label>
+            <input type="text" id="new-gcat-input-name" class="adm-input" placeholder="Например: Выставки и ярмарки" required style="font-size: 0.95rem; padding: 0.75rem 0.9rem; border-radius: 8px;">
+            <span style="display:block; margin-top: 0.6rem; font-size: 0.78rem; color: #64748B; line-height:1.4;">
+              <i class="fa-solid fa-wand-magic-sparkles" style="color:#7C3AED;"></i> Название будет автоматически переведено на азербайджанский (AZ) и английский (EN) языки и сохранено в базу Supabase.
+            </span>
+          </div>
+        </div>
+        <div class="admin-modal-footer" style="border-top: 1px solid #E2E8F0; padding: 1rem 1.4rem; display:flex; justify-content:flex-end; gap:0.75rem;">
+          <button type="button" class="btn btn-secondary" onclick="adminApp.closeModal('modal-gallery-category-create')">Отмена</button>
+          <button type="submit" class="btn btn-primary" style="background:#7C3AED; border-color:#7C3AED; font-weight:700; display:flex; align-items:center; gap:0.4rem;">
             <i class="fa-solid fa-plus"></i>
             <span>Добавить</span>
           </button>

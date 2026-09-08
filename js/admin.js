@@ -2609,6 +2609,84 @@ class AdminApp {
         }).join('');
     }
 
+    openNewGalleryCategoryModal(event) {
+        if (event) event.stopPropagation();
+
+        const input = document.getElementById('new-gcat-input-name');
+        if (input) input.value = '';
+
+        const modal = document.getElementById('modal-gallery-category-create');
+        if (modal) {
+            modal.classList.add('active');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                input?.focus();
+            }, 100);
+        }
+    }
+
+    async submitNewGalleryCategoryModal() {
+        const input = document.getElementById('new-gcat-input-name');
+        const rawName = input ? input.value.trim() : '';
+
+        if (!rawName) {
+            this.showToast('Пожалуйста, введите название категории!', 'error');
+            return;
+        }
+
+        const newCatId = 'gcat-' + Date.now();
+        let titleRu = rawName;
+        let titleAz = rawName;
+        let titleEn = rawName;
+
+        try {
+            titleAz = await this.translateUniversal(rawName, 'ru', 'az') || rawName;
+            titleEn = await this.translateUniversal(rawName, 'ru', 'en') || rawName;
+        } catch (e) {}
+
+        const categoryData = {
+            id: newCatId,
+            icon: 'fa-solid fa-camera',
+            title_ru: titleRu,
+            title_az: titleAz,
+            title_en: titleEn
+        };
+
+        if (window.dataStore) {
+            window.dataStore.saveGalleryCategory(categoryData);
+        }
+
+        this.closeModal('modal-gallery-category-create');
+        this.populateAlbumCategoriesDropdown(newCatId);
+        this.renderGalleryTable();
+        this.showToast(`✨ Новая категория галереи "${titleRu}" создана и выбрана!`, 'success');
+    }
+
+    deleteSelectedGalleryCategory(event) {
+        if (event) event.stopPropagation();
+        const select = document.getElementById('album-category-select');
+        const currentVal = select ? select.value : null;
+
+        if (!currentVal) {
+            this.showToast('Категория не выбрана', 'error');
+            return;
+        }
+
+        const cat = window.dataStore ? window.dataStore.getGalleryCategoryById(currentVal) : null;
+        const catTitle = (cat && (cat.title_ru || cat.title_az || cat.title_en)) || currentVal;
+
+        if (confirm(`Вы уверены, что хотите удалить категорию галереи «${catTitle}»?`)) {
+            if (window.dataStore) {
+                window.dataStore.deleteGalleryCategory(currentVal);
+            }
+            const remaining = window.dataStore ? window.dataStore.getGalleryCategories() : [];
+            const newSelected = remaining.length > 0 ? remaining[0].id : 'seminars';
+            this.populateAlbumCategoriesDropdown(newSelected);
+            this.renderGalleryTable();
+            this.showToast(`Категория «${catTitle}» удалена!`, 'info');
+        }
+    }
+
     // ==========================================
     // Photo Gallery CRUD Management (Albums & Photos)
     // ==========================================
