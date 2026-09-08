@@ -22,6 +22,7 @@ const TRANSLATIONS = {
         nav_proteins: 'Hulshof Zülalları',
         nav_partners: 'Tərəfdaşlarımız',
         nav_about: 'Şirkət haqqında',
+        nav_gallery: 'Qalereya',
         nav_services: 'Texnoloji Dəstək',
         nav_news: 'Xəbərlər',
         nav_contacts: 'Əlaqə',
@@ -156,6 +157,16 @@ const TRANSLATIONS = {
         footer_copyright: '© 2026 Cəsarətoğlu MMC. Bütün hüquqlar qorunur.',
         footer_admin_access: 'Admin Paneli',
 
+        // Gallery Page Section (AZ)
+        gallery_page_badge: 'FOTOQALEREYA',
+        gallery_page_title: 'Şirkətin Fotoqalereyası',
+        gallery_page_subtitle: 'İşgüzar görüşlər, istehsalat seminarları, baş ofis və anbar infrastrukturumuzdan görüntülər',
+        gallery_filter_all: 'Bütün Albomlar',
+        gallery_filter_seminars: 'Seminarlar və Ustad Dərsləri',
+        gallery_filter_meetings: 'Görüşlər və Danışıqlar',
+        gallery_filter_office: 'Ofis və Anbar',
+        gallery_view_album: 'Albomu aç',
+
         // Catalog Modal
         modal_catalog_title: 'Cəsarətoğlu MMC Məhsul Kataloqu',
         modal_catalog_subtitle: 'Atlantis-Pak, Wiberg, Südpack və Avangard şirkətlərindən rəsmi təchizat',
@@ -177,6 +188,7 @@ const TRANSLATIONS = {
         nav_spices: 'Специи Wiberg',
         nav_partners: 'Партнеры',
         nav_about: 'О компании',
+        nav_gallery: 'Галерея',
         nav_services: 'Техподдержка',
         nav_news: 'Новости',
         nav_contacts: 'Контакты',
@@ -311,7 +323,17 @@ const TRANSLATIONS = {
         footer_hours: 'Пн - Пт: 09:30 - 18:30',
         footer_address: 'Азербайджан, Баку, Белый город',
         footer_copyright: '© 2026 Cəsarətoğlu MMC. Все права защищены.',
-        footer_admin_access: 'Панель управления'
+        footer_admin_access: 'Панель управления',
+
+        // Gallery Page Section (RU)
+        gallery_page_badge: 'ФОТОГАЛЕРЕЯ',
+        gallery_page_title: 'Фотогалерея компании',
+        gallery_page_subtitle: 'Хроника рабочих встреч, технологических семинаров, офиса и складского комплекса компании',
+        gallery_filter_all: 'Все альбомы',
+        gallery_filter_seminars: 'Семинары и мастер-классы',
+        gallery_filter_meetings: 'Деловые встречи',
+        gallery_filter_office: 'Офис и Склад',
+        gallery_view_album: 'Смотреть альбом'
     },
 
     en: {
@@ -329,6 +351,7 @@ const TRANSLATIONS = {
         nav_spices: 'Wiberg Spices',
         nav_partners: 'Partners',
         nav_about: 'About Us',
+        nav_gallery: 'Gallery',
         nav_services: 'Technical Support',
         nav_news: 'News & Events',
         nav_contacts: 'Contacts',
@@ -460,6 +483,16 @@ const TRANSLATIONS = {
         footer_copyright: '© 2026 Cəsarətoğlu MMC. All rights reserved.',
         footer_admin_access: 'Admin Login',
 
+        // Gallery Page Section (EN)
+        gallery_page_badge: 'PHOTO GALLERY',
+        gallery_page_title: 'Corporate Photo Gallery',
+        gallery_page_subtitle: 'Chronicle of business meetings, meat technology workshops, headquarters, and logistics infrastructure',
+        gallery_filter_all: 'All Albums',
+        gallery_filter_seminars: 'Seminars & Workshops',
+        gallery_filter_meetings: 'Business Meetings',
+        gallery_filter_office: 'Office & Warehouse',
+        gallery_view_album: 'View Album',
+
         // Catalog Modal
         modal_catalog_title: 'Cəsarətoğlu MMC Product Catalog',
         modal_catalog_subtitle: 'Official supply from Atlantis-Pak, Wiberg, Südpack, and Avangard',
@@ -488,6 +521,7 @@ class MainApp {
         if (window.PartnersModule) window.PartnersModule.init();
         if (window.CatalogModule) window.CatalogModule.init();
         if (window.NewsModule) window.NewsModule.init();
+        if (window.GalleryModule) window.GalleryModule.init();
 
         // Ensure all modals start closed and handle clean anchor scrolling if needed
         this.handleInitialScroll();

@@ -631,9 +631,12 @@ class AdminApp {
             if (selCat) {
                 const titleRu = selCat.title_ru || (selCat.title && selCat.title.ru) || selCat.title_az || selCat.id;
                 const titleAz = selCat.title_az || (selCat.title && selCat.title.az) || '';
-                labelEl.textContent = titleAz ? `${titleRu} (${titleAz})` : titleRu;
+                const fullText = titleAz ? `${titleRu} (${titleAz})` : titleRu;
+                labelEl.textContent = fullText;
+                labelEl.title = fullText;
             } else {
                 labelEl.textContent = 'Выберите категорию...';
+                labelEl.removeAttribute('title');
             }
         }
 
@@ -649,9 +652,9 @@ class AdminApp {
                     const isSelected = c.id === targetVal;
 
                     return `
-                        <div class="custom-cat-row ${isSelected ? 'selected' : ''}" onclick="adminApp.selectCategoryFromDropdown('${c.id}')" style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0.95rem; cursor:pointer; gap:0.75rem; border-bottom:1px solid #F1F5F9;">
-                            <span class="custom-cat-row-title" style="flex:1 1 auto; text-align:left; font-weight:${isSelected ? '700' : '500'}; color:${isSelected ? '#4338CA' : '#1E293B'}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${displayTitle}</span>
-                            <button type="button" class="custom-cat-del-btn" onclick="adminApp.deleteCategoryFromDropdown(event, '${c.id}')" title="Удалить категорию '${titleRu}' (×)" style="flex:0 0 24px; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; background:#F1F5F9; border:1px solid #CBD5E1; color:#64748B; border-radius:6px; font-size:0.95rem; font-weight:700; cursor:pointer; line-height:1; padding:0; margin:0;">
+                        <div class="custom-cat-row ${isSelected ? 'selected' : ''}" onclick="adminApp.selectCategoryFromDropdown('${c.id}')" title="${displayTitle}">
+                            <span class="custom-cat-row-title">${displayTitle}</span>
+                            <button type="button" class="custom-cat-del-btn" onclick="adminApp.deleteCategoryFromDropdown(event, '${c.id}')" title="Удалить категорию '${titleRu}' (×)">
                                 ×
                             </button>
                         </div>
@@ -808,9 +811,12 @@ class AdminApp {
             if (selDep) {
                 const titleRu = selDep.title_ru || selDep.title_az || selDep.title_en || selDep.id;
                 const titleAz = selDep.title_az || '';
-                labelEl.textContent = titleAz ? `${titleRu} (${titleAz})` : titleRu;
+                const fullText = titleAz ? `${titleRu} (${titleAz})` : titleRu;
+                labelEl.textContent = fullText;
+                labelEl.title = fullText;
             } else {
                 labelEl.textContent = 'Выберите отдел...';
+                labelEl.removeAttribute('title');
             }
         }
 
@@ -826,9 +832,9 @@ class AdminApp {
                     const isSelected = d.id === targetVal;
 
                     return `
-                        <div class="custom-cat-row ${isSelected ? 'selected' : ''}" onclick="adminApp.selectDepartmentFromDropdown('${d.id}')" style="display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0.95rem; cursor:pointer; gap:0.75rem; border-bottom:1px solid #F1F5F9;">
-                            <span class="custom-cat-row-title" style="flex:1 1 auto; text-align:left; font-weight:${isSelected ? '700' : '500'}; color:${isSelected ? '#2563EB' : '#1E293B'}; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${displayTitle}</span>
-                            <button type="button" class="custom-cat-del-btn" onclick="adminApp.deleteDepartmentFromDropdown(event, '${d.id}')" title="Удалить отдел '${titleRu}' (×)" style="flex:0 0 24px; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; background:#F1F5F9; border:1px solid #CBD5E1; color:#64748B; border-radius:6px; font-size:0.95rem; font-weight:700; cursor:pointer; line-height:1; padding:0; margin:0;">
+                        <div class="custom-cat-row ${isSelected ? 'selected' : ''}" onclick="adminApp.selectDepartmentFromDropdown('${d.id}')" title="${displayTitle}">
+                            <span class="custom-cat-row-title" style="color:${isSelected ? '#2563EB' : '#1E293B'};">${displayTitle}</span>
+                            <button type="button" class="custom-cat-del-btn" onclick="adminApp.deleteDepartmentFromDropdown(event, '${d.id}')" title="Удалить отдел '${titleRu}' (×)">
                                 ×
                             </button>
                         </div>
