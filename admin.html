@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <!-- Admin Stylesheet -->
-  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/admin.css?v=3.9">
 </head>
 <body>
 
@@ -1358,9 +1358,27 @@
             </h4>
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.2rem; margin-bottom:1rem;">
-              <div class="adm-form-group">
-                <label for="album-category-select" style="font-weight:700; color:#1E293B;">Категория альбома *:</label>
-                <select id="album-category-select" class="adm-input" required style="background:#FFF; font-weight:600;" onchange="adminApp.handleAlbumCategoryChange(this)"></select>
+              <div class="adm-form-group" style="position:relative;" id="custom-gcat-dropdown-container">
+                <label style="font-weight:700; color:#1E293B;">Категория альбома *:</label>
+                <input type="hidden" id="album-category-select" value="seminars" required>
+                
+                <div id="custom-gcat-dropdown-trigger" class="adm-input" onclick="adminApp.toggleGalleryCategoryDropdown(event)" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; user-select:none; background:#FFF;">
+                  <span id="custom-gcat-selected-label" style="font-weight:600; color:#1E293B; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Семинары и Мастер-классы</span>
+                  <i class="fa-solid fa-chevron-down" id="custom-gcat-arrow" style="color:#64748B; font-size:0.8rem; transition:transform 0.2s;"></i>
+                </div>
+
+                <!-- Custom Gallery Category Dropdown Menu with (x) delete buttons -->
+                <div id="custom-gcat-dropdown-menu" style="display:none; position:absolute; top:calc(100% + 4px); left:0; min-width:320px; width:max-content; max-width:480px; background:#FFFFFF; border:1px solid #CBD5E1; border-radius:10px; box-shadow:0 14px 32px -4px rgba(0,0,0,0.18), 0 6px 14px -3px rgba(0,0,0,0.08); z-index:99999; max-height:300px; overflow-y:auto; overflow-x:hidden; padding:6px 0;">
+                  <div id="custom-gcat-items-list">
+                    <!-- Dynamic categories with name and [x] on the right -->
+                  </div>
+                  <div style="border-top:1px solid #E2E8F0; margin-top:4px; padding-top:4px;">
+                    <div class="custom-cat-add-btn" onclick="adminApp.openNewGalleryCategoryModal(event)" style="padding:0.6rem 0.9rem; color:#7C3AED; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; gap:0.5rem; transition:background 0.15s;">
+                      <i class="fa-solid fa-plus-circle"></i>
+                      <span>+ Добавить новую категорию...</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div class="adm-form-group">
@@ -1617,8 +1635,8 @@
   <script src="js/supabase.js?v=3.6"></script>
 
   <!-- Modular Scripts -->
-  <script src="js/data.js?v=3.9"></script>
-  <script src="js/admin.js?v=3.9"></script>
+  <script src="js/data.js?v=4.0"></script>
+  <script src="js/admin.js?v=4.0"></script>
 
   <script>
     function toggleLoginPasswordVisibility() {

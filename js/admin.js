@@ -2589,53 +2589,83 @@ class AdminApp {
 
 
     populateAlbumCategoriesDropdown(selectedCat = '') {
-        const select = document.getElementById('album-category-select');
-        if (!select) return;
+        const hiddenInput = document.getElementById('album-category-select');
+        const labelSpan = document.getElementById('custom-gcat-selected-label');
+        const itemsList = document.getElementById('custom-gcat-items-list');
 
         const categories = (window.dataStore && typeof window.dataStore.getGalleryCategories === 'function')
             ? window.dataStore.getGalleryCategories()
             : [];
 
-        const seenKeys = new Set();
-        const optionsHtml = [];
+        let currentCatId = selectedCat || (hiddenInput ? hiddenInput.value : '') || (categories.length > 0 ? categories[0].id : 'seminars');
 
-        categories.forEach(c => {
-            if (!c) return;
-            const tRu = (c.title_ru || c.title_az || c.title_en || c.id || '').trim();
-            const tAz = c.title_az ? ` (${c.title_az})` : '';
-            const key = (c.id || tRu).toLowerCase();
+        // Check if selected category exists in list
+        let matched = categories.find(c => String(c.id).toLowerCase() === String(currentCatId).toLowerCase());
+        if (!matched && categories.length > 0) {
+            matched = categories[0];
+            currentCatId = matched.id;
+        }
 
-            if (!seenKeys.has(key) && !seenKeys.has(tRu.toLowerCase())) {
-                seenKeys.add(key);
-                seenKeys.add(tRu.toLowerCase());
-                const isSel = String(c.id).toLowerCase() === String(selectedCat).toLowerCase() ? 'selected' : '';
-                optionsHtml.push(`<option value="${c.id}" ${isSel}>${tRu}${tAz}</option>`);
+        if (hiddenInput) hiddenInput.value = currentCatId;
+        if (labelSpan) {
+            labelSpan.textContent = matched ? (matched.title_ru || matched.title_az || matched.title_en) : 'Выберите категорию';
+        }
+
+        if (itemsList) {
+            if (categories.length === 0) {
+                itemsList.innerHTML = `<div style="padding:0.7rem 0.95rem; font-size:0.85rem; color:#94A3B8;">Категорий пока нет</div>`;
+            } else {
+                itemsList.innerHTML = categories.map(c => {
+                    const isSelected = String(c.id).toLowerCase() === String(currentCatId).toLowerCase();
+                    const titleRu = c.title_ru || c.title_az || c.title_en || c.id;
+                    const titleAz = c.title_az ? ` (${c.title_az})` : '';
+                    const fullTitle = `${titleRu}${titleAz}`;
+                    return `
+                        <div class="custom-cat-row ${isSelected ? 'selected' : ''}" onclick="adminApp.selectGalleryCategory('${c.id}', '${fullTitle.replace(/'/g, "\\'")}')">
+                            <span class="custom-cat-row-title">${fullTitle}</span>
+                            <button type="button" class="custom-cat-del-btn" onclick="adminApp.deleteGalleryCategoryItem(event, '${c.id}', '${titleRu.replace(/'/g, "\\'")}')" title="Удалить категорию">
+                                &times;
+                            </button>
+                        </div>
+                    `;
+                }).join('');
             }
-        });
-
-        // Always append special action option at bottom
-        optionsHtml.push(`<option value="__ADD_NEW__" style="color:#7C3AED; font-weight:700;">➕ + Добавить новую категорию...</option>`);
-
-        select.innerHTML = optionsHtml.join('');
-
-        if (selectedCat && selectedCat !== '__ADD_NEW__') {
-            select.value = selectedCat;
-        } else if (categories.length > 0 && (!select.value || select.value === '__ADD_NEW__')) {
-            select.value = categories[0].id;
         }
     }
 
-    handleAlbumCategoryChange(selectElement) {
-        if (!selectElement) return;
-        if (selectElement.value === '__ADD_NEW__') {
-            // Revert select back to first category or previous valid value
-            const categories = (window.dataStore && typeof window.dataStore.getGalleryCategories === 'function')
-                ? window.dataStore.getGalleryCategories()
-                : [];
-            if (categories.length > 0) {
-                selectElement.value = categories[0].id;
+    selectGalleryCategory(catId, catTitle) {
+        const hiddenInput = document.getElementById('album-category-select');
+        const labelSpan = document.getElementById('custom-gcat-selected-label');
+        const menu = document.getElementById('custom-gcat-dropdown-menu');
+
+        if (hiddenInput) hiddenInput.value = catId;
+        if (labelSpan) labelSpan.textContent = catTitle;
+        if (menu) menu.style.display = 'none';
+
+        // Re-render to update highlighted item
+        this.populateAlbumCategoriesDropdown(catId);
+    }
+
+    toggleGalleryCategoryDropdown(e) {
+        if (e) e.stopPropagation();
+        const menu = document.getElementById('custom-gcat-dropdown-menu');
+        if (menu) {
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+    }
+
+    deleteGalleryCategoryItem(event, catId, catTitle) {
+        if (event) event.stopPropagation();
+
+        if (confirm(`Вы уверены, что хотите удалить категорию галереи «${catTitle}»?`)) {
+            if (window.dataStore) {
+                window.dataStore.deleteGalleryCategory(catId);
             }
-            this.openNewGalleryCategoryModal();
+            const remaining = window.dataStore ? window.dataStore.getGalleryCategories() : [];
+            const newSelected = remaining.length > 0 ? remaining[0].id : '';
+            this.populateAlbumCategoriesDropdown(newSelected);
+            this.renderGalleryTable();
+            this.showToast(`Категория «${catTitle}» удалена!`, 'info');
         }
     }
 
@@ -2644,6 +2674,10 @@ class AdminApp {
 
         const input = document.getElementById('new-gcat-input-name');
         if (input) input.value = '';
+
+        // Close dropdown menu if open
+        const menu = document.getElementById('custom-gcat-dropdown-menu');
+        if (menu) menu.style.display = 'none';
 
         const modal = document.getElementById('modal-gallery-category-create');
         if (modal) {
@@ -2707,31 +2741,6 @@ class AdminApp {
         this.populateAlbumCategoriesDropdown(newCatId);
         this.renderGalleryTable();
         this.showToast(`✨ Новая категория галереи "${titleRu}" создана и выбрана!`, 'success');
-    }
-
-    deleteSelectedGalleryCategory(event) {
-        if (event) event.stopPropagation();
-        const select = document.getElementById('album-category-select');
-        const currentVal = select ? select.value : null;
-
-        if (!currentVal) {
-            this.showToast('Категория не выбрана', 'error');
-            return;
-        }
-
-        const cat = window.dataStore ? window.dataStore.getGalleryCategoryById(currentVal) : null;
-        const catTitle = (cat && (cat.title_ru || cat.title_az || cat.title_en)) || currentVal;
-
-        if (confirm(`Вы уверены, что хотите удалить категорию галереи «${catTitle}»?`)) {
-            if (window.dataStore) {
-                window.dataStore.deleteGalleryCategory(currentVal);
-            }
-            const remaining = window.dataStore ? window.dataStore.getGalleryCategories() : [];
-            const newSelected = remaining.length > 0 ? remaining[0].id : 'seminars';
-            this.populateAlbumCategoriesDropdown(newSelected);
-            this.renderGalleryTable();
-            this.showToast(`Категория «${catTitle}» удалена!`, 'info');
-        }
     }
 
     // ==========================================
