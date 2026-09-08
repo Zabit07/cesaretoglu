@@ -240,9 +240,6 @@ const GalleryModule = {
                         </div>
 
                         <div class="album-card-footer">
-                            <span class="album-quick-link">
-                                <span>${viewBtnText}</span> <i class="fa-solid fa-arrow-right"></i>
-                            </span>
                             <button type="button" class="btn btn-cta-orange btn-sm" onclick="event.stopPropagation(); GalleryModule.openLightbox('${album.id}', 0)">
                                 <i class="fa-solid fa-expand"></i> <span>${viewBtnText}</span>
                             </button>

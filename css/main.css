@@ -3134,23 +3134,19 @@ h6 {
 .album-card-footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding-top: 1rem;
   border-top: 1px solid #F1F5F9;
 }
 
-.album-card-footer .album-quick-link {
-  font-size: 0.85rem;
+.album-card-footer .btn {
   font-weight: 700;
-  color: var(--accent-orange);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  transition: gap 0.2s ease;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.gallery-album-card:hover .album-quick-link {
-  gap: 0.65rem;
+.gallery-album-card:hover .album-card-footer .btn {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 102, 0, 0.35);
 }
 
 /* Empty State */
