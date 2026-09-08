@@ -891,28 +891,51 @@ class MainApp {
             const desc = theme[`desc_${lang}`] || theme.desc_ru;
             const btn = theme[`btn_${lang}`] || theme.btn_ru;
 
-            // Extract unique manufacturers / brands strictly from real active products in this category
-            const brandSet = new Set();
-            categoryProducts.forEach(p => {
-                let b = (p.partner || p.brand || p.manufacturer || '').trim();
-                if (!b) return;
+            // Canonical 1-to-1 manufacturer mapping for core categories
+            const canonicalBrandMap = {
+                'casings': 'Atlantis-Pak',
+                'spices': 'Wiberg',
+                'packaging': 'Südpack',
+                'additives': 'Avangard',
+                'proteins': 'Hulshof'
+            };
 
-                const bLower = b.toLowerCase();
-                // Filter out test dummy keywords in Latin & Cyrillic (tct, тст, tst, тест, test, gemi)
-                if (bLower.includes('tct') || bLower.includes('тст') || bLower.includes('tst') || bLower.includes('тест') || bLower.includes('test') || bLower.includes('gemi')) {
-                    return;
+            // Determine strictly one representative manufacturer for this category
+            let representativeBrand = canonicalBrandMap[cat.id] || (cat.brands && cat.brands.length ? cat.brands[0] : null);
+
+            if (!representativeBrand) {
+                // Count frequency of brands across active products in this category
+                const brandCounts = {};
+                categoryProducts.forEach(p => {
+                    let b = (p.partner || p.brand || p.manufacturer || '').trim();
+                    if (!b) return;
+
+                    const bLower = b.toLowerCase();
+                    // Filter out test dummy keywords in Latin & Cyrillic (tct, тст, tst, тест, test, gemi)
+                    if (bLower.includes('tct') || bLower.includes('тст') || bLower.includes('tst') || bLower.includes('тест') || bLower.includes('test') || bLower.includes('gemi')) {
+                        return;
+                    }
+
+                    if (bLower.includes('atlantis')) b = 'Atlantis-Pak';
+                    else if (bLower.includes('wiberg')) b = 'Wiberg';
+                    else if (bLower.includes('südpack') || bLower.includes('sudpack')) b = 'Südpack';
+                    else if (bLower.includes('avangard')) b = 'Avangard';
+                    else if (partnerNameMap[bLower]) b = partnerNameMap[bLower];
+
+                    brandCounts[b] = (brandCounts[b] || 0) + 1;
+                });
+
+                // Pick the most prominent / most frequent brand in this category
+                const sortedBrands = Object.keys(brandCounts).sort((a, b) => brandCounts[b] - brandCounts[a]);
+                if (sortedBrands.length > 0) {
+                    representativeBrand = sortedBrands[0];
                 }
+            }
 
-                if (bLower.includes('atlantis')) b = 'Atlantis-Pak';
-                else if (bLower.includes('wiberg')) b = 'Wiberg';
-                else if (bLower.includes('südpack') || bLower.includes('sudpack')) b = 'Südpack';
-                else if (bLower.includes('avangard')) b = 'Avangard';
-                else if (partnerNameMap[bLower]) b = partnerNameMap[bLower];
-
-                brandSet.add(b);
-            });
-
-            const brandNames = Array.from(brandSet);
+            // Fallback default if still null
+            if (!representativeBrand) {
+                representativeBrand = 'Cəsarətoğlu MMC';
+            }
 
             // If custom category has product with image, use it for card banner
             let cardImage = theme.image;
@@ -923,7 +946,7 @@ class MainApp {
                 }
             }
 
-            const brandPillsHtml = brandNames.map(b => `<span class="pcc-brand-pill"><i class="fa-solid fa-circle-check"></i> ${b}</span>`).join('');
+            const brandPillsHtml = `<span class="pcc-brand-pill"><i class="fa-solid fa-circle-check"></i> ${representativeBrand}</span>`;
 
             return `
               <div class="swiper-slide">
