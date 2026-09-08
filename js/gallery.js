@@ -24,6 +24,38 @@ const GalleryModule = {
             });
         });
 
+        // Direct Language Switcher listener for buttons on gallery.html (AZ, RU, EN)
+        document.querySelectorAll('.lang-btn, [data-lang]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetLang = e.currentTarget.dataset.lang || e.currentTarget.getAttribute('data-lang');
+                if (targetLang) {
+                    setTimeout(() => {
+                        this.renderAlbums();
+                        if (this.activeAlbum) {
+                            this.updateLightboxContent();
+                        }
+                    }, 50);
+                }
+            });
+        });
+
+        // Listen for window language change events or custom triggers
+        window.addEventListener('languageChanged', () => {
+            this.renderAlbums();
+            if (this.activeAlbum) {
+                this.updateLightboxContent();
+            }
+        });
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'cesaretoglu_lang' || e.key === 'site_lang') {
+                this.renderAlbums();
+                if (this.activeAlbum) {
+                    this.updateLightboxContent();
+                }
+            }
+        });
+
         // Lightbox Keyboard Navigation
         document.addEventListener('keydown', (e) => {
             const modal = document.getElementById('gallery-lightbox-modal');
@@ -45,24 +77,33 @@ const GalleryModule = {
         }
     },
 
+    getCurrentLang() {
+        if (window.mainApp && window.mainApp.lang) return window.mainApp.lang;
+        if (window.app && window.app.lang) return window.app.lang;
+        if (window.currentLang) return window.currentLang;
+        return localStorage.getItem('cesaretoglu_lang') || localStorage.getItem('site_lang') || 'az';
+    },
+
     getLocalizedText(obj, fieldPrefix) {
-        const lang = window.currentLang || localStorage.getItem('cesaretoglu_lang') || 'ru';
+        const lang = this.getCurrentLang();
         if (!obj) return '';
 
+        // If stored as nested object: { title: { az: "...", ru: "...", en: "..." } }
         if (obj[fieldPrefix] && typeof obj[fieldPrefix] === 'object') {
-            return obj[fieldPrefix][lang] || obj[fieldPrefix].ru || obj[fieldPrefix].az || obj[fieldPrefix].en || '';
+            return obj[fieldPrefix][lang] || obj[fieldPrefix].az || obj[fieldPrefix].ru || obj[fieldPrefix].en || '';
         }
 
-        if (lang === 'az') return obj[`${fieldPrefix}_az`] || obj[`${fieldPrefix}_ru`] || obj[`${fieldPrefix}_en`] || '';
-        if (lang === 'en') return obj[`${fieldPrefix}_en`] || obj[`${fieldPrefix}_ru`] || obj[`${fieldPrefix}_az`] || '';
-        return obj[`${fieldPrefix}_ru`] || obj[`${fieldPrefix}_az`] || obj[`${fieldPrefix}_en`] || '';
+        // Direct flat properties: title_az, title_ru, title_en
+        if (lang === 'az') return obj[`${fieldPrefix}_az`] || obj[`${fieldPrefix}_ru`] || obj[`${fieldPrefix}_en`] || obj[fieldPrefix] || '';
+        if (lang === 'en') return obj[`${fieldPrefix}_en`] || obj[`${fieldPrefix}_az`] || obj[`${fieldPrefix}_ru`] || obj[fieldPrefix] || '';
+        return obj[`${fieldPrefix}_ru`] || obj[`${fieldPrefix}_az`] || obj[`${fieldPrefix}_en`] || obj[fieldPrefix] || '';
     },
 
     renderAlbums() {
         const grid = document.getElementById('gallery-albums-grid');
         if (!grid) return;
 
-        const lang = window.currentLang || localStorage.getItem('cesaretoglu_lang') || 'ru';
+        const lang = this.getCurrentLang();
         const albums = window.dataStore ? window.dataStore.getGallery() : [];
 
         const filtered = albums.filter(a => {

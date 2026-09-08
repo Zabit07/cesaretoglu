@@ -1064,6 +1064,12 @@ class MainApp {
             }
         }
         if (window.NewsModule) window.NewsModule.renderNews();
+        if (window.GalleryModule) {
+            window.GalleryModule.renderAlbums();
+            if (window.GalleryModule.activeAlbum) {
+                window.GalleryModule.updateLightboxContent();
+            }
+        }
     }
 
     applyLanguage(lang) {
