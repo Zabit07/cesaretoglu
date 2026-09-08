@@ -1170,5 +1170,6 @@ class MainApp {
 // Bootstrap
 document.addEventListener('DOMContentLoaded', () => {
     window.app = new MainApp();
+    window.mainApp = window.app;
     window.app.init();
 });
