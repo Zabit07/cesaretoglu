@@ -2588,18 +2588,13 @@ class AdminApp {
 
 
 
-    populateAlbumCategoriesDropdown(selectedCat = 'seminars') {
+    populateAlbumCategoriesDropdown(selectedCat = '') {
         const select = document.getElementById('album-category-select');
         if (!select) return;
 
         const categories = (window.dataStore && typeof window.dataStore.getGalleryCategories === 'function')
             ? window.dataStore.getGalleryCategories()
             : [];
-
-        if (categories.length === 0) {
-            select.innerHTML = `<option value="seminars">Семинары и Мастер-классы</option>`;
-            return;
-        }
 
         const seenKeys = new Set();
         const optionsHtml = [];
@@ -2618,7 +2613,30 @@ class AdminApp {
             }
         });
 
+        // Always append special action option at bottom
+        optionsHtml.push(`<option value="__ADD_NEW__" style="color:#7C3AED; font-weight:700;">➕ + Добавить новую категорию...</option>`);
+
         select.innerHTML = optionsHtml.join('');
+
+        if (selectedCat && selectedCat !== '__ADD_NEW__') {
+            select.value = selectedCat;
+        } else if (categories.length > 0 && (!select.value || select.value === '__ADD_NEW__')) {
+            select.value = categories[0].id;
+        }
+    }
+
+    handleAlbumCategoryChange(selectElement) {
+        if (!selectElement) return;
+        if (selectElement.value === '__ADD_NEW__') {
+            // Revert select back to first category or previous valid value
+            const categories = (window.dataStore && typeof window.dataStore.getGalleryCategories === 'function')
+                ? window.dataStore.getGalleryCategories()
+                : [];
+            if (categories.length > 0) {
+                selectElement.value = categories[0].id;
+            }
+            this.openNewGalleryCategoryModal();
+        }
     }
 
     openNewGalleryCategoryModal(event) {

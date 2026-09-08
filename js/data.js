@@ -2033,8 +2033,6 @@ class DataStore {
             if (stored !== null) {
                 const parsed = JSON.parse(stored);
                 if (Array.isArray(parsed)) list = parsed;
-            } else {
-                list = [...INITIAL_GALLERY_CATEGORIES];
             }
 
             // Deduplicate by ID and clean title
@@ -2055,7 +2053,7 @@ class DataStore {
 
             return uniqueList;
         } catch(e) {
-            return [...INITIAL_GALLERY_CATEGORIES];
+            return [];
         }
     }
 

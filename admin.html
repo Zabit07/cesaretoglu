@@ -1359,18 +1359,8 @@
 
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.2rem; margin-bottom:1rem;">
               <div class="adm-form-group">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
-                  <label style="margin:0; font-weight:700; color:#1E293B;">Категория альбома *:</label>
-                  <div style="display:flex; gap:0.4rem;">
-                    <button type="button" class="btn btn-sm" onclick="adminApp.openNewGalleryCategoryModal(event)" style="background:#7C3AED; color:#FFF; padding:0.25rem 0.6rem; font-size:0.8rem; border-radius:6px; border:none; display:flex; align-items:center; gap:0.3rem;" title="Добавить новую категорию галереи">
-                      <i class="fa-solid fa-plus"></i> <span>Добавить</span>
-                    </button>
-                    <button type="button" class="btn btn-sm" onclick="adminApp.deleteSelectedGalleryCategory(event)" style="background:#FEE2E2; color:#DC2626; border:1px solid #FECACA; padding:0.25rem 0.55rem; font-size:0.8rem; border-radius:6px;" title="Удалить выбранную категорию">
-                      <i class="fa-solid fa-trash"></i>
-                    </button>
-                  </div>
-                </div>
-                <select id="album-category-select" class="adm-input" required style="background:#FFF; font-weight:600;"></select>
+                <label for="album-category-select" style="font-weight:700; color:#1E293B;">Категория альбома *:</label>
+                <select id="album-category-select" class="adm-input" required style="background:#FFF; font-weight:600;" onchange="adminApp.handleAlbumCategoryChange(this)"></select>
               </div>
 
               <div class="adm-form-group">
@@ -1627,8 +1617,8 @@
   <script src="js/supabase.js?v=3.6"></script>
 
   <!-- Modular Scripts -->
-  <script src="js/data.js?v=3.7"></script>
-  <script src="js/admin.js?v=3.7"></script>
+  <script src="js/data.js?v=3.9"></script>
+  <script src="js/admin.js?v=3.9"></script>
 
   <script>
     function toggleLoginPasswordVisibility() {
