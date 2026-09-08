@@ -15,7 +15,22 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <!-- Admin Stylesheet -->
-  <link rel="stylesheet" href="css/admin.css?v=3.9">
+  <link rel="stylesheet" href="css/admin.css?v=4.1">
+
+  <!-- Instant Preload Lock: Prevents login flash if user is already authenticated -->
+  <script>
+    document.documentElement.classList.add('app-preload');
+    (function() {
+      try {
+        var isAuth = localStorage.getItem('cesaretoglu_admin_logged') === 'true' || 
+                     sessionStorage.getItem('cesaretoglu_admin_logged') === 'true';
+        if (isAuth) {
+          // If logged in, hide login screen immediately via inline stylesheet before DOM paint
+          document.write('<style>#admin-login-screen{display:none!important;}#admin-dashboard-layout{display:flex!important;}</style>');
+        }
+      } catch(e) {}
+    })();
+  </script>
 </head>
 <body>
 
@@ -1632,11 +1647,11 @@
 
   <!-- Supabase JS Client & Service Layer -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js?v=3.6"></script>
+  <script src="js/supabase.js?v=4.1"></script>
 
   <!-- Modular Scripts -->
-  <script src="js/data.js?v=4.0"></script>
-  <script src="js/admin.js?v=4.0"></script>
+  <script src="js/data.js?v=4.1"></script>
+  <script src="js/admin.js?v=4.1"></script>
 
   <script>
     function toggleLoginPasswordVisibility() {

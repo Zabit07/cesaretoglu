@@ -23,7 +23,12 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
   <!-- Main Stylesheet (asp-pack.ru Architecture) -->
-  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/main.css?v=4.1">
+
+  <!-- Instant Preload Lock: Prevents default template flash before Supabase sync -->
+  <script>
+    document.documentElement.classList.add('app-preload');
+  </script>
 </head>
 <body>
 
@@ -593,13 +598,13 @@
 
   <!-- Supabase JS Client & Service Layer -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js"></script>
+  <script src="js/supabase.js?v=4.1"></script>
 
   <!-- Modular Scripts -->
-  <script src="js/data.js?v=2"></script>
-  <script src="js/partners.js?v=2"></script>
-  <script src="js/news.js?v=2"></script>
-  <script src="js/catalog.js?v=2"></script>
-  <script src="js/main.js?v=2"></script>
+  <script src="js/data.js?v=4.1"></script>
+  <script src="js/partners.js?v=4.1"></script>
+  <script src="js/news.js?v=4.1"></script>
+  <script src="js/catalog.js?v=4.1"></script>
+  <script src="js/main.js?v=4.1"></script>
 </body>
 </html>

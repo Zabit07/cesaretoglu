@@ -219,6 +219,21 @@ class AdminApp {
             }
         }
         this.switchTab(initialTab, false);
+
+        // Smoothly reveal admin interface without flickers
+        this.revealUI();
+    }
+
+    revealUI() {
+        if (typeof document !== 'undefined') {
+            document.documentElement.classList.remove('app-preload');
+            document.documentElement.classList.add('app-loaded');
+            const preloader = document.getElementById('global-preloader');
+            if (preloader) {
+                preloader.classList.add('hidden');
+                setTimeout(() => preloader.remove(), 400);
+            }
+        }
     }
 
     // ==========================================

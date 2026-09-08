@@ -82,6 +82,65 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  opacity: 1;
+  transition: opacity 0.3s ease-out;
+}
+
+/* Preloader & Opacity Lock for Smooth Supabase Cloud Sync */
+html.app-preload body {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+html.app-loaded body {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+.global-preloader-spinner {
+  position: fixed;
+  inset: 0;
+  background: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  transition: opacity 0.35s ease-out, visibility 0.35s ease-out;
+}
+
+.global-preloader-spinner.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.global-preloader-logo {
+  width: 140px;
+  max-width: 80vw;
+  height: auto;
+  margin-bottom: 1.5rem;
+  animation: preloaderPulse 1.6s ease-in-out infinite alternate;
+}
+
+.global-spinner-ring {
+  width: 36px;
+  height: 36px;
+  border: 3px solid #F1F5F9;
+  border-top: 3px solid var(--primary-color, #C81E1E);
+  border-right: 3px solid var(--accent-orange, #FF6600);
+  border-radius: 50%;
+  animation: preloaderSpin 0.75s linear infinite;
+}
+
+@keyframes preloaderSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes preloaderPulse {
+  0% { transform: scale(0.96); opacity: 0.85; }
+  100% { transform: scale(1.02); opacity: 1; }
 }
 
 img,

@@ -35,6 +35,19 @@ body {
   color: var(--admin-text-main);
   line-height: 1.5;
   min-height: 100vh;
+  opacity: 1;
+  transition: opacity 0.25s ease-out;
+}
+
+/* Preloader & Auth Lock for Smooth Supabase Sync */
+html.app-preload body {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+html.app-loaded body {
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 /* ==========================================================================

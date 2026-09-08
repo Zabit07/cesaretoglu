@@ -525,6 +525,23 @@ class MainApp {
 
         // Ensure all modals start closed and handle clean anchor scrolling if needed
         this.handleInitialScroll();
+
+        // Reveal UI smoothly when ready
+        this.revealUI();
+    }
+
+    revealUI() {
+        if (typeof document !== 'undefined') {
+            document.documentElement.classList.remove('app-preload');
+            document.documentElement.classList.add('app-loaded');
+            const preloader = document.getElementById('global-preloader');
+            if (preloader) {
+                preloader.classList.add('hidden');
+                setTimeout(() => {
+                    if (preloader.parentNode) preloader.remove();
+                }, 400);
+            }
+        }
     }
 
     renderAboutPageContent() {
@@ -1178,4 +1195,35 @@ document.addEventListener('DOMContentLoaded', () => {
     window.app = new MainApp();
     window.mainApp = window.app;
     window.app.init();
+
+    // If Supabase sync is running, smoothly re-render on sync completion
+    if (window.dataStore && typeof window.dataStore.syncFromCloud === 'function') {
+        window.dataStore.syncFromCloud().then(() => {
+            if (window.mainApp) {
+                window.mainApp.applyDynamicSettings();
+                window.mainApp.renderDynamicHeroSlider();
+                window.mainApp.renderDynamicCategories();
+                window.mainApp.renderAboutPageContent();
+                window.mainApp.renderAboutTeam();
+                if (window.PartnersModule) window.PartnersModule.renderPartners();
+                if (window.CatalogModule) {
+                    window.CatalogModule.renderPartnerSelect();
+                    window.CatalogModule.renderCategoryTabs();
+                    window.CatalogModule.renderProducts();
+                }
+                if (window.NewsModule) window.NewsModule.renderNews();
+                if (window.GalleryModule) window.GalleryModule.renderAlbums();
+            }
+            if (window.app && typeof window.app.revealUI === 'function') {
+                window.app.revealUI();
+            }
+        });
+    }
+
+    // Safety fallback: Ensure page is always visible after max 600ms even on slow networks
+    setTimeout(() => {
+        if (window.app && typeof window.app.revealUI === 'function') {
+            window.app.revealUI();
+        }
+    }, 600);
 });
