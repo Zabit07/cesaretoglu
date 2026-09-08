@@ -7,22 +7,63 @@ const GalleryModule = {
     currentCategory: 'all',
     activeAlbum: null,
     currentPhotoIndex: 0,
+    currentPage: 1,
+    itemsPerPage: 6, // 3x2 grid per page
 
     init() {
+        this.renderCategoryFilterBar();
         this.bindEvents();
         this.renderAlbums();
     },
 
+    renderCategoryFilterBar() {
+        const filterBar = document.querySelector('.gallery-filter-bar');
+        if (!filterBar) return;
+
+        const lang = this.getCurrentLang();
+        const categories = (window.dataStore && typeof window.dataStore.getGalleryCategories === 'function')
+            ? window.dataStore.getGalleryCategories()
+            : [];
+
+        const allLabel = lang === 'az' ? 'Bütün Albomlar' : (lang === 'en' ? 'All Albums' : 'Все альбомы');
+
+        let html = `
+            <button class="gallery-filter-btn ${this.currentCategory === 'all' ? 'active' : ''}" data-category="all">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>${allLabel}</span>
+            </button>
+        `;
+
+        categories.forEach(cat => {
+            const catTitle = this.getLocalizedText(cat, 'title') || cat.id;
+            const icon = cat.icon || 'fa-solid fa-camera';
+            const isActive = this.currentCategory === cat.id ? 'active' : '';
+
+            html += `
+                <button class="gallery-filter-btn ${isActive}" data-category="${cat.id}">
+                    <i class="${icon}"></i>
+                    <span>${catTitle}</span>
+                </button>
+            `;
+        });
+
+        filterBar.innerHTML = html;
+    },
+
     bindEvents() {
-        // Category Filter Buttons
-        document.querySelectorAll('.gallery-filter-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.gallery-filter-btn').forEach(b => b.classList.remove('active'));
+        // Delegate Category Filter Buttons
+        const filterBar = document.querySelector('.gallery-filter-bar');
+        if (filterBar) {
+            filterBar.addEventListener('click', (e) => {
+                const btn = e.target.closest('.gallery-filter-btn');
+                if (!btn) return;
+                filterBar.querySelectorAll('.gallery-filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 this.currentCategory = btn.dataset.category || 'all';
+                this.currentPage = 1; // reset to first page on filter switch
                 this.renderAlbums();
             });
-        });
+        }
 
         // Direct Language Switcher listener for buttons on gallery.html (AZ, RU, EN)
         document.querySelectorAll('.lang-btn, [data-lang]').forEach(btn => {
@@ -30,6 +71,7 @@ const GalleryModule = {
                 const targetLang = e.currentTarget.dataset.lang || e.currentTarget.getAttribute('data-lang');
                 if (targetLang) {
                     setTimeout(() => {
+                        this.renderCategoryFilterBar();
                         this.renderAlbums();
                         if (this.activeAlbum) {
                             this.updateLightboxContent();
@@ -41,6 +83,7 @@ const GalleryModule = {
 
         // Listen for window language change events or custom triggers
         window.addEventListener('languageChanged', () => {
+            this.renderCategoryFilterBar();
             this.renderAlbums();
             if (this.activeAlbum) {
                 this.updateLightboxContent();
@@ -48,7 +91,8 @@ const GalleryModule = {
         });
 
         window.addEventListener('storage', (e) => {
-            if (e.key === 'cesaretoglu_lang' || e.key === 'site_lang') {
+            if (e.key === 'cesaretoglu_lang' || e.key === 'site_lang' || e.key === 'cesaretoglu_gallery_categories') {
+                this.renderCategoryFilterBar();
                 this.renderAlbums();
                 if (this.activeAlbum) {
                     this.updateLightboxContent();
@@ -101,10 +145,14 @@ const GalleryModule = {
 
     renderAlbums() {
         const grid = document.getElementById('gallery-albums-grid');
+        const paginationWrapper = document.getElementById('gallery-pagination-wrapper');
         if (!grid) return;
 
         const lang = this.getCurrentLang();
         const albums = window.dataStore ? window.dataStore.getGallery() : [];
+        const galleryCategories = (window.dataStore && typeof window.dataStore.getGalleryCategories === 'function')
+            ? window.dataStore.getGalleryCategories()
+            : [];
 
         const filtered = albums.filter(a => {
             if (this.currentCategory === 'all') return true;
@@ -119,25 +167,35 @@ const GalleryModule = {
                     <p>${noDataMsg}</p>
                 </div>
             `;
+            if (paginationWrapper) paginationWrapper.innerHTML = '';
             return;
         }
 
-        grid.innerHTML = filtered.map(album => {
+        // Pagination calculation
+        const totalItems = filtered.length;
+        const totalPages = Math.ceil(totalItems / this.itemsPerPage);
+
+        if (this.currentPage > totalPages) {
+            this.currentPage = totalPages;
+        }
+        if (this.currentPage < 1) {
+            this.currentPage = 1;
+        }
+
+        const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+        const endIndex = startIndex + this.itemsPerPage;
+        const pageItems = filtered.slice(startIndex, endIndex);
+
+        grid.innerHTML = pageItems.map(album => {
             const title = this.getLocalizedText(album, 'title');
             const desc = this.getLocalizedText(album, 'description');
             const location = this.getLocalizedText(album, 'location');
             const photosCount = Array.isArray(album.photos) ? album.photos.length : 1;
             const cover = album.cover_image || (album.photos && album.photos[0] && (album.photos[0].url || album.photos[0])) || 'images/hero/slide_1_casings.jpg';
 
-            // Category badge label
-            let catLabel = 'Событие';
-            if (album.category === 'seminars') {
-                catLabel = lang === 'az' ? 'Seminarlar və Ustad Dərsləri' : (lang === 'en' ? 'Seminars & Workshops' : 'Семинары и Мастер-классы');
-            } else if (album.category === 'meetings') {
-                catLabel = lang === 'az' ? 'İşgüzar Görüşlər və Danışıqlar' : (lang === 'en' ? 'Business Meetings' : 'Деловые встречи и Переговоры');
-            } else if (album.category === 'office') {
-                catLabel = lang === 'az' ? 'Ofis və Anbar Kompleksi' : (lang === 'en' ? 'Office & Logistics Hub' : 'Офис и Складской комплекс');
-            }
+            // Category badge label (dynamically matched from categories)
+            const matchedCat = galleryCategories.find(c => String(c.id).toLowerCase() === String(album.category || '').toLowerCase());
+            let catLabel = matchedCat ? this.getLocalizedText(matchedCat, 'title') : (lang === 'az' ? 'Hadisə' : (lang === 'en' ? 'Event' : 'Событие'));
 
             // Thumbnail previews strip (up to 4 thumbs)
             const photoList = Array.isArray(album.photos) ? album.photos : [{ url: cover }];
@@ -182,6 +240,9 @@ const GalleryModule = {
                         </div>
 
                         <div class="album-card-footer">
+                            <span class="album-quick-link">
+                                <span>${viewBtnText}</span> <i class="fa-solid fa-arrow-right"></i>
+                            </span>
                             <button type="button" class="btn btn-cta-orange btn-sm" onclick="event.stopPropagation(); GalleryModule.openLightbox('${album.id}', 0)">
                                 <i class="fa-solid fa-expand"></i> <span>${viewBtnText}</span>
                             </button>
@@ -190,6 +251,86 @@ const GalleryModule = {
                 </div>
             `;
         }).join('');
+
+        this.renderPagination(totalPages, totalItems, startIndex + 1, Math.min(endIndex, totalItems));
+    },
+
+    renderPagination(totalPages, totalItems, startItem, endItem) {
+        const wrapper = document.getElementById('gallery-pagination-wrapper');
+        if (!wrapper) return;
+
+        if (totalPages <= 1) {
+            wrapper.innerHTML = '';
+            return;
+        }
+
+        const lang = this.getCurrentLang();
+        const loadMoreText = lang === 'az' ? 'Daha çox göstər' : (lang === 'en' ? 'Load More' : 'Показать еще');
+        const showingText = lang === 'az' ? `Göstərilir: ${startItem} – ${endItem} / Cəmi: ${totalItems} albom` : (lang === 'en' ? `Showing: ${startItem} – ${endItem} of ${totalItems} albums` : `Показано: ${startItem} – ${endItem} из ${totalItems} альбомов`);
+
+        // Load More button (if not on last page)
+        const hasNextPage = this.currentPage < totalPages;
+        const loadMoreBtnHtml = hasNextPage ? `
+            <button type="button" class="gallery-load-more-btn" onclick="GalleryModule.loadMore()">
+                <i class="fa-solid fa-rotate-right"></i>
+                <span>${loadMoreText}</span>
+            </button>
+        ` : '';
+
+        // Numbered pagination buttons
+        let pageButtonsHtml = '';
+
+        // Prev Button
+        pageButtonsHtml += `
+            <button type="button" class="gallery-page-btn" onclick="GalleryModule.goToPage(${this.currentPage - 1})" ${this.currentPage === 1 ? 'disabled' : ''} aria-label="Previous">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+        `;
+
+        for (let i = 1; i <= totalPages; i++) {
+            if (i === 1 || i === totalPages || (i >= this.currentPage - 1 && i <= this.currentPage + 1)) {
+                pageButtonsHtml += `
+                    <button type="button" class="gallery-page-btn ${i === this.currentPage ? 'active' : ''}" onclick="GalleryModule.goToPage(${i})">
+                        ${i}
+                    </button>
+                `;
+            } else if (i === this.currentPage - 2 || i === this.currentPage + 2) {
+                pageButtonsHtml += `<span style="padding: 0 4px; color:#94A3B8; font-weight:700;">...</span>`;
+            }
+        }
+
+        // Next Button
+        pageButtonsHtml += `
+            <button type="button" class="gallery-page-btn" onclick="GalleryModule.goToPage(${this.currentPage + 1})" ${this.currentPage === totalPages ? 'disabled' : ''} aria-label="Next">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        `;
+
+        wrapper.innerHTML = `
+            ${loadMoreBtnHtml}
+            <div class="gallery-pagination-bar">
+                ${pageButtonsHtml}
+            </div>
+            <div class="gallery-pagination-info">
+                ${showingText}
+            </div>
+        `;
+    },
+
+    goToPage(pageNumber) {
+        this.currentPage = pageNumber;
+        this.renderAlbums();
+
+        // Smooth scroll to top of gallery section
+        const section = document.getElementById('gallery-section');
+        if (section) {
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    },
+
+    loadMore() {
+        this.currentPage += 1;
+        this.renderAlbums();
     },
 
     openLightbox(albumId, initialIndex = 0) {
@@ -230,12 +371,14 @@ const GalleryModule = {
         const photoUrl = typeof currentPhoto === 'object' ? (currentPhoto.url || currentPhoto.image) : currentPhoto;
         const caption = typeof currentPhoto === 'object' ? this.getLocalizedText(currentPhoto, 'caption') : '';
         const albumTitle = this.getLocalizedText(album, 'title');
+        const albumDesc = this.getLocalizedText(album, 'description');
         const albumDate = album.date || '';
         const albumLocation = this.getLocalizedText(album, 'location');
 
         // Main Lightbox Elements
         const mainImg = document.getElementById('lightbox-main-img');
         const titleEl = document.getElementById('lightbox-album-title');
+        const descEl = document.getElementById('lightbox-album-description');
         const counterEl = document.getElementById('lightbox-counter');
         const captionEl = document.getElementById('lightbox-caption');
         const metaEl = document.getElementById('lightbox-meta');
@@ -247,10 +390,14 @@ const GalleryModule = {
         }
 
         if (titleEl) titleEl.textContent = albumTitle;
+        if (descEl) {
+            descEl.textContent = albumDesc || '';
+            descEl.style.display = albumDesc ? 'block' : 'none';
+        }
         if (counterEl) counterEl.textContent = `${this.currentPhotoIndex + 1} / ${photos.length}`;
         if (captionEl) {
-            captionEl.textContent = caption || albumTitle;
-            captionEl.style.display = caption ? 'block' : 'none';
+            captionEl.textContent = caption || '';
+            captionEl.style.display = caption && caption !== albumTitle ? 'block' : 'none';
         }
         if (metaEl) {
             metaEl.innerHTML = `

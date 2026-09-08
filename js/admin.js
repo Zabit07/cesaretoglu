@@ -2177,59 +2177,67 @@ class AdminApp {
         }
     }
 
+    renderAll() {
+        this.renderDashboardStats();
+        this.populateCategoriesDropdown();
+        this.renderPartnersTable();
+        this.renderProductsTable();
+        this.renderNewsTable();
+        this.renderTeamTable();
+        this.renderGalleryCategoriesTable();
+        this.renderGalleryTable();
+        this.renderAboutForm();
+        this.renderSettingsForm();
+    }
+
     // ==========================================
-    // News & Events Management
+    // Gallery Categories CRUD Management
     // ==========================================
-    renderNewsTable() {
-        const tbody = document.getElementById('admin-news-tbody');
+    renderGalleryCategoriesTable() {
+        const tbody = document.getElementById('admin-gallery-categories-tbody');
         if (!tbody) return;
 
-        const newsList = window.dataStore ? window.dataStore.getNews() : [];
+        const categories = (window.dataStore && typeof window.dataStore.getGalleryCategories === 'function') 
+            ? window.dataStore.getGalleryCategories() 
+            : [];
 
-        if (newsList.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color: #94A3B8;">Новости не найдены</td></tr>`;
+        if (categories.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 2rem; color: #94A3B8;">Категорий галереи пока нет. Нажмите «Добавить категорию», чтобы создать.</td></tr>`;
             return;
         }
 
-        tbody.innerHTML = newsList.map((item, idx) => {
-            const hasRu = !!(item.title_ru || item.content_ru);
-            const hasAz = !!(item.title_az || item.content_az);
-            const hasEn = !!(item.title_en || item.content_en);
-            const isActive = item.status !== 'draft';
+        tbody.innerHTML = categories.map((cat, idx) => {
+            const icon = cat.icon || 'fa-solid fa-camera';
+            const titleRu = cat.title_ru || '—';
+            const titleAz = cat.title_az || '—';
+            const titleEn = cat.title_en || '—';
 
             return `
                 <tr>
-                    <td>${idx + 1}</td>
+                    <td style="font-weight:700; color:#64748B;">${idx + 1}</td>
                     <td>
-                        <div class="item-main-cell">
-                            <img src="${item.image_local || item.image || 'images/logo.png'}" class="item-thumb-sm" alt="" onerror="this.src='images/logo.png'" style="object-fit:cover; border-radius:6px;">
-                            <div>
-                                <span class="item-title-bold">${item.title_ru || item.title_az || item.title_en || 'Без названия'}</span>
-                                <span class="item-subtitle-muted">${item.title_az || item.title_en || ''}</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td><code style="font-size:0.82rem; font-weight:600; color:#334155;">${item.date || '—'}</code></td>
-                    <td>
-                        <div style="display:flex; gap:4px; font-size:0.75rem;">
-                            <span style="color:${hasRu ? '#16A34A' : '#EF4444'}; font-weight:700;">RU</span>
-                            <span style="color:#CBD5E1;">•</span>
-                            <span style="color:${hasAz ? '#16A34A' : '#EF4444'}; font-weight:700;">AZ</span>
-                            <span style="color:#CBD5E1;">•</span>
-                            <span style="color:${hasEn ? '#16A34A' : '#EF4444'}; font-weight:700;">EN</span>
+                        <div style="width:36px; height:36px; border-radius:8px; background:#F5F3FF; color:#7C3AED; display:flex; align-items:center; justify-content:center; font-size:1.1rem; border:1px solid #DDD6FE;">
+                            <i class="${icon}"></i>
                         </div>
                     </td>
                     <td>
-                        <span class="badge ${isActive ? 'badge-active' : 'badge-draft'}" style="background:${isActive ? '#DCFCE7' : '#F1F5F9'}; color:${isActive ? '#15803D' : '#64748B'}; font-weight:700; padding:3px 8px; border-radius:12px; font-size:0.75rem;">
-                            ${isActive ? '🟢 Активна' : '⚪ Черновик'}
-                        </span>
+                        <strong style="color:#1E293B; font-size:0.92rem;">${titleRu}</strong>
                     </td>
                     <td>
-                        <div class="tbl-actions">
-                            <button class="btn-action btn-action-edit" onclick="adminApp.openNewsModal('${item.id}')" title="Редактировать">
-                                <i class="fa-solid fa-pen-to-square"></i>
+                        <span style="color:#475569; font-size:0.88rem;">${titleAz}</span>
+                    </td>
+                    <td>
+                        <span style="color:#64748B; font-size:0.88rem;">${titleEn}</span>
+                    </td>
+                    <td>
+                        <code style="background:#F1F5F9; padding:3px 6px; border-radius:4px; font-size:0.82rem; color:#6D28D9;">${cat.id}</code>
+                    </td>
+                    <td style="text-align: right;">
+                        <div class="action-buttons-cell" style="justify-content: flex-end;">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="adminApp.openGalleryCategoryModal('${cat.id}')" title="Редактировать категорию">
+                                <i class="fa-solid fa-pen"></i>
                             </button>
-                            <button class="btn-action btn-action-del" onclick="adminApp.deleteNews('${item.id}')" title="Удалить">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="adminApp.deleteGalleryCategory('${cat.id}')" title="Удалить категорию">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                         </div>
@@ -2239,55 +2247,39 @@ class AdminApp {
         }).join('');
     }
 
-    openNewsModal(newsId = null) {
-        const cleanId = newsId ? String(newsId).trim() : null;
-        this.editingNewsId = cleanId;
+    openGalleryCategoryModal(catId = null) {
+        const form = document.getElementById('form-gallery-category-edit');
+        if (form) form.reset();
 
-        const hiddenIdInput = document.getElementById('news-edit-id');
-        if (hiddenIdInput) hiddenIdInput.value = cleanId || '';
-
-        const modal = document.getElementById('modal-news-edit');
-        const titleEl = document.getElementById('mnews-modal-title');
+        const modal = document.getElementById('modal-gallery-category-edit');
+        const titleEl = document.getElementById('mgcat-modal-title');
+        const hiddenIdInput = document.getElementById('gcat-edit-id');
+        const idInput = document.getElementById('gcat-id-input');
 
         const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
 
-        if (cleanId) {
-            const item = window.dataStore ? window.dataStore.getNewsById(cleanId) : null;
-            if (!item) return;
-            if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square" style="color:#10B981;"></i> <span>Редактировать новость</span>`;
-
-            setVal('news-title-az', item.title_az);
-            setVal('news-title-ru', item.title_ru);
-            setVal('news-title-en', item.title_en);
-            setVal('news-date', item.date);
-            setVal('news-image-url', item.image_local || item.image);
-            
-            const prev = document.getElementById('news-img-preview');
-            if (prev) prev.src = item.image_local || item.image || 'images/news/event_1.jpg';
-
-            const statusCheckbox = document.getElementById('news-status-active');
-            if (statusCheckbox) statusCheckbox.checked = item.status !== 'draft';
-
-            setVal('news-summary-az', item.summary_az);
-            setVal('news-summary-ru', item.summary_ru);
-            setVal('news-summary-en', item.summary_en);
-
-            setVal('news-content-az', item.content_az);
-            setVal('news-content-ru', item.content_ru);
-            setVal('news-content-en', item.content_en);
+        if (catId) {
+            const cat = window.dataStore ? window.dataStore.getGalleryCategoryById(catId) : null;
+            if (!cat) return;
+            if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> <span>Редактировать категорию галереи</span>`;
+            if (hiddenIdInput) hiddenIdInput.value = cat.id;
+            if (idInput) {
+                idInput.value = cat.id;
+                idInput.disabled = true;
+            }
+            setVal('gcat-icon-input', cat.icon || 'fa-solid fa-camera');
+            setVal('gcat-title-ru', cat.title_ru);
+            setVal('gcat-title-az', cat.title_az);
+            setVal('gcat-title-en', cat.title_en);
         } else {
-            if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-plus-circle" style="color:#10B981;"></i> <span>Добавить новость</span>`;
-            const form = document.getElementById('form-news-edit');
-            if (form) form.reset();
+            if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-plus"></i> <span>Добавить категорию галереи</span>`;
             if (hiddenIdInput) hiddenIdInput.value = '';
-            const prev = document.getElementById('news-img-preview');
-            if (prev) prev.src = 'images/news/event_1.jpg';
-            const statusCheckbox = document.getElementById('news-status-active');
-            if (statusCheckbox) statusCheckbox.checked = true;
-            setVal('news-date', new Date().toISOString().slice(0, 10));
+            if (idInput) {
+                idInput.value = '';
+                idInput.disabled = false;
+            }
+            setVal('gcat-icon-input', 'fa-solid fa-camera');
         }
-
-        this.updateFieldHighlights();
 
         if (modal) {
             modal.classList.add('active');
@@ -2295,248 +2287,83 @@ class AdminApp {
         }
     }
 
-    saveNewsForm() {
+    saveGalleryCategoryForm() {
         const getVal = (id) => (document.getElementById(id)?.value || '').trim();
 
-        const titleRu = getVal('news-title-ru');
-        const titleAz = getVal('news-title-az');
-        const titleEn = getVal('news-title-en');
+        const titleRu = getVal('gcat-title-ru');
+        const titleAz = getVal('gcat-title-az');
+        const titleEn = getVal('gcat-title-en');
+        const icon = getVal('gcat-icon-input') || 'fa-solid fa-camera';
+        const rawId = getVal('gcat-id-input');
 
         if (!titleRu && !titleAz && !titleEn) {
-            this.showToast('Пожалуйста, введите заголовок новости хотя бы на одном языке!', 'error');
+            this.showToast('Пожалуйста, укажите название категории хотя бы на одном языке!', 'error');
             return;
         }
 
-        const hiddenId = (document.getElementById('news-edit-id')?.value || '').trim();
-        const targetId = hiddenId || (this.editingNewsId ? String(this.editingNewsId).trim() : null) || ('news-' + Date.now());
-        const isActive = document.getElementById('news-status-active')?.checked ?? true;
-        const image = getVal('news-image-url') || 'images/news/event_1.jpg';
+        const hiddenId = getVal('gcat-edit-id');
+        let targetId = hiddenId || rawId || (titleEn || titleAz || titleRu).toLowerCase().replace(/[^a-z0-9]/g, '-');
+        targetId = targetId.toLowerCase().replace(/[^a-z0-9_-]/g, '');
 
-        const newsData = {
+        if (!targetId) {
+            this.showToast('Пожалуйста, укажите системный ID (slug)!', 'error');
+            return;
+        }
+
+        const categoryData = {
             id: targetId,
-            status: isActive ? 'active' : 'draft',
-            title_az: titleAz || titleRu || titleEn,
+            icon: icon,
             title_ru: titleRu || titleAz || titleEn,
-            title_en: titleEn || titleRu || titleAz,
-            date: getVal('news-date') || new Date().toISOString().slice(0, 10),
-            image_local: image,
-            image: image,
-            summary_az: getVal('news-summary-az'),
-            summary_ru: getVal('news-summary-ru'),
-            summary_en: getVal('news-summary-en'),
-            content_az: getVal('news-content-az') || getVal('news-summary-az'),
-            content_ru: getVal('news-content-ru') || getVal('news-summary-ru'),
-            content_en: getVal('news-content-en') || getVal('news-summary-en')
+            title_az: titleAz || titleRu || titleEn,
+            title_en: titleEn || titleRu || titleAz
         };
 
         if (window.dataStore) {
-            window.dataStore.saveNews(newsData);
+            window.dataStore.saveGalleryCategory(categoryData);
         }
-        this.editingNewsId = null;
-        const hiddenIdInput = document.getElementById('news-edit-id');
-        if (hiddenIdInput) hiddenIdInput.value = '';
 
-        this.closeModal('modal-news-edit');
-        this.renderAll();
-        this.showToast('Новость успешно сохранена!', 'success');
+        this.closeModal('modal-gallery-category-edit');
+        this.renderGalleryCategoriesTable();
+        this.renderGalleryTable();
+        this.populateAlbumCategoriesDropdown();
+        this.showToast('Категория галереи успешно сохранена!', 'success');
     }
 
-    deleteNews(id) {
-        if (confirm('Вы уверены, что хотите удалить эту новость?')) {
-            if (window.dataStore) window.dataStore.deleteNews(id);
-            this.renderAll();
-            this.showToast('Новость удалена', 'info');
+    deleteGalleryCategory(id) {
+        if (!id) return;
+        const cat = window.dataStore ? window.dataStore.getGalleryCategoryById(id) : null;
+        const catTitle = (cat && (cat.title_ru || cat.title_az || cat.title_en)) || id;
+
+        if (confirm(`Вы уверены, что хотите удалить категорию «${catTitle}»?`)) {
+            if (window.dataStore) {
+                window.dataStore.deleteGalleryCategory(id);
+            }
+            this.renderGalleryCategoriesTable();
+            this.renderGalleryTable();
+            this.populateAlbumCategoriesDropdown();
+            this.showToast(`Категория «${catTitle}» удалена!`, 'info');
         }
     }
 
-    // ==========================================
-    // Team & Leadership Management
-    // ==========================================
-    renderTeamTable() {
-        const tbody = document.getElementById('admin-team-tbody');
-        if (!tbody) return;
+    populateAlbumCategoriesDropdown(selectedCat = 'seminars') {
+        const select = document.getElementById('album-category-select');
+        if (!select) return;
 
-        const team = window.dataStore ? window.dataStore.getTeam() : [];
+        const categories = (window.dataStore && typeof window.dataStore.getGalleryCategories === 'function')
+            ? window.dataStore.getGalleryCategories()
+            : [];
 
-        if (team.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color: #94A3B8;">Сотрудники не найдены</td></tr>`;
+        if (categories.length === 0) {
+            select.innerHTML = `<option value="seminars">Семинары и Мастер-классы</option>`;
             return;
         }
 
-        tbody.innerHTML = team.map((item, idx) => {
-            const hasRu = !!item.name_ru;
-            const hasAz = !!item.name_az;
-            const hasEn = !!item.name_en;
-            const isLeader = Boolean(item.is_leader === true || item.is_leader === 'true');
-            const isActive = item.status !== 'draft';
-
-            return `
-                <tr>
-                    <td>${idx + 1}</td>
-                    <td>
-                        <div class="item-main-cell">
-                            <img src="${item.image_local || item.image || 'images/team/director.jpg'}" class="item-thumb-sm" alt="" onerror="this.src='images/logo.png'" style="object-fit:cover; border-radius:8px; border:1px solid #CBD5E1;">
-                            <div>
-                                <span class="item-title-bold">${item.name_ru || item.name_az || item.name_en || 'Без имени'}</span>
-                                <span class="item-subtitle-muted">${item.name_az || item.name_en || ''}</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span style="font-weight:600; color:#334155; font-size:0.85rem;">${item.role_ru || item.role_az || item.role_en || '—'}</span>
-                    </td>
-                    <td>
-                        <span class="badge" style="background:${isLeader ? '#FEF3C7' : '#F1F5F9'}; color:${isLeader ? '#D97706' : '#475569'}; font-weight:700; padding:4px 9px; border-radius:12px; font-size:0.75rem;">
-                            ${isLeader ? '👑 Руководство (Director)' : 'Специалист'}
-                        </span>
-                    </td>
-                    <td>
-                        <span class="badge ${isActive ? 'badge-active' : 'badge-draft'}" style="background:${isActive ? '#DCFCE7' : '#F1F5F9'}; color:${isActive ? '#15803D' : '#64748B'}; font-weight:700; padding:3px 8px; border-radius:12px; font-size:0.75rem;">
-                            ${isActive ? '🟢 Активен' : '⚪ Черновик'}
-                        </span>
-                    </td>
-                    <td>
-                        <div class="tbl-actions">
-                            <button class="btn-action btn-action-edit" onclick="adminApp.openTeamModal('${item.id}')" title="Редактировать">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
-                            <button class="btn-action btn-action-del" onclick="adminApp.deleteTeamMember('${item.id}')" title="Удалить">
-                                <i class="fa-solid fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `;
+        select.innerHTML = categories.map(c => {
+            const isSel = String(c.id).toLowerCase() === String(selectedCat).toLowerCase() ? 'selected' : '';
+            const tRu = c.title_ru || c.title_az || c.title_en || c.id;
+            const tAz = c.title_az ? ` (${c.title_az})` : '';
+            return `<option value="${c.id}" ${isSel}>${tRu}${tAz}</option>`;
         }).join('');
-    }
-
-    openTeamModal(memberId = null) {
-        const cleanId = memberId ? String(memberId).trim() : null;
-        this.editingTeamId = cleanId;
-
-        const hiddenIdInput = document.getElementById('team-edit-id');
-        if (hiddenIdInput) hiddenIdInput.value = cleanId || '';
-
-        const modal = document.getElementById('modal-team-edit');
-        const titleEl = document.getElementById('mteam-modal-title');
-
-        const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
-
-        if (cleanId) {
-            const item = window.dataStore ? window.dataStore.getTeamById(cleanId) : null;
-            if (!item) return;
-            if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-user-pen" style="color:#3B82F6;"></i> <span>Редактировать сотрудника</span>`;
-
-            setVal('team-name-ru', item.name_ru);
-            setVal('team-name-az', item.name_az);
-            setVal('team-name-en', item.name_en);
-
-            setVal('team-role-ru', item.role_ru);
-            setVal('team-role-az', item.role_az);
-            setVal('team-role-en', item.role_en);
-
-            setVal('team-bio-ru', item.bio_ru);
-            setVal('team-bio-az', item.bio_az);
-            setVal('team-bio-en', item.bio_en);
-
-            setVal('team-department', item.department || 'management');
-            setVal('team-image-url', item.image_local || item.image);
-
-            const prev = document.getElementById('team-img-preview');
-            if (prev) prev.src = item.image_local || item.image || 'images/team/director.jpg';
-
-            const fileInput = document.getElementById('team-file-input');
-            if (fileInput) fileInput.value = '';
-
-            const leaderCheckbox = document.getElementById('team-is-leader');
-            if (leaderCheckbox) leaderCheckbox.checked = Boolean(item.is_leader === true || item.is_leader === 'true');
-
-            const statusCheckbox = document.getElementById('team-status-active');
-            if (statusCheckbox) statusCheckbox.checked = Boolean(item.status !== 'draft');
-
-            this.populateDepartmentsDropdown(item.department || 'management');
-        } else {
-            if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-user-plus" style="color:#3B82F6;"></i> <span>Добавить сотрудника</span>`;
-            const form = document.getElementById('form-team-edit');
-            if (form) form.reset();
-            if (hiddenIdInput) hiddenIdInput.value = '';
-            const prev = document.getElementById('team-img-preview');
-            if (prev) prev.src = 'images/team/director.jpg';
-            const fileInput = document.getElementById('team-file-input');
-            if (fileInput) fileInput.value = '';
-            const statusCheckbox = document.getElementById('team-status-active');
-            if (statusCheckbox) statusCheckbox.checked = true;
-            const leaderCheckbox = document.getElementById('team-is-leader');
-            if (leaderCheckbox) leaderCheckbox.checked = false;
-
-            this.populateDepartmentsDropdown('management');
-        }
-
-        this.updateFieldHighlights();
-
-        if (modal) {
-            modal.classList.add('active');
-            modal.style.display = 'flex';
-        }
-    }
-
-    saveTeamForm() {
-        const getVal = (id) => (document.getElementById(id)?.value || '').trim();
-
-        const nameRu = getVal('team-name-ru');
-        const nameAz = getVal('team-name-az');
-        const nameEn = getVal('team-name-en');
-
-        if (!nameRu && !nameAz && !nameEn) {
-            this.showToast('Пожалуйста, введите имя сотрудника хотя бы на одном языке!', 'error');
-            return;
-        }
-
-        const hiddenId = (document.getElementById('team-edit-id')?.value || '').trim();
-        const editingId = this.editingTeamId ? String(this.editingTeamId).trim() : '';
-        const targetId = hiddenId || editingId || ('team-' + Date.now());
-
-        const isLeader = Boolean(document.getElementById('team-is-leader')?.checked);
-        const isActive = Boolean(document.getElementById('team-status-active')?.checked);
-        const image = getVal('team-image-url') || 'images/team/director.jpg';
-        const department = getVal('team-department') || 'management';
-
-        const memberData = {
-            id: targetId,
-            name_ru: nameRu || nameAz || nameEn,
-            name_az: nameAz || nameRu || nameEn,
-            name_en: nameEn || nameRu || nameAz,
-            role_ru: getVal('team-role-ru'),
-            role_az: getVal('team-role-az'),
-            role_en: getVal('team-role-en'),
-            bio_ru: getVal('team-bio-ru'),
-            bio_az: getVal('team-bio-az'),
-            bio_en: getVal('team-bio-en'),
-            department: department,
-            is_leader: isLeader,
-            status: isActive ? 'active' : 'draft',
-            image_local: image,
-            image: image
-        };
-
-        if (window.dataStore) {
-            window.dataStore.saveTeamMember(memberData);
-        }
-        this.editingTeamId = null;
-        const hiddenIdInput = document.getElementById('team-edit-id');
-        if (hiddenIdInput) hiddenIdInput.value = '';
-
-        this.closeModal('modal-team-edit');
-        this.renderAll();
-        this.showToast('Сотрудник успешно сохранен!', 'success');
-    }
-
-    deleteTeamMember(id) {
-        if (confirm('Вы уверены, что хотите удалить этого сотрудника?')) {
-            if (window.dataStore) window.dataStore.deleteTeamMember(id);
-            this.renderAll();
-            this.showToast('Сотрудник удален', 'info');
-        }
     }
 
     // ==========================================
@@ -2547,6 +2374,9 @@ class AdminApp {
         if (!tbody) return;
 
         const albums = window.dataStore ? window.dataStore.getGallery() : [];
+        const galleryCategories = (window.dataStore && typeof window.dataStore.getGalleryCategories === 'function') 
+            ? window.dataStore.getGalleryCategories() 
+            : [];
 
         if (albums.length === 0) {
             tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 2.5rem; color: #94A3B8;">Альбомов в галерее пока нет. Нажмите «Добавить альбом», чтобы создать новый.</td></tr>`;
@@ -2562,16 +2392,15 @@ class AdminApp {
             const location = album.location_ru || album.location_az || album.location_en || '';
             const photosCount = Array.isArray(album.photos) ? album.photos.length : 0;
 
-            let catLabel = 'Событие';
+            const matchedCat = galleryCategories.find(c => String(c.id).toLowerCase() === String(album.category || '').toLowerCase());
+            let catLabel = matchedCat ? (matchedCat.title_ru || matchedCat.title_az || matchedCat.title_en) : 'Событие';
             let catBadgeColor = 'background:#EDE9FE; color:#6D28D9; border:1px solid #DDD6FE;';
+
             if (album.category === 'seminars') {
-                catLabel = '🎓 Семинары';
                 catBadgeColor = 'background:#EFF6FF; color:#1D4ED8; border:1px solid #BFDBFE;';
             } else if (album.category === 'meetings') {
-                catLabel = '🤝 Переговоры';
                 catBadgeColor = 'background:#ECFDF5; color:#047857; border:1px solid #A7F3D0;';
             } else if (album.category === 'office') {
-                catLabel = '🏢 Офис и Склад';
                 catBadgeColor = 'background:#FFFBEB; color:#B45309; border:1px solid #FDE68A;';
             }
 
@@ -2650,6 +2479,7 @@ class AdminApp {
             }
             if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square" style="color:#FFFFFF;"></i> <span>Редактировать фотоальбом</span>`;
 
+            this.populateAlbumCategoriesDropdown(album.category || 'seminars');
             setVal('album-category-select', album.category || 'seminars');
             setVal('album-date', album.date || '2024-10-18');
             setVal('album-cover-url', album.cover_image || '');
@@ -2676,6 +2506,7 @@ class AdminApp {
             if (titleEl) titleEl.innerHTML = `<i class="fa-solid fa-images" style="color:#FFFFFF;"></i> <span>Добавить фотоальбом в галерею</span>`;
             if (hiddenIdInput) hiddenIdInput.value = '';
 
+            this.populateAlbumCategoriesDropdown('seminars');
             const today = new Date().toISOString().split('T')[0];
             setVal('album-date', today);
 

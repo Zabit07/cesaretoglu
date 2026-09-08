@@ -153,6 +153,11 @@
         <!-- Rendered dynamically by GalleryModule.renderAlbums() -->
       </div>
 
+      <!-- Gallery Pagination & Load More Controls Container -->
+      <div class="gallery-pagination-wrapper" id="gallery-pagination-wrapper">
+        <!-- Rendered dynamically by GalleryModule.renderPagination() -->
+      </div>
+
     </div>
   </section>
 
@@ -166,6 +171,7 @@
           <div class="lightbox-meta-info" id="lightbox-meta">
             <!-- Rendered by JS -->
           </div>
+          <p class="lightbox-event-description" id="lightbox-album-description"></p>
         </div>
         <div class="lightbox-header-actions">
           <span class="lightbox-counter-badge" id="lightbox-counter">1 / 4</span>
@@ -249,11 +255,11 @@
 
   <!-- Supabase JS Client & Service Layer -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js?v=2"></script>
+  <script src="js/supabase.js?v=3.3"></script>
 
   <!-- Scripts -->
-  <script src="js/data.js?v=2.8"></script>
-  <script src="js/gallery.js?v=2.8"></script>
-  <script src="js/main.js?v=2.8"></script>
+  <script src="js/data.js?v=3.3"></script>
+  <script src="js/gallery.js?v=3.3"></script>
+  <script src="js/main.js?v=3.3"></script>
 </body>
 </html>

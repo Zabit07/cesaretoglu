@@ -12,6 +12,7 @@ const STORAGE_KEYS = {
     TEAM: 'cesaretoglu_team',
     DEPARTMENTS: 'cesaretoglu_departments',
     GALLERY: 'cesaretoglu_gallery',
+    GALLERY_CATEGORIES: 'cesaretoglu_gallery_categories',
     ABOUT: 'cesaretoglu_about',
     SETTINGS: 'cesaretoglu_settings'
 };
@@ -58,6 +59,13 @@ const INITIAL_DEPARTMENTS = [
     { id: 'technology', title_ru: 'Технологический отдел', title_az: 'Texnoloji Şöbə',    title_en: 'Food Technology & R&D' },
     { id: 'supply',     title_ru: 'Снабжение и сервис',   title_az: 'Təchizat və Müştəri Servisi', title_en: 'Supply & Client Relations' },
     { id: 'logistics',  title_ru: 'Складская логистика',  title_az: 'Anbar və Logistika', title_en: 'Warehouse & Logistics' }
+];
+
+// Initial Gallery Categories Seed Data (Trilingual with Icon)
+const INITIAL_GALLERY_CATEGORIES = [
+    { id: 'seminars', icon: 'fa-solid fa-chalkboard-user', title_az: 'Seminarlar və Ustad Dərsləri', title_ru: 'Семинары и Мастер-классы', title_en: 'Seminars & Workshops' },
+    { id: 'meetings', icon: 'fa-solid fa-handshake', title_az: 'İşgüzar Görüşlər və Danışıqlar', title_ru: 'Деловые встречи и Переговоры', title_en: 'Business Meetings' },
+    { id: 'office', icon: 'fa-solid fa-building', title_az: 'Ofis və Anbar Kompleksi', title_ru: 'Офис и Складской комплекс', title_en: 'Office & Logistics Hub' }
 ];
 
 // Initial Dynamic Categories Seed Data for Homepage Slider (Admin-Panel Ready)
@@ -1494,6 +1502,7 @@ class DataStore {
         seedIfAbsent(STORAGE_KEYS.TEAM, INITIAL_TEAM);
         seedIfAbsent(STORAGE_KEYS.DEPARTMENTS, INITIAL_DEPARTMENTS);
         seedIfAbsent(STORAGE_KEYS.GALLERY, INITIAL_GALLERY);
+        seedIfAbsent(STORAGE_KEYS.GALLERY_CATEGORIES, INITIAL_GALLERY_CATEGORIES);
         seedIfAbsent(STORAGE_KEYS.ABOUT, INITIAL_ABOUT);
     }
 
@@ -1502,7 +1511,7 @@ class DataStore {
 
         try {
             console.log('🔄 Fetching latest data from Supabase Cloud...');
-            const [products, partners, categories, news, team, departments, gallery, about, settings] = await Promise.all([
+            const [products, partners, categories, news, team, departments, gallery, galleryCategories, about, settings] = await Promise.all([
                 window.supabaseService.fetchTable('products').catch(() => null),
                 window.supabaseService.fetchTable('partners').catch(() => null),
                 window.supabaseService.fetchTable('categories').catch(() => null),
@@ -1510,6 +1519,7 @@ class DataStore {
                 window.supabaseService.fetchTable('team').catch(() => null),
                 window.supabaseService.fetchTable('departments').catch(() => null),
                 window.supabaseService.fetchTable('gallery').catch(() => null),
+                window.supabaseService.fetchTable('gallery_categories').catch(() => null),
                 window.supabaseService.fetchTable('about').catch(() => null),
                 window.supabaseService.fetchTable('settings').catch(() => null)
             ]);
@@ -1521,6 +1531,7 @@ class DataStore {
             if (team !== null && Array.isArray(team)) localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(team));
             if (departments !== null && Array.isArray(departments)) localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(departments));
             if (gallery !== null && Array.isArray(gallery)) localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
+            if (galleryCategories !== null && Array.isArray(galleryCategories)) localStorage.setItem(STORAGE_KEYS.GALLERY_CATEGORIES, JSON.stringify(galleryCategories));
             if (about && about.length) localStorage.setItem(STORAGE_KEYS.ABOUT, JSON.stringify(about[0]));
             if (settings && settings.length) localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings[0]));
 
@@ -2009,6 +2020,64 @@ class DataStore {
 
         if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
             window.supabaseService.deleteRecord('departments', id);
+        }
+    }
+
+    // ==========================================
+    // Gallery Categories CRUD Management
+    // ==========================================
+    getGalleryCategories() {
+        try {
+            const stored = localStorage.getItem(STORAGE_KEYS.GALLERY_CATEGORIES);
+            if (stored !== null) {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            }
+            return INITIAL_GALLERY_CATEGORIES;
+        } catch(e) {
+            return INITIAL_GALLERY_CATEGORIES;
+        }
+    }
+
+    getGalleryCategoryById(id) {
+        if (!id) return null;
+        const cleanId = String(id).trim().toLowerCase();
+        return this.getGalleryCategories().find(c => String(c.id).trim().toLowerCase() === cleanId);
+    }
+
+    saveGalleryCategory(category) {
+        if (!category) return null;
+        let categories = this.getGalleryCategories();
+        if (!category.id) {
+            const base = (category.title_az || category.title_ru || category.title_en || 'cat');
+            category.id = 'gcat-' + base.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+        }
+        const targetId = String(category.id).trim();
+        category.id = targetId;
+
+        const idx = categories.findIndex(c => String(c.id).trim().toLowerCase() === targetId.toLowerCase());
+        if (idx >= 0) {
+            categories[idx] = { ...categories[idx], ...category, id: targetId };
+        } else {
+            categories.push(category);
+        }
+        localStorage.setItem(STORAGE_KEYS.GALLERY_CATEGORIES, JSON.stringify(categories));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.upsertRecord('gallery_categories', category);
+        }
+        return category;
+    }
+
+    deleteGalleryCategory(id) {
+        if (!id) return;
+        const targetId = String(id).trim().toLowerCase();
+        let categories = this.getGalleryCategories();
+        categories = categories.filter(c => String(c.id).trim().toLowerCase() !== targetId);
+        localStorage.setItem(STORAGE_KEYS.GALLERY_CATEGORIES, JSON.stringify(categories));
+
+        if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
+            window.supabaseService.deleteRecord('gallery_categories', id);
         }
     }
 

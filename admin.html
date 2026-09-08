@@ -321,6 +321,41 @@
 
         <!-- TAB 6: GALLERY CRUD -->
         <section id="tab-gallery" class="admin-tab-content">
+          <!-- Gallery Categories Management Card -->
+          <div class="admin-card" style="margin-bottom: 1.8rem; border-top: 3px solid #7C3AED;">
+            <div class="admin-card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+              <div>
+                <h3 class="admin-card-title" style="display:flex; align-items:center; gap:0.5rem;">
+                  <i class="fa-solid fa-tags" style="color:#7C3AED;"></i>
+                  <span>Категории фотогалереи</span>
+                </h3>
+                <p style="font-size:0.85rem; color:#64748B; margin-top:3px;">Управление рубриками альбомов (Seminars, Meetings, Office и др.), отображаемыми на сайте и в фильтрах</p>
+              </div>
+              <div class="admin-card-actions">
+                <button type="button" class="btn btn-primary btn-sm" onclick="adminApp.openGalleryCategoryModal()" style="background:#7C3AED; border-color:#7C3AED; font-weight:600;">
+                  <i class="fa-solid fa-plus"></i> Добавить категорию
+                </button>
+              </div>
+            </div>
+            <div class="admin-table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">#</th>
+                    <th style="width: 70px;">Иконка</th>
+                    <th>Название (RU)</th>
+                    <th>Adı (AZ)</th>
+                    <th>Title (EN)</th>
+                    <th style="width: 140px;">Системный ID</th>
+                    <th style="width: 110px; text-align: right;">Действия</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-gallery-categories-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Albums List Card -->
           <div class="admin-card">
             <div class="admin-card-header">
               <div>
@@ -1582,13 +1617,63 @@
     </div>
   </div>
 
+  <!-- MODAL: Gallery Category Create / Edit Modal -->
+  <div id="modal-gallery-category-edit" class="admin-modal-backdrop" style="z-index: 100000; display: none;">
+    <div class="admin-modal-window" style="max-width: 560px;">
+      <div class="admin-modal-header" style="background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%); color:#FFFFFF; padding: 1.1rem 1.4rem;">
+        <h3 class="admin-modal-title" id="mgcat-modal-title" style="font-size: 1.15rem; display:flex; align-items:center; gap:0.5rem; color:#FFFFFF;">
+          <i class="fa-solid fa-tags"></i>
+          <span>Добавить категорию галереи</span>
+        </h3>
+        <button type="button" class="admin-modal-close" style="color:#FFFFFF;" onclick="adminApp.closeModal('modal-gallery-category-edit')">&times;</button>
+      </div>
+      <form id="form-gallery-category-edit" onsubmit="event.preventDefault(); adminApp.saveGalleryCategoryForm();">
+        <input type="hidden" id="gcat-edit-id" value="">
+        <div class="admin-modal-body" style="padding: 1.5rem;">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.2rem;">
+            <div class="adm-form-group">
+              <label style="font-weight: 700; color: #1E293B;">Системный ID (slug) *:</label>
+              <input type="text" id="gcat-id-input" class="adm-input" placeholder="например: seminars" required style="font-family: monospace; font-size: 0.9rem;">
+            </div>
+            <div class="adm-form-group">
+              <label style="font-weight: 700; color: #1E293B;">Иконка (FontAwesome):</label>
+              <input type="text" id="gcat-icon-input" class="adm-input" placeholder="fa-solid fa-camera" value="fa-solid fa-camera">
+            </div>
+          </div>
+
+          <div class="adm-form-group" style="margin-bottom: 1rem;">
+            <label style="font-weight: 700; color: #1E293B;">Название на русском (RU) *:</label>
+            <input type="text" id="gcat-title-ru" class="adm-input" placeholder="Например: Выставки и Презентации" required>
+          </div>
+
+          <div class="adm-form-group" style="margin-bottom: 1rem;">
+            <label style="font-weight: 700; color: #1E293B;">Название на азербайджанском (AZ):</label>
+            <input type="text" id="gcat-title-az" class="adm-input" placeholder="Məsələn: Sərgilər və Təqdimatlar">
+          </div>
+
+          <div class="adm-form-group" style="margin-bottom: 0.5rem;">
+            <label style="font-weight: 700; color: #1E293B;">Название на английском (EN):</label>
+            <input type="text" id="gcat-title-en" class="adm-input" placeholder="Example: Exhibitions & Expos">
+          </div>
+        </div>
+        <div class="admin-modal-footer" style="border-top: 1px solid #E2E8F0; padding: 1rem 1.4rem; display:flex; justify-content:flex-end; gap:0.75rem;">
+          <button type="button" class="btn btn-secondary" onclick="adminApp.closeModal('modal-gallery-category-edit')">Отмена</button>
+          <button type="submit" class="btn btn-primary" style="background:#7C3AED; border-color:#7C3AED; font-weight:700; display:flex; align-items:center; gap:0.4rem;">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span>Сохранить категорию</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Supabase JS Client & Service Layer -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase.js"></script>
+  <script src="js/supabase.js?v=3.1"></script>
 
   <!-- Modular Scripts -->
-  <script src="js/data.js?v=2.8"></script>
-  <script src="js/admin.js?v=2.8"></script>
+  <script src="js/data.js?v=3.1"></script>
+  <script src="js/admin.js?v=3.1"></script>
 
   <script>
     function toggleLoginPasswordVisibility() {
