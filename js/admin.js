@@ -2504,7 +2504,6 @@ class AdminApp {
             image_local: image,
             department: department,
             department_id: department,
-            isLeader: isLeader,
             is_leader: isLeader,
             status: isActive ? 'active' : 'draft',
 
