@@ -483,11 +483,11 @@
   <!-- 1. FULL INTERACTIVE CATALOG MODAL -->
   <div class="modal-backdrop" id="catalog-interactive-modal">
     <div class="modal-window catalog-modal-window">
-      <button class="modal-close-btn" id="catalog-modal-close">&times;</button>
+      <button class="modal-close-btn" id="catalog-modal-close" aria-label="Закрыть">&times;</button>
       <div class="catalog-modal-header">
         <div>
-          <h2 style="color:var(--secondary-color); font-size:1.4rem;" data-i18n="modal_catalog_title">Каталог продукции Cəsarətoğlu MMC</h2>
-          <p style="font-size:0.85rem; color:#64748B;" data-i18n="modal_catalog_subtitle">Официальные поставки от Atlantis-Pak, Wiberg, Südpack и Avangard</p>
+          <h2 class="catalog-modal-title" data-i18n="modal_catalog_title">Каталог продукции Cəsarətoğlu MMC</h2>
+          <p class="catalog-modal-subtitle" data-i18n="modal_catalog_subtitle">Официальные поставки от Atlantis-Pak, Wiberg, Südpack и Avangard</p>
         </div>
       </div>
 
@@ -505,11 +505,11 @@
         <div class="catalog-category-tabs catalog-category-tabs-container"></div>
       </div>
 
-      <div style="font-size:0.8rem; color:#64748B; font-weight:600; margin-bottom:0.8rem;">
+      <div class="catalog-results-count-wrap">
         <span class="catalog-results-count-target"></span>
       </div>
 
-      <div class="catalog-products-grid catalog-products-render-target" style="max-height: 55vh; overflow-y: auto; padding-right: 0.3rem;"></div>
+      <div class="catalog-products-grid catalog-products-render-target"></div>
     </div>
   </div>
 
