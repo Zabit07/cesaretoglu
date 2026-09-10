@@ -139,6 +139,21 @@ const PartnersModule = {
 
                     let detailsText = lang === 'az' ? 'Xüsusiyyətlər' : (lang === 'ru' ? 'Характеристики' : 'Specifications');
 
+                    // Extract top specs for partner card preview
+                    let specsHtml = '';
+                    if (window.CatalogModule && typeof window.CatalogModule.extractProductSpecs === 'function') {
+                        const specsRows = window.CatalogModule.extractProductSpecs(p, lang, 2);
+                        if (specsRows.length > 0) {
+                            const rowsHtml = specsRows.map(r => `
+                                <div class="product-spec-row">
+                                    <span class="product-spec-label">${r.label}</span>
+                                    <span class="product-spec-dots"></span>
+                                    <span class="product-spec-val">${r.value}</span>
+                                </div>`).join('');
+                            specsHtml = `<div class="product-card-specs">${rowsHtml}</div>`;
+                        }
+                    }
+
                     return `
                         <div class="product-card" data-product-id="${p.id}" style="box-shadow:none; border:1px solid #E2E8F0;">
                             <div class="product-card-thumb" onclick="PartnersModule.viewProductSpecs('${p.id}')">
@@ -148,6 +163,7 @@ const PartnersModule = {
                             <div class="product-card-info">
                                 <span class="product-card-category">${pCat}</span>
                                 <h4 class="product-card-title" onclick="PartnersModule.viewProductSpecs('${p.id}')">${pTitle}</h4>
+                                ${specsHtml}
                             </div>
                             <div class="product-card-actions">
                                 <button class="btn btn-outline-primary btn-sm" onclick="PartnersModule.viewProductSpecs('${p.id}')" style="width:100%;">
