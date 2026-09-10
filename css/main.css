@@ -3803,10 +3803,12 @@ h6 {
   }
   .product-card {
     height: auto !important;
-    min-height: auto;
-    display: flex;
-    flex-direction: column;
+    min-height: auto !important;
+    max-height: none !important;
+    display: flex !important;
+    flex-direction: column !important;
     border-radius: 16px;
+    overflow: visible !important;
   }
   .product-card-thumb {
     height: 190px !important;
