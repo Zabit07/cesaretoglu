@@ -1,0 +1,29 @@
+{
+  "redirects": [
+    {
+      "source": "/az",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/az/:match*",
+      "destination": "/:match*",
+      "permanent": true
+    },
+    {
+      "source": "/ru",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/single-project",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/single-project/:match*",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}
