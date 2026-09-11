@@ -150,6 +150,7 @@ const GalleryModule = {
 
         const lang = this.getCurrentLang();
         const albums = window.dataStore ? window.dataStore.getGallery() : [];
+        albums.sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at));
         const galleryCategories = (window.dataStore && typeof window.dataStore.getGalleryCategories === 'function')
             ? window.dataStore.getGalleryCategories()
             : [];
@@ -158,6 +159,7 @@ const GalleryModule = {
             if (this.currentCategory === 'all') return true;
             return a.category === this.currentCategory;
         });
+        filtered.sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at));
 
         if (filtered.length === 0) {
             const noDataMsg = lang === 'az' ? 'Bu kateqoriyada heç bir albom tapılmadı.' : (lang === 'en' ? 'No albums found in this category.' : 'В этой категории альбомов пока нет.');

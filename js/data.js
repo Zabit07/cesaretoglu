@@ -1524,10 +1524,10 @@ class DataStore {
                     window.supabaseService.fetchTable('products').catch(() => null),
                     window.supabaseService.fetchTable('partners').catch(() => null),
                     window.supabaseService.fetchTable('categories').catch(() => null),
-                    window.supabaseService.fetchTable('news').catch(() => null),
+                    window.supabaseService.fetchTable('news', { orderBy: 'created_at', ascending: false }).catch(() => null),
                     window.supabaseService.fetchTable('team').catch(() => null),
                     window.supabaseService.fetchTable('departments').catch(() => null),
-                    window.supabaseService.fetchTable('gallery').catch(() => null),
+                    window.supabaseService.fetchTable('gallery', { orderBy: 'created_at', ascending: false }).catch(() => null),
                     window.supabaseService.fetchTable('gallery_categories').catch(() => null),
                     window.supabaseService.fetchTable('about').catch(() => null),
                     window.supabaseService.fetchTable('settings').catch(() => null)
@@ -1536,10 +1536,16 @@ class DataStore {
                 if (products !== null && Array.isArray(products)) localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
                 if (partners !== null && Array.isArray(partners)) localStorage.setItem(STORAGE_KEYS.PARTNERS, JSON.stringify(partners));
                 if (categories !== null && Array.isArray(categories)) localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
-                if (news !== null && Array.isArray(news)) localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(news));
+                if (news !== null && Array.isArray(news)) {
+                    news.sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at));
+                    localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(news));
+                }
                 if (team !== null && Array.isArray(team)) localStorage.setItem(STORAGE_KEYS.TEAM, JSON.stringify(team));
                 if (departments !== null && Array.isArray(departments)) localStorage.setItem(STORAGE_KEYS.DEPARTMENTS, JSON.stringify(departments));
-                if (gallery !== null && Array.isArray(gallery)) localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
+                if (gallery !== null && Array.isArray(gallery)) {
+                    gallery.sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at));
+                    localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(gallery));
+                }
                 if (galleryCategories !== null && Array.isArray(galleryCategories)) localStorage.setItem(STORAGE_KEYS.GALLERY_CATEGORIES, JSON.stringify(galleryCategories));
                 if (about && about.length) localStorage.setItem(STORAGE_KEYS.ABOUT, JSON.stringify(about[0]));
                 if (settings && settings.length) localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings[0]));
@@ -1839,8 +1845,13 @@ class DataStore {
     getNews() {
         try {
             const stored = localStorage.getItem(STORAGE_KEYS.NEWS);
-            if (stored !== null) return JSON.parse(stored);
-            return [];
+            let list = [];
+            if (stored !== null) {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed)) list = parsed;
+            }
+            list.sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at));
+            return list;
         } catch(e) {
             return [];
         }
@@ -1854,6 +1865,12 @@ class DataStore {
         const newsList = this.getNews();
         if (!newsItem.id) {
             newsItem.id = 'news-' + Date.now();
+        }
+        if (!newsItem.created_at) {
+            newsItem.created_at = new Date().toISOString();
+        }
+        if (!newsItem.date) {
+            newsItem.date = new Date().toISOString().split('T')[0];
         }
         const idx = newsList.findIndex(n => n.id === newsItem.id);
         if (idx >= 0) {
@@ -1869,6 +1886,7 @@ class DataStore {
         } else {
             newsList.unshift(newsItem);
         }
+        newsList.sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at));
         localStorage.setItem(STORAGE_KEYS.NEWS, JSON.stringify(newsList));
 
         if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {
@@ -2160,6 +2178,7 @@ class DataStore {
                 }
             });
 
+            uniqueList.sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at));
             return uniqueList;
         } catch(e) {
             return [];
@@ -2177,6 +2196,12 @@ class DataStore {
         let gallery = this.getGallery();
         const albumIdStr = album.id ? String(album.id).trim() : ('album-' + Date.now());
         album.id = albumIdStr;
+        if (!album.created_at) {
+            album.created_at = new Date().toISOString();
+        }
+        if (!album.date) {
+            album.date = new Date().toISOString().split('T')[0];
+        }
 
         // Check if an album with same ID exists
         const idx = gallery.findIndex(a => String(a.id).trim() === albumIdStr);
@@ -2206,6 +2231,7 @@ class DataStore {
             }
         }
 
+        cleanList.sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at));
         localStorage.setItem(STORAGE_KEYS.GALLERY, JSON.stringify(cleanList));
 
         if (typeof window !== 'undefined' && window.supabaseService && window.supabaseService.isConfigured) {

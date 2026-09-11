@@ -2200,6 +2200,7 @@ class AdminApp {
         if (!tbody) return;
 
         const newsList = (window.dataStore && typeof window.dataStore.getNews === 'function') ? window.dataStore.getNews() : [];
+        newsList.sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at));
         if (newsList.length === 0) {
             tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color: #94A3B8;">Новостей пока нет. Нажмите «Добавить новость», чтобы создать.</td></tr>`;
             return;
@@ -2329,10 +2330,12 @@ class AdminApp {
 
         const hiddenId = (document.getElementById('news-edit-id')?.value || '').trim();
         const targetId = hiddenId || (this.editingNewsId ? String(this.editingNewsId).trim() : null) || ('news-' + Date.now());
+        const existingNews = (hiddenId || this.editingNewsId) ? window.dataStore?.getNewsById(hiddenId || this.editingNewsId) : null;
 
         const newsData = {
             id: targetId,
             date: date,
+            created_at: existingNews?.created_at || new Date().toISOString(),
             image: image,
             image_local: image,
             status: isActive ? 'active' : 'draft',
@@ -2765,6 +2768,7 @@ class AdminApp {
         if (!tbody) return;
 
         const albums = window.dataStore ? window.dataStore.getGallery() : [];
+        albums.sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at));
         const galleryCategories = (window.dataStore && typeof window.dataStore.getGalleryCategories === 'function') 
             ? window.dataStore.getGalleryCategories() 
             : [];
@@ -3095,10 +3099,12 @@ class AdminApp {
             coverImage = 'images/news/event_1.jpg';
         }
 
+        const existingAlbum = (hiddenId || editingId) ? window.dataStore?.getAlbumById(hiddenId || editingId) : null;
         const albumData = {
             id: targetId,
             category: category,
             date: date,
+            created_at: existingAlbum?.created_at || new Date().toISOString(),
             cover_image: coverImage,
             title_ru: titleRu || titleAz || titleEn,
             title_az: titleAz || titleRu || titleEn,

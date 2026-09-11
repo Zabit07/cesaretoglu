@@ -76,6 +76,7 @@ const NewsModule = {
         const lang = window.currentLang || (window.app && window.app.lang) || 'ru';
         const allNews = window.dataStore ? window.dataStore.getNews() : [];
         const activeNews = allNews.filter(item => item.status !== 'draft');
+        activeNews.sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at));
 
         // 1. Render for Swiper Slider on Homepage
         const swiperWrapper = document.getElementById('news-swiper-wrapper');

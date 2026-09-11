@@ -36,10 +36,16 @@ class SupabaseService {
     // =========================================================================
     // Generic Cloud Sync & Fetch
     // =========================================================================
-    async fetchTable(tableName) {
+    async fetchTable(tableName, options = {}) {
         if (!this.isConfigured || !this.client) return null;
         try {
-            const { data, error } = await this.client.from(tableName).select('*');
+            let query = this.client.from(tableName).select('*');
+            if (options && options.orderBy) {
+                query = query.order(options.orderBy, { ascending: options.ascending !== undefined ? options.ascending : false });
+            } else if (tableName === 'news' || tableName === 'gallery') {
+                query = query.order('created_at', { ascending: false });
+            }
+            const { data, error } = await query;
             if (error) {
                 console.error(`Supabase fetch error on [${tableName}]:`, error);
                 return null;
