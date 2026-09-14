@@ -1977,7 +1977,8 @@ h6 {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: auto;
+  justify-content: space-between;
+  height: 100%;
   min-height: 480px;
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
   box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
@@ -2154,6 +2155,7 @@ h6 {
   display: flex;
   align-items: center;
   width: 100%;
+  margin-top: auto;
 }
 
 .product-card-actions .product-details-btn {
